@@ -1,3 +1,5 @@
+using System;
+
 namespace PeerStudy.Data
 {
     public class WeatherForecast
