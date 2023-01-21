@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PeerStudy;
 using PeerStudy.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+builder.Services.RegisterDbContext(builder.Configuration.GetConnectionString("DBConnectionString"));
+
 builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
