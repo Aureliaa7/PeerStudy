@@ -1,0 +1,19 @@
+﻿.login-card {
+    margin-top: 10%;
+    width: 50%;
+    margin-left: 25%;
+    background-color: #BCD4E6;
+    border-radius: 20px;
+}
+
+.card-title, label {
+    text-align: center;
+}
+
+div {
+    margin-top: 15px;
+}
+
+button {
+    align-content: center;
+}

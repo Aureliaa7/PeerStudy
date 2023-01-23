@@ -13,7 +13,9 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.RegisterDbContext(builder.Configuration.GetConnectionString("DBConnectionString"));
 
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.RegisterServices();
+
+builder.Services.AddSingleton<WeatherForecastService>();  //TODO: delete
 
 var app = builder.Build();
 

@@ -7,11 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\Services\**" />
+    <Compile Remove="Model\**" />
+    <EmbeddedResource Remove="Interfaces\Services\**" />
+    <EmbeddedResource Remove="Model\**" />
+    <None Remove="Interfaces\Services\**" />
+    <None Remove="Model\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="DomainServices\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Interfaces\DomainServices\" />
-    <Folder Include="Interfaces\Services\" />
-    <Folder Include="Interfaces\UnitOfWork\" />
   </ItemGroup>
 
 </Project>

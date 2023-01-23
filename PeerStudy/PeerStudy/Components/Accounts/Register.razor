@@ -1,0 +1,37 @@
+﻿@page "/register"
+
+<div class="card register-card">
+    <div class="card-title">
+        <h3>Register</h3>
+    </div>
+
+    <div class="card-body">
+        <EditForm Model="@registerModel" OnValidSubmit="@CreateAccount">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div>
+                <label>First Name</label>
+                <InputText class="form-control" @bind-Value="registerModel.FirstName" />
+            </div>
+            <div>
+                <label>Last Name</label>
+                <InputText class="form-control" @bind-Value="registerModel.LastName" />
+            </div>
+            <div>
+                <label>Email</label>
+                <InputText class="form-control" @bind-Value="registerModel.Email" />
+            </div>
+            <div>
+                <label>Password</label>
+                <InputText type="password" class="form-control" @bind-Value="registerModel.Password" />
+            </div>
+            <div>
+                <label>Choose a profile image</label>
+                <InputFile OnChange="@HandleSelected" />
+            </div>
+            <div>
+                <button class="btn btn-primary form-control">Create account</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
