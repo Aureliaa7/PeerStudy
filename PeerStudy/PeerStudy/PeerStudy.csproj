@@ -23,4 +23,9 @@
     <ProjectReference Include="..\PeerStudy.Infrastructure\PeerStudy.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Teachers\" />
+    <Folder Include="Components\Students\" />
+  </ItemGroup>
+
 </Project>

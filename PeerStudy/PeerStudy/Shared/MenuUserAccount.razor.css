@@ -1,0 +1,12 @@
+﻿img {
+    width: 30px;
+    height:30px;
+}
+
+.dropdown-item {
+    width: 80%;
+}
+
+.dropdown-toggle {
+    background-color: #3B7197 !important;
+}

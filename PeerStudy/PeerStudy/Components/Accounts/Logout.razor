@@ -1,0 +1,14 @@
+﻿@page "/logout"
+@using PeerStudy.Services.Interfaces
+
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+@code {
+
+    protected async override Task OnInitializedAsync()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/login");
+    }
+}
