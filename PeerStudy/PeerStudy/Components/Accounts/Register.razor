@@ -1,37 +1,48 @@
 ﻿@page "/register"
 
-<div class="card register-card">
-    <div class="card-title">
-        <h3>Register</h3>
-    </div>
+<EditForm Model="@registerModel" OnValidSubmit="@CreateAccount">
+    <DataAnnotationsValidator />
+    <div class="card register-card">
+        <div class="card-title">
+            <h3>Register</h3>
+        </div>
 
-    <div class="card-body">
-        <EditForm Model="@registerModel" OnValidSubmit="@CreateAccount">
-            <DataAnnotationsValidator />
-           @* <ValidationSummary />*@
-            <div>
-                <label>First Name</label>
-                <InputText class="form-control" @bind-Value="registerModel.FirstName" />
+        <div class="card-body">
+            <div class="form-row">
+                <div>
+                    <MatTextField Class="input-field" @bind-Value="@registerModel.FirstName" Label="First Name"></MatTextField>
+                    <ValidationMessage For="@(() => registerModel.FirstName)" />
+                </div>
+                <div>
+                    <MatTextField Class="input-field" @bind-Value="@registerModel.LastName" Label="Last Name"></MatTextField>
+                    <ValidationMessage For="@(() => registerModel.LastName)" />
+                </div>
             </div>
-            <div>
-                <label>Last Name</label>
-                <InputText class="form-control" @bind-Value="registerModel.LastName" />
+            <div class="form-row">
+                <div>
+                    <MatTextField Class="input-field" @bind-Value="@registerModel.Email" Label="Email"></MatTextField>
+                    <ValidationMessage For="@(() => registerModel.Email)" />
+                </div>
+                <div>
+                    <MatTextField Class="input-field" @bind-Value="@registerModel.Password" Label="Password" Type="password"></MatTextField>
+                    <ValidationMessage For="@(() => registerModel.Password)" />
+                </div>
             </div>
-            <div>
-                <label>Email</label>
-                <InputText class="form-control" @bind-Value="registerModel.Email" />
+
+            <div class="form-row">
+                <div>
+                    <PeerStudyFileUpload Class="file-upload" OnChange="@FilesReady" Label="Choose a profile picture" Accept=".png, .jpg, .jpeg"></PeerStudyFileUpload>
+                </div>
+                <div>
+                    <MatButton Class="submit-button" Style="margin-top:15px" Raised="true" Type="submit">Create account</MatButton>
+                </div>
             </div>
-            <div>
-                <label>Password</label>
-                <InputText type="password" class="form-control" @bind-Value="registerModel.Password" />
-            </div>
-            <div>
-                <label>Choose a profile image</label>
-                <InputFile OnChange="@HandleSelected" />
-            </div>
-            <div>
-                <button class="btn btn-primary form-control">Create account</button>
-            </div>
-        </EditForm>
+            <div><a href="/login">Already have an account?</a></div>
+        </div>
     </div>
-</div>
+</EditForm>
+
+<Alert Color="Color.Danger" @bind-Visible="@showErrorMessage">
+    <AlertDescription>@errorMessage</AlertDescription>
+    <CloseButton />
+</Alert>

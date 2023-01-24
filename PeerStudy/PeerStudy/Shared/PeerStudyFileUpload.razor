@@ -1,0 +1,21 @@
+﻿@*filter allowed file types according to https://github.com/SamProf/MatBlazor/issues/810*@
+
+@inherits BaseMatFileUpload
+
+<div @ref="@Ref" @attributes="@Attributes" class="@ClassMapper.AsString()" style="@StyleMapper.AsString()" id="@Id">
+    <input type="file" @ref="@InputRef" multiple="@AllowMultiple" accept="@Accept" />
+    <div class="mat-file-upload-content">
+        <span>@Label</span>
+        <MatIcon>@MatIconNames.Attach_file</MatIcon>
+    </div>
+    @if (ProgressTotal != 0)
+    {
+        <MatProgressBar Class="mat-file-upload-progress" Progress="@(Math.Round((double)ProgressProgress / ProgressTotal, 2))"/>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public string Accept { get; set; } = "*";
+}

@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using MatBlazor;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Accounts
@@ -19,9 +20,10 @@ namespace PeerStudy.Components.Accounts
         private IAccountService AccountService { get; set; }
 
         private RegisterModel registerModel = new();
-        private IBrowserFile imageFile;
         private string errorMessage;
         private bool showErrorMessage;
+
+        private IMatFileUploadEntry profilePicture;
 
         private async Task CreateAccount()
         {
@@ -59,27 +61,22 @@ namespace PeerStudy.Components.Accounts
             registerModel = new();
         }
 
-        private void HandleSelected(InputFileChangeEventArgs e)
-        {
-            imageFile = e.File;
-        }
-
         private async Task<byte[]> GetProfilePhotoContentAsync()
         {
-            if (imageFile != null)
+            if (profilePicture != null)
             {
-                var resizedFile = await imageFile.RequestImageFileAsync(
-                    "image/png", ClientConstants.ImageWidth, ClientConstants.ImageHeight);
-                using (var source = resizedFile.OpenReadStream(resizedFile.Size))
+                using (var stream = new MemoryStream())
                 {
-                    using (var stream = new MemoryStream())
-                    {
-                        await source.CopyToAsync(stream);
-                        return stream.ToArray();
-                    }
+                    await profilePicture.WriteToStreamAsync(stream);
+                    return stream.ToArray();
                 }
             }
             return null;
+        }
+
+        void FilesReady(IMatFileUploadEntry[] files)
+        {
+            profilePicture = files.First();
         }
     }
 }

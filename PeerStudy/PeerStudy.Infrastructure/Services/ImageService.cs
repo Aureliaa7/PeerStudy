@@ -10,7 +10,6 @@ namespace PeerStudy.Infrastructure.Services
         public async Task<string> SaveImageAsync(byte[] imageContent, string destinationDirectoryName)
         {
             var currentDirectory = Directory.GetCurrentDirectory();
-           // currentDirectory = currentDirectory.Replace(Constants.APIAssembly, Constants.ClientAssembly);
             string profilePhtotosDirectory = $"{currentDirectory}\\{destinationDirectoryName}";
 
             if (!Directory.Exists(profilePhtotosDirectory))
@@ -23,7 +22,6 @@ namespace PeerStudy.Infrastructure.Services
             string filePath = Path.Combine(profilePhtotosDirectory, fileName);
             await File.WriteAllBytesAsync(filePath, imageContent);
 
-            // Return the fileName and not its path because otherwise I cannot access the image from Client
             return fileName;
         }
     }

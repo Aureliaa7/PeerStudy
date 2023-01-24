@@ -1,18 +1,33 @@
 ﻿.register-card {
-    width: 50%;
-    margin-left: 25%;
+    width: 80%;
+    margin:auto;
     background-color: #BCD4E6;
     border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .card-title, label {
+    margin-top: 15px;
     text-align: center;
+    color: white;
+}
+
+.card-body {
+    width: 95%;
+    display: grid;
+    place-items: center;
 }
 
 div {
-    margin-top: 15px;
+    display: inline-block;
 }
 
-button {
-    align-content: center;
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 95%;
+    margin-top:20px;
+    margin-left: auto;
 }

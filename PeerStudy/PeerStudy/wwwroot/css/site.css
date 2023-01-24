@@ -65,7 +65,19 @@ a, .btn-link {
 
 
 
- /*   custom styling rules applied globally */
+ /* custom styling rules applied globally */
 .alert {
     border-radius: 50px;
+}
+
+.input-field, .submit-button {
+    border-radius: 50px; 
+    width: 80%;
+}
+
+.file-upload {
+    border-radius: 50px;
+    height: 45%;
+    width: 80%;
+    background-color: #F5F5F5;
 }

@@ -1,8 +1,8 @@
 ﻿.login-card {
-    margin-top: 10%;
+    margin-top: 5%;
     width: 50%;
     margin-left: 25%;
-    background-color: #a8c5de; /*#BCD4E6;*/
+    background-color: #a8c5de;
     border-radius: 20px;
     display: flex;
     justify-content: center;

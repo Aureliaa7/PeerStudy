@@ -9,18 +9,19 @@
 
         <div class="card-body">
             <div>
-                <MatTextField Style="@style" @bind-Value="@loginModel.Email" Label="Email" Icon="email"></MatTextField>
+                <MatTextField Class="input-field" @bind-Value="@loginModel.Email" Label="Email" Icon="email"></MatTextField>
                 <ValidationMessage For="@(() => loginModel.Email)" />
             </div>
 
             <div>
-                <MatTextField Style="@style" @bind-Value="@loginModel.Password" Label="Password" Icon="lock" Type="password"></MatTextField>
+                <MatTextField Class="input-field" @bind-Value="@loginModel.Password" Label="Password" Icon="lock" Type="password"></MatTextField>
                 <ValidationMessage For="@(() => loginModel.Password)" />
             </div>
 
             <div>
-                <MatButton Style="@style" Raised="true" Type="submit">Log in</MatButton>
+                <MatButton Class="submit-button" Raised="true" Type="submit">Log in</MatButton>
             </div>
+            <div>You do not have an account?<a href="/register">Sign up</a></div>
         </div>
     </div>
 </EditForm>
