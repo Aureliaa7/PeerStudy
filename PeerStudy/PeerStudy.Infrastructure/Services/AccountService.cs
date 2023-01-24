@@ -25,6 +25,36 @@ namespace PeerStudy.Infrastructure.Services
             this.imageService = imageService;
         }
 
+        public async Task<bool> ChangePasswordAsync(ChangePasswordModel changePasswordModel)
+        {
+            User user = await unitOfWork.UsersRepository.GetByIdAsync(changePasswordModel.UserId);
+            if (user == null)
+            {
+                return false;
+            }
+
+            bool isOldPasswordCorrect = PasswordHelper.IsCorrectPasswordHash(
+                changePasswordModel.OldPassword, 
+                user.PasswordHash, 
+                user.PasswordSalt);
+
+            if (isOldPasswordCorrect)
+            {
+                PasswordHelper.CreatePasswordHash(
+                    changePasswordModel.NewPassword, 
+                    out byte[] newPasswordHash, 
+                    out byte[] newPasswordSalt);
+                user.PasswordHash = newPasswordHash;
+                user.PasswordSalt = newPasswordSalt;
+                await unitOfWork.UsersRepository.UpdateAsync(user);
+                await unitOfWork.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<string> LoginAsync(LoginModel loginModel)
         {
             string token = string.Empty;

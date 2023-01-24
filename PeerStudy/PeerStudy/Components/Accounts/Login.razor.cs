@@ -16,10 +16,14 @@ namespace PeerStudy.Components.Accounts
 
         private LoginModel loginModel = new();
         private bool showLoginErrorMessage;
+        private bool isSubmitButtonDisabled;
 
         private async Task LogIn()
         {
+            await DisableSubmitButton(true);
             string userId = await AuthenticationService.LoginAsync(loginModel);
+            await DisableSubmitButton(false);
+
             if (string.IsNullOrEmpty(userId))
             {
                 this.showLoginErrorMessage = true;
@@ -30,6 +34,12 @@ namespace PeerStudy.Components.Accounts
             }
 
             loginModel = new();
+        }
+
+        private async Task DisableSubmitButton(bool disabled)
+        {
+            isSubmitButtonDisabled = disabled;
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

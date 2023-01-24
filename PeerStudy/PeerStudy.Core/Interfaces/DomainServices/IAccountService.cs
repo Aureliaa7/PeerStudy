@@ -9,5 +9,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<string> LoginAsync(LoginModel loginModel);
 
         Task<User> RegisterAsync(RegisterModel registerModel);
+
+        Task<bool> ChangePasswordAsync(ChangePasswordModel changePasswordModel);
     }
 }

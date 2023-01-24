@@ -19,7 +19,7 @@
             </div>
 
             <div>
-                <MatButton Class="submit-button" Raised="true" Type="submit">Log in</MatButton>
+                <MatButton Class="submit-button" Raised="true" Type="submit" Disabled="@(isSubmitButtonDisabled || !context.IsModified() || !context.Validate())">Log in</MatButton>
             </div>
             <div>You do not have an account?<a href="/register">Sign up</a></div>
         </div>
