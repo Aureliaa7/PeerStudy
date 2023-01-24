@@ -8,7 +8,7 @@
     <div class="card-body">
         <EditForm Model="@registerModel" OnValidSubmit="@CreateAccount">
             <DataAnnotationsValidator />
-            <ValidationSummary />
+           @* <ValidationSummary />*@
             <div>
                 <label>First Name</label>
                 <InputText class="form-control" @bind-Value="registerModel.FirstName" />

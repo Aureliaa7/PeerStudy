@@ -17,6 +17,8 @@ namespace PeerStudy.Components.Accounts
         private LoginModel loginModel = new();
         private bool showLoginErrorMessage;
 
+        private const string style = "border-radius: 50px; width: 80%;";
+
         private async Task LogIn()
         {
             string userId = await AuthenticationService.LoginAsync(loginModel);

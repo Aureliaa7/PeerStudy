@@ -1,4 +1,8 @@
 ﻿using Blazored.LocalStorage;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +32,17 @@ namespace PeerStudy
             RegisterDomainServices(services);
             RegisterClientServices(services);
             RegisterServicesFromInfrastructure(services);
+        }
+
+        public static void RegisterBlazorComponentLibraries(this IServiceCollection services)
+        {
+            services.AddMatBlazor();
+            services.AddBlazorise(options =>
+            {
+                options.Immediate = true;
+            })
+            .AddBootstrapProviders()
+            .AddFontAwesomeIcons();
         }
 
         private static void RegisterDomainServices(this IServiceCollection services)

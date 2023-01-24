@@ -1,25 +1,34 @@
 ﻿@page "/login"
 
-<div class="card login-card">
-    <div class="card-title">
-        <h3>Login</h3>
-    </div>
+<EditForm Model="loginModel" OnValidSubmit="LogIn">
+    <DataAnnotationsValidator />
+    <div class="card login-card">
+        <div class="card-title">
+            <h3>Login</h3>
+        </div>
 
-    <div class="card-body">
-        <EditForm Model="@loginModel" OnValidSubmit="@LogIn">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+        <div class="card-body">
             <div>
-                <label>Email</label>
-                <InputText class="form-control" @bind-Value="loginModel.Email" />
+                <MatTextField Style="@style" @bind-Value="@loginModel.Email" Label="Email" Icon="email"></MatTextField>
+                <ValidationMessage For="@(() => loginModel.Email)" />
             </div>
+
             <div>
-                <label>Password</label>
-                <InputText type="password" class="form-control" @bind-Value="loginModel.Password" />
+                <MatTextField Style="@style" @bind-Value="@loginModel.Password" Label="Password" Icon="lock" Type="password"></MatTextField>
+                <ValidationMessage For="@(() => loginModel.Password)" />
             </div>
+
             <div>
-                <button class="btn btn-primary form-control">Log in</button>
+                <MatButton Style="@style" Raised="true" Type="submit">Log in</MatButton>
             </div>
-        </EditForm>
+        </div>
     </div>
-</div>
+</EditForm>
+
+
+<Alert Color="Color.Danger" @bind-Visible="@showLoginErrorMessage">
+    <AlertDescription>Invalid Credentials!</AlertDescription>
+    <CloseButton />
+</Alert>
+
+

@@ -2,18 +2,22 @@
     margin-top: 10%;
     width: 50%;
     margin-left: 25%;
-    background-color: #BCD4E6;
+    background-color: #a8c5de; /*#BCD4E6;*/
     border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .card-title, label {
     text-align: center;
+    color: white;
 }
 
 div {
     margin-top: 15px;
-}
-
-button {
-    align-content: center;
+    display: grid;
+    place-items: center;
+    width: 95%;
 }
