@@ -3,10 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PeerStudy;
-using PeerStudy.Data;
-using PeerStudy.Infrastructure;
 using PeerStudy.Infrastructure.Interfaces;
-using PeerStudy.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +22,7 @@ var app = builder.Build();
 var serviceProvider = builder.Services.BuildServiceProvider();
 var service = serviceProvider.GetService<IDatabaseSeedingService>();
 
-service.InsertTeachers();
+service?.InsertTeachers();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

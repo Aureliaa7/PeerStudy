@@ -22,7 +22,6 @@ namespace PeerStudy.Infrastructure.Services
         {
             try
             {
-                var directory = Directory.GetCurrentDirectory();
                 string filePath = @"C:\Users\Aura.LAPTOP-GLQOS0K8\Desktop\disertatie\Project\PeerStudy\PeerStudy\PeerStudy.Infrastructure\teachers.json";
 
                 StreamReader sr = new StreamReader(filePath);
