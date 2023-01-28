@@ -20,6 +20,9 @@ namespace PeerStudy.Infrastructure.ModelConfigurations
                 .IsRequired()
                 .HasMaxLength(30);
 
+            builder.Property(b => b.ProfilePhotoName)
+              .IsRequired(false);
+
             builder.Ignore(b => b.Password);
         }
     }
