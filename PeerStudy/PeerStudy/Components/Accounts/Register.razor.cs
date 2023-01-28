@@ -22,11 +22,15 @@ namespace PeerStudy.Components.Accounts
         private RegisterModel registerModel = new();
         private string errorMessage;
         private bool showErrorMessage;
+        private bool isBtnDisabled;
 
         private IMatFileUploadEntry profilePicture;
 
         private async Task CreateAccount()
         {
+            isBtnDisabled = true;
+            StateHasChanged();
+
             var profilePhotoContent = await GetProfilePhotoContentAsync();
             if (profilePhotoContent != null)
             {
@@ -59,6 +63,8 @@ namespace PeerStudy.Components.Accounts
             errorMessage = message;
             showErrorMessage = true;
             registerModel = new();
+            isBtnDisabled = false;
+            StateHasChanged();
         }
 
         private async Task<byte[]> GetProfilePhotoContentAsync()

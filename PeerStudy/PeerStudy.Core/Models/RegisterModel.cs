@@ -16,6 +16,7 @@ namespace PeerStudy.Core.Models
         public string Email { get; set; }
 
         [Required]
+        [MinLength(8, ErrorMessage = Constants.ErrorMessageForShortPassword)]
         public string Password { get; set; }
 
         public byte[] ProfilePhotoContent { get; set; }

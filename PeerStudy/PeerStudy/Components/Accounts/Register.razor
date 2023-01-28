@@ -34,7 +34,7 @@
                     <PeerStudyFileUpload Class="file-upload" OnChange="@FilesReady" Label="Choose a profile picture" Accept=".png, .jpg, .jpeg"></PeerStudyFileUpload>
                 </div>
                 <div>
-                    <MatButton Class="submit-button" Style="margin-top:15px" Raised="true" Type="submit">Create account</MatButton>
+                    <MatButton Class="submit-button" Style="margin-top:15px" Raised="true" Type="submit" Disabled=@(isBtnDisabled || !context.IsModified() || !context.Validate())>Create account</MatButton>
                 </div>
             </div>
             <div><a href="/login">Already have an account?</a></div>

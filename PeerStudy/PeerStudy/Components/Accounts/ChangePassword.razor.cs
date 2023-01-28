@@ -22,6 +22,7 @@ namespace PeerStudy.Components.Accounts
         private string alertText;
         private bool isAlertVisible;
         private Guid userId;
+        private bool isBtnDisabled;
 
         protected override async Task OnInitializedAsync()
         {
@@ -30,6 +31,9 @@ namespace PeerStudy.Components.Accounts
 
         private async Task UpdatePassword()
         {
+            isBtnDisabled = true;
+            StateHasChanged();
+
             changePasswordModel.UserId = userId;
             var result = await AccountService.ChangePasswordAsync(changePasswordModel);
             isAlertVisible = true;
@@ -44,6 +48,9 @@ namespace PeerStudy.Components.Accounts
                 alertColor = Color.Danger;
                 alertText = "The password could not be changed...";
             }
+
+            isBtnDisabled = false;
+            StateHasChanged();
         }
     }
 }

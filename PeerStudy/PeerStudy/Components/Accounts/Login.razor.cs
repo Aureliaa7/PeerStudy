@@ -20,9 +20,9 @@ namespace PeerStudy.Components.Accounts
 
         private async Task LogIn()
         {
-            await DisableSubmitButton(true);
+            DisableSubmitButton(true);
             string userId = await AuthenticationService.LoginAsync(loginModel);
-            await DisableSubmitButton(false);
+            DisableSubmitButton(false);
 
             if (string.IsNullOrEmpty(userId))
             {
@@ -36,10 +36,10 @@ namespace PeerStudy.Components.Accounts
             loginModel = new();
         }
 
-        private async Task DisableSubmitButton(bool disabled)
+        private void DisableSubmitButton(bool disabled)
         {
             isSubmitButtonDisabled = disabled;
-            await InvokeAsync(StateHasChanged);
+            StateHasChanged();
         }
     }
 }

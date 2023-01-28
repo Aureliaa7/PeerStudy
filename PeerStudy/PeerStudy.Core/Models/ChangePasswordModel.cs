@@ -12,6 +12,7 @@ namespace PeerStudy.Core.Models
         public string OldPassword { get; set; }
 
         [Required]
+        [MinLength(8, ErrorMessage = Constants.ErrorMessageForShortPassword)]
         public string NewPassword { get; set; }
 
         [Required]
