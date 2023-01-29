@@ -11,6 +11,8 @@ namespace PeerStudy.Infrastructure.ModelConfigurations
             builder.Property(x => x.Title).HasMaxLength(60);
 
             builder.Property(x => x.NoStudents).HasDefaultValue(default(int));
+
+            builder.HasOne(x => x.Teacher).WithMany(y => y.TeacherCourses);
         }
     }
 }

@@ -26,14 +26,14 @@ namespace PeerStudy.Infrastructure.Services
 
                 StreamReader sr = new StreamReader(filePath);
                 var jsonData = sr.ReadToEnd();
-                var users = JsonSerializer.Deserialize<List<User>>(jsonData);
+                var users = JsonSerializer.Deserialize<List<Teacher>>(jsonData);
 
                 if (users == null || !users.Any())
                 {
                     return;
                 }
 
-                var usersToBeInserted = new List<User>();
+                var usersToBeInserted = new List<Teacher>();
 
                 foreach (var user in users)
                 {
@@ -50,7 +50,7 @@ namespace PeerStudy.Infrastructure.Services
             catch (Exception) { }
         }
 
-        private static User UpdateUserToInsert(User user)
+        private static Teacher UpdateUserToInsert(Teacher user)
         {
             PasswordHelper.CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
 

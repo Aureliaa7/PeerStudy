@@ -1,10 +1,12 @@
 ﻿using PeerStudy.Core.DomainEntities;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Infrastructure.Interfaces;
+using System;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Infrastructure.Services
@@ -78,27 +80,57 @@ namespace PeerStudy.Infrastructure.Services
             }
 
             PasswordHelper.CreatePasswordHash(registerModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            var user = new User
-            {
-                Email = registerModel.Email,
-                FirstName = registerModel.FirstName,
-                LastName = registerModel.LastName,
-                Role = registerModel.Role
-            };
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+           
+            var userToBeInserted = GetUserToBeInserted(registerModel);
+
+            userToBeInserted.PasswordHash = passwordHash;
+            userToBeInserted.PasswordSalt = passwordSalt;
             if (registerModel.ProfilePhotoContent != null)
             {
-                user.ProfilePhotoName = await imageService.SaveImageAsync(registerModel.ProfilePhotoContent, Constants.ProfileImagesDirector);
+                userToBeInserted.ProfilePhotoName = await imageService.SaveImageAsync(
+                    registerModel.ProfilePhotoContent, 
+                    Constants.ProfileImagesDirector);
             }
 
-            var newUser = await unitOfWork.UsersRepository.AddAsync(user);
+            var newUser = await unitOfWork.UsersRepository.AddAsync(userToBeInserted);
             await unitOfWork.SaveChangesAsync();
 
             newUser.PasswordHash = null;
             newUser.PasswordSalt = null;
 
             return newUser;
+        }
+
+        private User GetUserToBeInserted(RegisterModel registerModel)
+        {
+            User userToBeInserted = null;
+
+            if (registerModel.Role == Role.Student)
+            {
+                userToBeInserted = new Student
+                {
+                    Email = registerModel.Email,
+                    FirstName = registerModel.FirstName,
+                    LastName = registerModel.LastName,
+                    Role = registerModel.Role
+                };
+            }
+            else if (registerModel.Role == Role.Teacher)
+            {
+                userToBeInserted = new Teacher
+                {
+                    Email = registerModel.Email,
+                    FirstName = registerModel.FirstName,
+                    LastName = registerModel.LastName,
+                    Role = registerModel.Role
+                };
+            }
+            else
+            {
+                throw new Exception($"{registerModel.Role} role is not supported by PeerStudy!");
+            }
+
+            return userToBeInserted;
         }
     }
 }

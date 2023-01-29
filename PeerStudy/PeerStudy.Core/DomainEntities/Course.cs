@@ -24,5 +24,7 @@ namespace PeerStudy.Core.DomainEntities
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
+
+        public Teacher Teacher { get; set; }
     }
 }
