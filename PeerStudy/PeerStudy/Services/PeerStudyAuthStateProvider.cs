@@ -34,17 +34,22 @@ namespace PeerStudy.Services
                     return authState;
                 }
 
-                // when removing the jwt from local storage, notify the UI
                 await localStorageService.RemoveItemAsync(ClientConstants.Token);
-                var newAuthState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-                NotifyAuthenticationStateChanged(Task.FromResult(newAuthState));
-
-                return newAuthState;
+                return GetUnauthorizedState();
             }
             catch (Exception)
             {
-                return new AuthenticationState(GetClaimsPrincipal(string.Empty));
+                return GetUnauthorizedState();
             }
+        }
+
+        private AuthenticationState GetUnauthorizedState()
+        {
+            var unauthorizedState = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            // if the user is not authenticated, notify the UI
+            NotifyAuthenticationStateChanged(Task.FromResult(unauthorizedState));
+
+            return unauthorizedState;
         }
 
         /// <summary>

@@ -5,7 +5,6 @@ using PeerStudy.Core.Models;
 using PeerStudy.Infrastructure;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Services.Interfaces;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Services
