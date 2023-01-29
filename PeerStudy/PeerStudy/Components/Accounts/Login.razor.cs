@@ -18,6 +18,8 @@ namespace PeerStudy.Components.Accounts
         private bool showLoginErrorMessage;
         private bool isSubmitButtonDisabled;
 
+        private string styleRules = "width: 80%";
+
         private async Task LogIn()
         {
             DisableSubmitButton(true);

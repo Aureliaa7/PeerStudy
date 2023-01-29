@@ -26,6 +26,8 @@ namespace PeerStudy.Components.Accounts
 
         private IMatFileUploadEntry profilePicture;
 
+        private string inputFieldStyleRules = "width: 80%";
+        private string submitBtnStyleRules = "width: 80%; margin-top:15px;";
         private async Task CreateAccount()
         {
             isBtnDisabled = true;

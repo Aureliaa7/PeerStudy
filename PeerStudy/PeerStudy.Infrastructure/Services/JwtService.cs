@@ -55,7 +55,7 @@ namespace PeerStudy.Infrastructure.Services
 
             var securityToken = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: DateTime.UtcNow.AddMinutes(90),
                 signingCredentials: credentials
                 );
 

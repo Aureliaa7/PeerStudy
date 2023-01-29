@@ -18,6 +18,8 @@ namespace PeerStudy.Components.Accounts
 
         private ChangePasswordModel changePasswordModel = new();
 
+        private string styleRules = "width: 80%";
+
         private Color alertColor; 
         private string alertText;
         private bool isAlertVisible;

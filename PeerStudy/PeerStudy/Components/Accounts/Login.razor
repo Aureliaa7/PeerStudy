@@ -9,17 +9,17 @@
 
         <div class="card-body">
             <div>
-                <MatTextField Class="input-field" @bind-Value="@loginModel.Email" Label="Email" Icon="email"></MatTextField>
+                <MatTextField Class="input-field" Style="@styleRules" @bind-Value="@loginModel.Email" Label="Email" Icon="email"></MatTextField>
                 <ValidationMessage For="@(() => loginModel.Email)" />
             </div>
 
             <div>
-                <MatTextField Class="input-field" @bind-Value="@loginModel.Password" Label="Password" Icon="lock" Type="password"></MatTextField>
+                <MatTextField Class="input-field" Style="@styleRules" @bind-Value="@loginModel.Password" Label="Password" Icon="lock" Type="password"></MatTextField>
                 <ValidationMessage For="@(() => loginModel.Password)" />
             </div>
 
             <div>
-                <MatButton Class="submit-button" Raised="true" Type="submit" Disabled="@(isSubmitButtonDisabled || !context.IsModified() || !context.Validate())">Log in</MatButton>
+                <MatButton Class="submit-button" Style="@styleRules" Raised="true" Type="submit" Disabled="@(isSubmitButtonDisabled || !context.IsModified() || !context.Validate())">Log in</MatButton>
             </div>
             <div>You do not have an account?<a href="/register">Sign up</a></div>
         </div>

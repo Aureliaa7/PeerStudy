@@ -1,0 +1,30 @@
+﻿.form-row, first-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 98%;
+    margin-top: 20px;
+}
+
+.create-course-card {
+    width: 95%;
+    margin: auto;
+    background-color: #BCD4E6;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-body {
+    width: 95%;
+    display: grid;
+    place-items: center;
+}
+
+div {
+    display: inline-block;
+}
+
+.center-items {
+    text-align: center;
+}

@@ -1,0 +1,24 @@
+﻿@page "/courses"
+@attribute [Authorize]
+
+<AuthorizeView Roles="Teacher">
+    <div>
+        <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
+            <img src="/images/icons8-plus.svg" />
+        </MatButton>
+    </div>
+
+    <CreateCourseDialog IsVisible="@displayCreateCourseDialog"
+                        OnCourseAdded="@SaveCourse"
+                        OnCancel="@HideAddCourseDialog">
+    </CreateCourseDialog>
+</AuthorizeView>
+
+
+<div class="courses-container">
+    <CourseCard></CourseCard>
+    @*TODO: Display the teacher's courses*@
+</div>
+
+
+

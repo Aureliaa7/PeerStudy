@@ -65,14 +65,15 @@ a, .btn-link {
 
 
 
- /* custom styling rules applied globally */
+ /* custom styling rules applied globally - MatBlazor */
 .alert {
     border-radius: 50px;
 }
 
-.input-field, .submit-button {
-    border-radius: 50px; 
-    width: 80%;
+.input-field,
+.submit-button,
+.mat-date-picker {
+    border-radius: 50px;
 }
 
 .file-upload {
@@ -80,4 +81,18 @@ a, .btn-link {
     height: 45%;
     width: 80%;
     background-color: #F5F5F5;
+}
+
+
+.flatpickr-calendar {
+    top: auto;
+}
+
+.mdc-dialog .mdc-dialog__surface {
+    background-color: #BCD4E6;
+}
+
+.mdc-button .mdc-button__ripple {
+    width: 0;
+    height: 0;
 }

@@ -10,21 +10,21 @@
         <div class="card-body">
             <div class="form-row">
                 <div>
-                    <MatTextField Class="input-field" @bind-Value="@registerModel.FirstName" Label="First Name"></MatTextField>
+                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.FirstName" Label="First Name"></MatTextField>
                     <ValidationMessage For="@(() => registerModel.FirstName)" />
                 </div>
                 <div>
-                    <MatTextField Class="input-field" @bind-Value="@registerModel.LastName" Label="Last Name"></MatTextField>
+                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.LastName" Label="Last Name"></MatTextField>
                     <ValidationMessage For="@(() => registerModel.LastName)" />
                 </div>
             </div>
             <div class="form-row">
                 <div>
-                    <MatTextField Class="input-field" @bind-Value="@registerModel.Email" Label="Email"></MatTextField>
+                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.Email" Label="Email"></MatTextField>
                     <ValidationMessage For="@(() => registerModel.Email)" />
                 </div>
                 <div>
-                    <MatTextField Class="input-field" @bind-Value="@registerModel.Password" Label="Password" Type="password"></MatTextField>
+                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.Password" Label="Password" Type="password"></MatTextField>
                     <ValidationMessage For="@(() => registerModel.Password)" />
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     <PeerStudyFileUpload Class="file-upload" OnChange="@FilesReady" Label="Choose a profile picture" Accept=".png, .jpg, .jpeg"></PeerStudyFileUpload>
                 </div>
                 <div>
-                    <MatButton Class="submit-button" Style="margin-top:15px" Raised="true" Type="submit" Disabled=@(isBtnDisabled || !context.IsModified() || !context.Validate())>Create account</MatButton>
+                    <MatButton Class="submit-button" Style="@submitBtnStyleRules" Raised="true" Type="submit" Disabled=@(isBtnDisabled || !context.IsModified() || !context.Validate())>Create account</MatButton>
                 </div>
             </div>
             <div><a href="/login">Already have an account?</a></div>

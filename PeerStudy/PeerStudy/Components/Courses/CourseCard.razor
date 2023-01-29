@@ -1,0 +1,23 @@
+﻿@attribute [Authorize]
+
+<MatCard Style="width: 80%; height: 90%; margintop:200px;">
+    <div>
+        <MatHeadline6>
+            Course Name
+        </MatHeadline6>
+    </div>
+    <MatCardContent>
+        <MatBody2>
+            TODO: display the course details here...
+        </MatBody2>
+    </MatCardContent>
+    <AuthorizeView Roles="Teacher">
+        <MatCardActions>
+            <MatCardActionIcons>
+                <MatIconButton Icon="@MatIconNames.Edit"></MatIconButton>
+                <MatIconButton Icon="@MatIconNames.Remove"></MatIconButton>
+            </MatCardActionIcons>
+        </MatCardActions>
+    </AuthorizeView>
+</MatCard>
+
