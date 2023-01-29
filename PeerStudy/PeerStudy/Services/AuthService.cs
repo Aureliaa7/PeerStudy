@@ -5,6 +5,7 @@ using PeerStudy.Core.Models;
 using PeerStudy.Infrastructure;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Services.Interfaces;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Services
@@ -57,7 +58,6 @@ namespace PeerStudy.Services
 
                 return JwtHelper.GetClaimValueByName(token, Constants.UserId);
             }
-
 
             return null;
         }

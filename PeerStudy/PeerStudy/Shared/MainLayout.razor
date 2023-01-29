@@ -4,9 +4,14 @@
 
 <MatThemeProvider Theme="@matBlazorTheme">
     <div class="page">
-        <div class="sidebar">
-            <NavMenu />
-        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="sidebar">
+                    <NavMenu />
+                </div>
+            </Authorized>
+        </AuthorizeView>
+
 
         <main>
             <div class="top-row px-4">
@@ -16,7 +21,8 @@
                         <a href="/login" class="ml-md-auto">Login</a>
                     </NotAuthorized>
                     <Authorized>
-                         <MenuUserAccount></MenuUserAccount>
+                        <a href="/test" class="ml-md-auto">Test</a>
+                        <MenuUserAccount></MenuUserAccount>
                     </Authorized>
                 </AuthorizeView>
             </div>

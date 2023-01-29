@@ -6,6 +6,7 @@ using PeerStudy.Core.Models;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Infrastructure.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -39,24 +40,28 @@ namespace PeerStudy.Infrastructure.Services
                 throw new EntityNotFoundException("Wrong credentials!");
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, string.Concat(user.FirstName, " ", user.LastName)),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(Constants.UserId, user.Id.ToString())
+            };
 
             string jwtKey = configuration.GetSection("JWTKey").Value;
-            var tokenKeyBytes = Encoding.ASCII.GetBytes(jwtKey);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Email, loginModel.Email),
-                    new Claim(Constants.UserFullName, string.Concat(user.FirstName, " ", user.LastName)),
-                    new Claim(Constants.UserId, user.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(tokenKeyBytes),
-                    SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
-            return tokenHandler.WriteToken(token);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var securityToken = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: credentials
+                );
+
+            var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
+
+            return token;
         }
     }
 }

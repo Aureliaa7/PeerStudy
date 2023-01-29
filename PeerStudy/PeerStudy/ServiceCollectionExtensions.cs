@@ -55,8 +55,8 @@ namespace PeerStudy
         {
             services.AddBlazoredLocalStorage();
 
-            services.AddAuthorizationCore();
             services.AddScoped<AuthenticationStateProvider, PeerStudyAuthStateProvider>();
+            services.AddAuthorizationCore();
 
             services.AddScoped<IAuthService, AuthService>();
         }

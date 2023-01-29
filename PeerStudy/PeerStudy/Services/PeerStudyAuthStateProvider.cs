@@ -26,7 +26,12 @@ namespace PeerStudy.Services
 
                 if (!string.IsNullOrEmpty(token) && isJwtValid)
                 {
-                    return new AuthenticationState(GetClaimsPrincipal(token));
+                    var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(JwtHelper.GetClaimsFromJWT(token), "jwt"));
+                    var authState = new AuthenticationState(authenticatedUser);
+
+                    NotifyAuthenticationStateChanged(Task.FromResult(authState));
+
+                    return authState;
                 }
 
                 // when removing the jwt from local storage, notify the UI
@@ -49,8 +54,9 @@ namespace PeerStudy.Services
         /// <param name="token"></param>
         public void NotifyUserAuthentication(string token)
         {
-            var claimsPrincipal = GetClaimsPrincipal(token);
-            var authState = Task.FromResult(new AuthenticationState(claimsPrincipal));
+            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(JwtHelper.GetClaimsFromJWT(token), "jwt"));
+            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
+
             NotifyAuthenticationStateChanged(authState);
         }
 
