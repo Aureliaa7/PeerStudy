@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PeerStudy.Core.Models.Courses
 {
-    public class CreateCourseModel
+    public class CourseModel
     {
         [Required]
         public string Title { get; set; }

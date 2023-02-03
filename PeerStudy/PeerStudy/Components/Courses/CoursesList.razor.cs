@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Courses;
 using System;
 using System.Collections.Generic;
@@ -18,19 +17,15 @@ namespace PeerStudy.Components.Courses
         [Parameter]
         public string CoursesNotFoundMessage { get; set; }
 
-        [Inject]
-        public ICourseService tmp { get; set; } 
-
-
         [Parameter]
-        public EventCallback<Guid> OnEditCourse { get; set; }
+        public EventCallback<CourseDetailsModel> OnEditCourse { get; set; }
 
         [Parameter]
         public EventCallback<Guid> OnArchiveCourse { get; set; }
 
-        private async Task EditCourseHandler(Guid courseId)
+        private async Task EditCourseHandler(CourseDetailsModel course)
         {
-            await OnEditCourse.InvokeAsync(courseId);
+            await OnEditCourse.InvokeAsync(course);
         }
 
         private async Task ArchiveCourseHandler(Guid courseId)

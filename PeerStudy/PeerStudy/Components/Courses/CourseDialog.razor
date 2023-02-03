@@ -1,8 +1,8 @@
 ﻿@attribute [Authorize(Roles = "Teacher")]
 
 
-<EditForm Model="@createCourseModel">
-       <DataAnnotationsValidator />
+<EditForm Model="CourseModel">
+    <DataAnnotationsValidator />
     <MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
         <MatDialogTitle>Create course</MatDialogTitle>
         <MatDialogContent Style="background-color: #BCD4E6">
@@ -11,33 +11,34 @@
                 <div class="card-body">
                     <div class="first-form-row">
                         <div style="width: 70%;">
-                            <MatTextField Class="input-field" Style="width: 92%;" @bind-Value="@createCourseModel.Title" Label="Title" Required></MatTextField>
+                            <MatTextField Class="input-field" Style="width: 92%;" @bind-Value="CourseModel.Title" Label="Title" Required></MatTextField>
                         </div>
                         <div style="width: 28%;">
-                            <MatTextField Class="input-field" Style="width: 100%;" @bind-Value="@createCourseModel.NumberOfStudents" Label="No.Students" Required TValue="int"></MatTextField>
+                            <MatTextField Class="input-field" Style="width: 100%;" @bind-Value="CourseModel.NumberOfStudents" Label="No.Students" Required TValue="int"></MatTextField>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="center-items">
-                            <MatDatePicker Label="Start Date" @bind-Value="@createCourseModel.StartDate"
+                            <MatDatePicker Label="Start Date" @bind-Value="CourseModel.StartDate"
                                            Minimum="@DateTime.Now.AddDays(10)"
                                            Required
                                            TValue="DateTime"
-                                           Style="@datePickerStyleRules">
+                                           Style="@datePickerStyleRules"
+                                           ReadOnly="IsEditCourseEnabled">
                             </MatDatePicker>
                         </div>
                         <div class="center-items">
-                            <MatDatePicker Label="End Date" @bind-Value="@createCourseModel.EndDate"
-                                           Minimum="@createCourseModel.StartDate.AddDays(20)"
+                            <MatDatePicker Label="End Date" @bind-Value="CourseModel.EndDate"
+                                           Minimum="CourseModel.StartDate.AddDays(20)"
                                            Required
                                            TValue="DateTime"
-                                           Style="@datePickerStyleRules">
+                                           Style="@datePickerStyleRules"
+                                           ReadOnly="IsEditCourseEnabled">
                             </MatDatePicker>
                         </div>
                     </div>
                 </div>
             </div>
-
 
         </MatDialogContent>
         <MatDialogActions>

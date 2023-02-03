@@ -11,7 +11,7 @@ namespace PeerStudy.Components.Courses
         public CourseDetailsModel Course { get; set; }
 
         [Parameter]
-        public EventCallback<Guid> OnEditCourse { get; set; }
+        public EventCallback<CourseDetailsModel> OnEditCourse { get; set; }
 
         [Parameter]
         public EventCallback<Guid> OnArchiveCourse { get; set; }
@@ -21,7 +21,7 @@ namespace PeerStudy.Components.Courses
 
         public async Task EditCourse()
         {
-            await OnEditCourse.InvokeAsync(Course.Id);
+            await OnEditCourse.InvokeAsync(Course);
         }
 
         private async Task ArchiveCourse()

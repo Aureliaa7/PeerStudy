@@ -20,7 +20,7 @@ namespace PeerStudy.Core.DomainServices
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<CourseDetailsModel> AddAsync(CreateCourseModel courseModel)
+        public async Task<CourseDetailsModel> AddAsync(CourseModel courseModel)
         {
             var teacher = await unitOfWork.UsersRepository.GetFirstOrDefaultAsync(x => x.Id == courseModel.TeacherId && 
             x.Role == Role.Teacher);
@@ -98,6 +98,27 @@ namespace PeerStudy.Core.DomainServices
             return courses;
         }
 
+        public async Task<CourseDetailsModel> UpdateAsync(UpdateCourseModel courseModel)
+        {
+            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseModel.Id &&
+            x.TeacherId == courseModel.TeacherId);
+
+            if (course == null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            course.StartDate = courseModel.StartDate;
+            course.EndDate = courseModel.EndDate;
+            course.Title = courseModel.Title;
+            course.NoStudents = courseModel.NumberOfStudents;
+
+            await unitOfWork.CoursesRepository.UpdateAsync(course);
+            await unitOfWork.SaveChangesAsync();
+
+            return MapToCourseDetails(course);
+        }
+
         private async Task CheckIfTeacherExistsAsync(Guid teacherId)
         {
             bool teacherExists = await unitOfWork.UsersRepository.ExistsAsync(x => x.Id == teacherId && x.Role == Role.Teacher);
@@ -106,6 +127,20 @@ namespace PeerStudy.Core.DomainServices
             {
                 throw new EntityNotFoundException($"Teacher with id {teacherId} was not found!");
             }
+        }
+
+        private CourseDetailsModel MapToCourseDetails(Course course)
+        {
+            return new CourseDetailsModel
+            {
+                Id = course.Id,
+                NoMaxStudents = course.NoStudents,
+                StartDate = course.StartDate,
+                EndDate = course.EndDate,
+                Title = course.Title,
+                TeacherName = $"{course.Teacher?.FirstName} {course.Teacher?.LastName}",
+                Status = course.Status
+            };
         }
     }
 }

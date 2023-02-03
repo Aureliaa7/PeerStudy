@@ -8,10 +8,12 @@ namespace PeerStudy.Core.Interfaces.DomainServices
 {
     public interface ICourseService
     {
-        Task<CourseDetailsModel> AddAsync(CreateCourseModel courseModel);
+        Task<CourseDetailsModel> AddAsync(CourseModel courseModel);
 
         Task<List<CourseDetailsModel>> GetAsync(Guid teacherId, CourseStatus status);
 
         Task<bool> ArchiveCourseAsync(Guid teacherId, Guid courseId);
+
+        Task<CourseDetailsModel> UpdateAsync(UpdateCourseModel courseModel);  
     }
 }

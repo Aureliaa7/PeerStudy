@@ -15,10 +15,14 @@ namespace PeerStudy.Components.Courses
 
         private string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
         private bool showErrorMessage;
-        private bool displayCreateCourseDialog = false;
+        private bool displayCourseDialog = false;
         private string noCoursesMessage;
         private bool showArchiveCourseResult;
         private string archiveCourseMessage;
+        private bool isEditCourseModeEnabled;
+        private CourseModel CourseModel = new();
+        private Guid courseId;
+
 
         public ActiveCourses(): base(CourseStatus.Active)
         {
@@ -39,21 +43,21 @@ namespace PeerStudy.Components.Courses
 
         public void ShowAddCourseDialog()
         {
-            displayCreateCourseDialog = true;
+            displayCourseDialog = true;
         }
 
-        public async Task SaveCourse(CreateCourseModel courseData)
+        public async Task SaveCourse()
         {
-            bool isValidData = ModelValidator.IsModelValid<CreateCourseModel>(courseData);
+            bool isValidData = ModelValidator.IsModelValid<CourseModel>(CourseModel);
             if (isValidData)
             {
                 try
                 {
-                    displayCreateCourseDialog = false;
-                    courseData.TeacherId = currentUserId;
-                    var addedCourse = await CourseService.AddAsync(courseData);
+                    displayCourseDialog = false;
+                    CourseModel.TeacherId = currentUserId;
+                    var addedCourse = await CourseService.AddAsync(CourseModel);
                     courses.Add(addedCourse);
-                    courseData = new CreateCourseModel();
+                    CourseModel = new CourseModel();
                 }
                 catch (Exception)
                 {
@@ -62,14 +66,44 @@ namespace PeerStudy.Components.Courses
             }
         }
 
-        public void HideAddCourseDialog()
+        private void CloseCourseDialog()
         {
-            displayCreateCourseDialog = false;
+            displayCourseDialog = false;
+            CourseModel = new();
         }
 
-        private async Task EditCourseHandler(Guid courseId)
+        private void CancelEditCourse()
         {
+            isEditCourseModeEnabled = false;
+            CloseCourseDialog();
+        }
 
+        private async Task EditCourseHandler(CourseDetailsModel course)
+        {
+            displayCourseDialog = true;
+            isEditCourseModeEnabled = true;
+            CourseModel = new UpdateCourseModel
+            {
+                Title = course.Title,
+                EndDate = course.EndDate,
+                StartDate = course.StartDate,
+                NumberOfStudents = course.NoMaxStudents,
+                TeacherId = currentUserId,
+                Id = course.Id,
+            };
+        }
+
+        private async Task EditCourseAsync()
+        {
+            var course = (UpdateCourseModel)CourseModel;
+            var courseToBeUpdated = courses.First(x => x.Id == course.Id);
+
+            displayCourseDialog = false;
+            var updatedCourse = await CourseService.UpdateAsync((UpdateCourseModel)CourseModel);
+            courseToBeUpdated.Title = updatedCourse.Title;
+            courseToBeUpdated.NoMaxStudents = updatedCourse.NoMaxStudents;
+            CourseModel = new CourseModel();
+            StateHasChanged();
         }
 
         private async Task ArchiveCourseHandler(Guid courseId)

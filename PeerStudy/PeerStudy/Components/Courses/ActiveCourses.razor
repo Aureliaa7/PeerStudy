@@ -8,24 +8,36 @@
         <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
             <img src="/images/icons8-plus.svg" />
         </MatButton>
-        <Alert Color="Color.Danger" @bind-Visible="@showErrorMessage">
+        <Alert Color="Color.Danger" @bind-Visible="showErrorMessage">
             <AlertDescription>An error occurred while saving the course...</AlertDescription>
             <CloseButton />
         </Alert>
     </div>
-    <CreateCourseDialog IsVisible="@displayCreateCourseDialog"
-                        OnCourseAdded="@SaveCourse"
-                        OnCancel="@HideAddCourseDialog">
-    </CreateCourseDialog>
+    <CourseDialog IsVisible="displayCourseDialog"
+                  IsEditCourseEnabled="false"
+                  CourseModel="CourseModel"
+                  OnSave="SaveCourse"
+                  OnCancel="CloseCourseDialog">
+    </CourseDialog>
+
+    @if (isEditCourseModeEnabled)
+    {
+        <CourseDialog IsVisible="displayCourseDialog"
+                  IsEditCourseEnabled="true"
+                  CourseModel="CourseModel"
+                  OnSave="EditCourseAsync"
+                  OnCancel="CancelEditCourse">
+        </CourseDialog>
+    }
 </AuthorizeView>
 
-<CoursesList Courses="@courses"
-             IsLoading="@isLoading"
+<CoursesList Courses="courses"
+             IsLoading="isLoading"
              CoursesNotFoundMessage="@noCoursesMessage"
              OnEditCourse="EditCourseHandler"
              OnArchiveCourse="ArchiveCourseHandler">
 </CoursesList>
 
-<MatSnackbar @bind-IsOpen="@showArchiveCourseResult">
+<MatSnackbar @bind-IsOpen="showArchiveCourseResult">
     <MatSnackbarContent>@archiveCourseMessage</MatSnackbarContent>
 </MatSnackbar>

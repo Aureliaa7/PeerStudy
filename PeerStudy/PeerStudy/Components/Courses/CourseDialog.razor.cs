@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class CreateCourseDialog
+    public partial class CourseDialog
     {
         [Parameter]
-        public EventCallback<CreateCourseModel> OnCourseAdded { get; set; }
+        public EventCallback OnSave { get; set; }
 
         [Parameter]
         public EventCallback<bool> OnCancel { get; set; }
@@ -15,20 +15,22 @@ namespace PeerStudy.Components.Courses
         [Parameter]
         public bool IsVisible { get; set; }
 
-        private CreateCourseModel createCourseModel = new CreateCourseModel();
+        [Parameter]
+        public CourseModel CourseModel { get; set; }
+
+        [Parameter]
+        public bool IsEditCourseEnabled { get; set; }   
 
         private string datePickerStyleRules = "width: 80%;";
 
         private async Task SaveCourse()
         {
-            await OnCourseAdded.InvokeAsync(createCourseModel);
-            createCourseModel = new CreateCourseModel();
+            await OnSave.InvokeAsync();
         }
 
         private async Task Cancel()
         {
             await OnCancel.InvokeAsync();
-            createCourseModel = new CreateCourseModel();
         }
     }
 }
