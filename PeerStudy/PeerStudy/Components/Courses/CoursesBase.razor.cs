@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public abstract class CoursesBase : ComponentBase
+    public class CoursesBase : ComponentBase
     {
         [Inject]
         IAuthService AuthService { get; set; }
