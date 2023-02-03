@@ -11,6 +11,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
     {
         private readonly ApplicationDbContext dbContext;
         private IRepository<User> usersRepository;
+        private IRepository<Course> coursesRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -26,6 +27,18 @@ namespace PeerStudy.Infrastructure.UnitOfWork
                     usersRepository = new Repository<User>(dbContext);
                 }
                 return usersRepository;
+            }
+        }
+
+        public IRepository<Course> CoursesRepository
+        {
+            get
+            {
+                if (coursesRepository == null)
+                {
+                    coursesRepository = new Repository<Course>(dbContext);
+                }
+                return coursesRepository;
             }
         }
 

@@ -1,23 +1,43 @@
-﻿@attribute [Authorize]
+﻿@using System.Globalization
+@using PeerStudy.Core.Enums
+@attribute [Authorize]
 
-<MatCard Style="width: 80%; height: 90%; margintop:200px;">
-    <div>
+<MatCard Style="@cardStyles">
+    <div class="card-header center-elements">
         <MatHeadline6>
-            Course Name
+            @Course.Title
         </MatHeadline6>
     </div>
     <MatCardContent>
         <MatBody2>
-            TODO: display the course details here...
+            <div class="card-body">
+                <div>
+                    <h5>@Course.TeacherName</h5>
+                </div>
+                <div>
+                    @($"{Course.StartDate.ToString("dddd dd MMMM", CultureInfo.CreateSpecificCulture("en-US"))} - " +
+                    $"{Course.EndDate.ToString("dddd dd MMMM", CultureInfo.CreateSpecificCulture("en-US"))}")
+                </div>
+                <div>x/y students enrolled</div>
+            </div>
         </MatBody2>
     </MatCardContent>
-    <AuthorizeView Roles="Teacher">
-        <MatCardActions>
-            <MatCardActionIcons>
-                <MatIconButton Icon="@MatIconNames.Edit"></MatIconButton>
-                <MatIconButton Icon="@MatIconNames.Remove"></MatIconButton>
-            </MatCardActionIcons>
-        </MatCardActions>
-    </AuthorizeView>
+    @if (Course.Status == CourseStatus.Active)
+    {
+        <AuthorizeView Roles="Teacher">
+            <MatCardActions>
+                <MatCardActionIcons>
+                    <MatIconButton Icon="@MatIconNames.Edit" OnClick="EditCourse"></MatIconButton>
+                    <MatIconButton Icon="@MatIconNames.Archive" OnClick="ArchiveCourse"></MatIconButton>
+                </MatCardActionIcons>
+            </MatCardActions>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Student">
+            <MatCardActions>
+                <MatButton>Enroll now</MatButton>
+            </MatCardActions>
+        </AuthorizeView>
+    }
 </MatCard>
 

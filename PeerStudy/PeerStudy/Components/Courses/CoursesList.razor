@@ -1,24 +1,24 @@
-﻿@page "/courses"
-@attribute [Authorize]
-
-<AuthorizeView Roles="Teacher">
-    <div>
-        <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
-            <img src="/images/icons8-plus.svg" />
-        </MatButton>
-    </div>
-
-    <CreateCourseDialog IsVisible="@displayCreateCourseDialog"
-                        OnCourseAdded="@SaveCourse"
-                        OnCancel="@HideAddCourseDialog">
-    </CreateCourseDialog>
-</AuthorizeView>
-
-
-<div class="courses-container">
-    <CourseCard></CourseCard>
-    @*TODO: Display the teacher's courses*@
+﻿<div class="container center-elements">
+    @if (IsLoading)
+    {
+        <div>
+            <MatProgressCircle Indeterminate="@IsLoading" Size="MatProgressCircleSize.Large" />
+        </div>
+    }
+    else if (!IsLoading && !Courses.Any())
+    {
+        <NotFound Message="@CoursesNotFoundMessage"></NotFound>
+    }
+    else
+    {
+        <div class="courses-container">
+            @foreach (var course in Courses)
+            {
+                <CourseCard Course="course"
+                    OnEditCourse="EditCourseHandler"
+                    OnArchiveCourse="ArchiveCourseHandler">
+                </CourseCard>
+            }
+        </div>
+    }
 </div>
-
-
-

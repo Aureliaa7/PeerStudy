@@ -1,0 +1,12 @@
+﻿<div class="container">
+  <Alert Color="Color.Info" @bind-Visible="@isVisible">
+            <AlertDescription>@Message</AlertDescription>
+        </Alert>
+</div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; }
+
+    private bool isVisible = true;
+}

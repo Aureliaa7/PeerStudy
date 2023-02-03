@@ -6,9 +6,10 @@ using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PeerStudy.Core.DomainServices;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
-using PeerStudy.Infrastructure;
 using PeerStudy.Infrastructure.AppDbContext;
 using PeerStudy.Infrastructure.Interfaces;
 using PeerStudy.Infrastructure.Services;
@@ -49,6 +50,7 @@ namespace PeerStudy
         private static void RegisterDomainServices(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICourseService, CourseService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)
@@ -67,6 +69,7 @@ namespace PeerStudy
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IDatabaseSeedingService, DatabaseSeedingService>();
+            services.AddScoped<IGoogleDriveService, GoogleDriveService>();
         }
     }
 }

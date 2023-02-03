@@ -8,6 +8,8 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
     {
         IRepository<User> UsersRepository { get; }
 
+        IRepository<Course> CoursesRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

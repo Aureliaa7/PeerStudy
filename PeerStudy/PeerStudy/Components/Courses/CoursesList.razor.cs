@@ -1,34 +1,41 @@
-﻿using PeerStudy.Core.Models.Courses;
+﻿using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Models.Courses;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
     public partial class CoursesList
     {
+        [Parameter]
+        public List<CourseDetailsModel> Courses { get; set; } = new();
 
-        private bool displayCreateCourseDialog = false;
+        [Parameter]
+        public bool IsLoading { get; set; }
 
-        private string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
+        [Parameter]
+        public string CoursesNotFoundMessage { get; set; }
 
-        public void ShowAddCourseDialog()
+        [Inject]
+        public ICourseService tmp { get; set; } 
+
+
+        [Parameter]
+        public EventCallback<Guid> OnEditCourse { get; set; }
+
+        [Parameter]
+        public EventCallback<Guid> OnArchiveCourse { get; set; }
+
+        private async Task EditCourseHandler(Guid courseId)
         {
-            displayCreateCourseDialog = true;
+            await OnEditCourse.InvokeAsync(courseId);
         }
 
-        public async Task SaveCourse(CreateCourseModel courseData)
+        private async Task ArchiveCourseHandler(Guid courseId)
         {
-            bool isValidData = ModelValidator.IsModelValid<CreateCourseModel>(courseData);
-            if (isValidData)
-            {
-                displayCreateCourseDialog = false;
-                //TODO: save data to DB
-            }
-            await Task.Delay(0);
-        }
-
-        public void HideAddCourseDialog()
-        {
-            displayCreateCourseDialog = false;
+            await OnArchiveCourse.InvokeAsync(courseId);
         }
     }
 }

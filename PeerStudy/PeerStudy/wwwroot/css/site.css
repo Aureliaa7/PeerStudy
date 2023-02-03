@@ -65,7 +65,14 @@ a, .btn-link {
 
 
 
- /* custom styling rules applied globally - MatBlazor */
+.center-elements {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* custom styling rules applied globally - MatBlazor */
 .alert {
     border-radius: 50px;
 }

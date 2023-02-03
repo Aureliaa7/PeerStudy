@@ -1,0 +1,6 @@
+﻿@page "/archived-courses"
+@attribute [Authorize]
+@inherits CoursesBase
+
+
+<CoursesList Courses="@courses" IsLoading="@isLoading" CoursesNotFoundMessage="@noCoursesMessage"></CoursesList>

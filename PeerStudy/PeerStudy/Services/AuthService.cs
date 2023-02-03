@@ -5,6 +5,7 @@ using PeerStudy.Core.Models;
 using PeerStudy.Infrastructure;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Services.Interfaces;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Services
@@ -65,6 +66,11 @@ namespace PeerStudy.Services
         {
             await localStorageService.RemoveItemAsync(ClientConstants.Token);
             ((PeerStudyAuthStateProvider)authStateProvider).NotifyUserLogout();
+        }
+
+        public Task<string> GetCurrentUserRole()
+        {
+            return GetClaimByNameAsync(ClaimTypes.Role);
         }
     }
 }

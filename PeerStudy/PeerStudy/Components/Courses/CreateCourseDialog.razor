@@ -1,25 +1,27 @@
 ﻿@attribute [Authorize(Roles = "Teacher")]
 
-<MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
-    <MatDialogTitle>Create course</MatDialogTitle>
-    <MatDialogContent Style="background-color: #BCD4E6">
-        <EditForm Model="@createCourseModel">
+
+<EditForm Model="@createCourseModel">
+       <DataAnnotationsValidator />
+    <MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
+        <MatDialogTitle>Create course</MatDialogTitle>
+        <MatDialogContent Style="background-color: #BCD4E6">
             <div class="create-course-card">
 
                 <div class="card-body">
                     <div class="first-form-row">
                         <div style="width: 70%;">
-                            <MatTextField Class="input-field" Style="width: 92%;" @bind-Value="@createCourseModel.Title" Label="Title"></MatTextField>
+                            <MatTextField Class="input-field" Style="width: 92%;" @bind-Value="@createCourseModel.Title" Label="Title" Required></MatTextField>
                         </div>
                         <div style="width: 28%;">
-                            <MatTextField Class="input-field" Style="width: 100%;" @bind-Value="@createCourseModel.NumberOfStudents" Label="No.Students"></MatTextField>
+                            <MatTextField Class="input-field" Style="width: 100%;" @bind-Value="@createCourseModel.NumberOfStudents" Label="No.Students" Required TValue="int"></MatTextField>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="center-items">
                             <MatDatePicker Label="Start Date" @bind-Value="@createCourseModel.StartDate"
                                            Minimum="@DateTime.Now.AddDays(10)"
-                                           Required="true"
+                                           Required
                                            TValue="DateTime"
                                            Style="@datePickerStyleRules">
                             </MatDatePicker>
@@ -27,7 +29,7 @@
                         <div class="center-items">
                             <MatDatePicker Label="End Date" @bind-Value="@createCourseModel.EndDate"
                                            Minimum="@createCourseModel.StartDate.AddDays(20)"
-                                           Required="true"
+                                           Required
                                            TValue="DateTime"
                                            Style="@datePickerStyleRules">
                             </MatDatePicker>
@@ -35,13 +37,13 @@
                     </div>
                 </div>
             </div>
-        </EditForm>
 
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
-        <MatButton Class="submit-button" Raised="true" OnClick="SaveCourse">Confirm</MatButton>
-    </MatDialogActions>
-</MatDialog>
 
+        </MatDialogContent>
+        <MatDialogActions>
+            <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
+            <MatButton Class="submit-button" Raised="true" OnClick="SaveCourse" Disabled=@(!context.IsModified() || !context.Validate())>Confirm</MatButton>
+        </MatDialogActions>
+    </MatDialog>
+</EditForm>
 

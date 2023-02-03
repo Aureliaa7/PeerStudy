@@ -1,0 +1,31 @@
+﻿@page "/active-courses"
+@attribute [Authorize]
+@inherits CoursesBase
+
+
+<AuthorizeView Roles="Teacher">
+    <div>
+        <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
+            <img src="/images/icons8-plus.svg" />
+        </MatButton>
+        <Alert Color="Color.Danger" @bind-Visible="@showErrorMessage">
+            <AlertDescription>An error occurred while saving the course...</AlertDescription>
+            <CloseButton />
+        </Alert>
+    </div>
+    <CreateCourseDialog IsVisible="@displayCreateCourseDialog"
+                        OnCourseAdded="@SaveCourse"
+                        OnCancel="@HideAddCourseDialog">
+    </CreateCourseDialog>
+</AuthorizeView>
+
+<CoursesList Courses="@courses"
+             IsLoading="@isLoading"
+             CoursesNotFoundMessage="@noCoursesMessage"
+             OnEditCourse="EditCourseHandler"
+             OnArchiveCourse="ArchiveCourseHandler">
+</CoursesList>
+
+<MatSnackbar @bind-IsOpen="@showArchiveCourseResult">
+    <MatSnackbarContent>@archiveCourseMessage</MatSnackbarContent>
+</MatSnackbar>

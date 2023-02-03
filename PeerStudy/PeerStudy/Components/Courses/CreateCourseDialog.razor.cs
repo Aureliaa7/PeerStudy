@@ -22,12 +22,13 @@ namespace PeerStudy.Components.Courses
         private async Task SaveCourse()
         {
             await OnCourseAdded.InvokeAsync(createCourseModel);
+            createCourseModel = new CreateCourseModel();
         }
 
         private async Task Cancel()
         {
-            IsVisible = false;
             await OnCancel.InvokeAsync();
+            createCourseModel = new CreateCourseModel();
         }
     }
 }
