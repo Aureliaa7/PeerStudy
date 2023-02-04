@@ -69,7 +69,9 @@ namespace PeerStudy
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IDatabaseSeedingService, DatabaseSeedingService>();
-            services.AddScoped<IGoogleDriveService, GoogleDriveService>();
+            services.AddScoped<IGoogleDriveFileService, GoogleDriveFileService>();
+            services.AddScoped<IGoogleDrivePermissionService, GoogleDrivePermissionService>();
+            services.AddScoped<IConfigurationService, ConfigurationService>();
         }
     }
 }

@@ -2,6 +2,7 @@
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Courses;
 using System;
@@ -14,10 +15,22 @@ namespace PeerStudy.Core.DomainServices
     public class CourseService : ICourseService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IGoogleDriveFileService fileService;
+        private readonly IGoogleDrivePermissionService permissionService;
+        private readonly IConfigurationService configurationService;
 
-        public CourseService(IUnitOfWork unitOfWork)
+        private const string assignmentsFolderName = "Assignments";
+        private const string resourcesFolderName = "Resources";
+
+        public CourseService(IUnitOfWork unitOfWork,
+            IGoogleDriveFileService fileService,
+            IGoogleDrivePermissionService permissionService,
+            IConfigurationService configurationService)
         {
             this.unitOfWork = unitOfWork;
+            this.fileService = fileService;
+            this.permissionService = permissionService;
+            this.configurationService = configurationService;
         }
 
         public async Task<CourseDetailsModel> AddAsync(CourseModel courseModel)
@@ -40,11 +53,13 @@ namespace PeerStudy.Core.DomainServices
                 Status = CourseStatus.Active
             };
 
-            //TODO: create folders in Google Drive
-            course.DriveRootFolderId = "dummy string";
-            course.AssignmentsDriveFolderId = "dummy string";
-            course.ResourcesDriveFolderId = "dummy string";
+            course.DriveRootFolderId = await fileService.CreateFolderAsync(courseModel.Title);
+            course.AssignmentsDriveFolderId = await fileService.CreateFolderAsync(assignmentsFolderName, course.DriveRootFolderId);
+            course.ResourcesDriveFolderId = await fileService.CreateFolderAsync(resourcesFolderName, course.DriveRootFolderId);
 
+            await permissionService.SetPermissionsAsync(course.DriveRootFolderId, 
+                new List<string> { teacher.Email, configurationService.AppEmail}, 
+                "writer");
 
             var insertedCourse = await unitOfWork.CoursesRepository.AddAsync(course);
             await unitOfWork.SaveChangesAsync();
