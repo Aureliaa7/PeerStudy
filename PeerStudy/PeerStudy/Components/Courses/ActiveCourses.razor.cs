@@ -21,8 +21,9 @@ namespace PeerStudy.Components.Courses
         private string archiveCourseMessage;
         private bool isEditCourseModeEnabled;
         private CourseModel CourseModel = new();
-        private Guid courseId;
-
+        private bool displayCourseCreationMessage;
+        private const string courseCreationMessage = "Course creation is in progress...";
+        private const string courseCreationMessageStyle = "position: absolute; bottom: 10px; width: 50%; left: 0; right: 0; margin: auto; text-align: center;";
 
         public ActiveCourses(): base(CourseStatus.Active)
         {
@@ -51,6 +52,7 @@ namespace PeerStudy.Components.Courses
             bool isValidData = ModelValidator.IsModelValid<CourseModel>(CourseModel);
             if (isValidData)
             {
+                displayCourseCreationMessage = true;
                 try
                 {
                     displayCourseDialog = false;
@@ -63,6 +65,7 @@ namespace PeerStudy.Components.Courses
                 {
                     showErrorMessage = true;
                 }
+                displayCourseCreationMessage = false;
             }
         }
 
