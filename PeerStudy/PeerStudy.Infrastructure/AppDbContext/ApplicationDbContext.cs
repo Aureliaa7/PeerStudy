@@ -12,6 +12,10 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<Course> Courses { get; set; }
 
+        public DbSet<CourseEnrollmentRequest> CourseEnrollmentRequests { get; set; }
+
+        public DbSet<StudentCourse> StudentCourses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
