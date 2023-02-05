@@ -72,7 +72,8 @@ namespace PeerStudy.Core.DomainServices
                 EndDate= insertedCourse.EndDate,
                 Title = insertedCourse.Title,
                 TeacherName = $"{teacher.FirstName} {teacher.LastName}",
-                Status = insertedCourse.Status
+                Status = insertedCourse.Status,
+                TeacherId = insertedCourse.TeacherId
             };
         }
 
@@ -106,7 +107,8 @@ namespace PeerStudy.Core.DomainServices
                     EndDate = x.EndDate,
                     Title = x.Title,
                     TeacherName = $"{x.Teacher.FirstName} {x.Teacher.LastName}",
-                    Status = x.Status
+                    Status = x.Status,
+                    TeacherId = x.TeacherId
                 })  //TODO: add the number of enrolled students
             .ToList();
 

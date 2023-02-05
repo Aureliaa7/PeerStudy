@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
-using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Courses;
 using PeerStudy.Services.Interfaces;
 using System;
@@ -9,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public class CoursesBase : ComponentBase
+    public abstract class CoursesBase : ComponentBase
     {
         [Inject]
         IAuthService AuthService { get; set; }
-
-        [Inject]
-        ICourseService CourseService { get; set; }
 
         protected List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
 
@@ -23,13 +19,6 @@ namespace PeerStudy.Components.Courses
         protected bool isTeacher;
         protected bool isStudent;
         protected bool isLoading;
-
-        private CourseStatus courseStatus;
-
-        public CoursesBase(CourseStatus courseStatus)
-        {
-            this.courseStatus = courseStatus;
-        }
 
         protected async Task InitializeCoursesListAsync()
         {
@@ -47,13 +36,6 @@ namespace PeerStudy.Components.Courses
             isStudent = userRole == Role.Student.ToString();
         }
 
-        private Task<List<CourseDetailsModel>> GetCoursesAsync()
-        {
-            if (isTeacher)
-            {
-                return CourseService.GetAsync(currentUserId, courseStatus);
-            }
-            return Task.FromResult(new List<CourseDetailsModel>());
-        }
+        protected abstract Task<List<CourseDetailsModel>> GetCoursesAsync();
     }
 }

@@ -61,6 +61,8 @@ namespace PeerStudy
             services.AddAuthorizationCore();
 
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddScoped<INavigationMenuService, NavigationMenuService>();    
         }
 
         private static void RegisterServicesFromInfrastructure(this IServiceCollection services)

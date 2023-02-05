@@ -3,17 +3,24 @@ using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Courses;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class ActiveCourses
+    public partial class ActiveCourses : CoursesBase
     {
         [Inject]
         private ICourseService CourseService { get; set; }
 
-        private string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
+        [Inject]
+        private NavigationManager NavigationManager { get; set; }
+
+        private const string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
+        private const string courseCreationMessage = "Course creation is in progress...";
+        private const string courseCreationMessageStyle = "position: absolute; bottom: 10px; width: 50%; left: 0; right: 0; margin: auto; text-align: center;";
+
         private bool showErrorMessage;
         private bool displayCourseDialog = false;
         private string noCoursesMessage;
@@ -22,11 +29,19 @@ namespace PeerStudy.Components.Courses
         private bool isEditCourseModeEnabled;
         private CourseModel CourseModel = new();
         private bool displayCourseCreationMessage;
-        private const string courseCreationMessage = "Course creation is in progress...";
-        private const string courseCreationMessageStyle = "position: absolute; bottom: 10px; width: 50%; left: 0; right: 0; margin: auto; text-align: center;";
 
-        public ActiveCourses(): base(CourseStatus.Active)
+        protected override Task<List<CourseDetailsModel>> GetCoursesAsync()
         {
+            if (isTeacher)
+            {
+                return CourseService.GetAsync(currentUserId, CourseStatus.Active);
+            } 
+            else if (isStudent)
+            {
+                // get all courses for student to enroll
+                //TODO: should use pagination
+            }
+            return Task.FromResult(new List<CourseDetailsModel>());
         }
 
         protected override async Task OnInitializedAsync()
@@ -121,6 +136,24 @@ namespace PeerStudy.Components.Courses
             {
                 showArchiveCourseResult = true;
                 archiveCourseMessage = "The course could not be archived...";
+            }
+        }
+
+        private async Task CourseClickedHandler(CourseDetailsModel courseDetails)
+        {
+            // redirect the user to specific page
+            if (isTeacher && courseDetails.TeacherId == currentUserId)
+            {
+                NavigationManager.NavigateTo($"/{currentUserId}/courses/{courseDetails.Id}");
+            }
+            //TODO:
+            //else if (isStudent && isEnrolledToCourse(courseId))
+            //{
+                // NavigationManager.NavigateTo($"/{currentUserId}/my-courses/{courseDetails.Id}");
+            //}
+            else
+            {
+                NavigationManager.NavigateTo("/forbidden");
             }
         }
     }

@@ -15,7 +15,9 @@ namespace PeerStudy.Components.Courses
 
         [Parameter]
         public EventCallback<Guid> OnArchiveCourse { get; set; }
-
+        
+        [Parameter]
+        public EventCallback<CourseDetailsModel> OnCourseClicked { get; set; }
 
         private string cardStyles = "width: 80%; height: 90%;";
 
@@ -27,6 +29,11 @@ namespace PeerStudy.Components.Courses
         private async Task ArchiveCourse()
         {
             await OnArchiveCourse.InvokeAsync(Course.Id);
+        }
+
+        private async Task ClickedCourseHandler()
+        {
+            await OnCourseClicked.InvokeAsync(Course);
         }
     }
 }

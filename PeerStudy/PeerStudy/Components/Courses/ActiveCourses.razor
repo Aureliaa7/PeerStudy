@@ -13,21 +13,21 @@
             <CloseButton />
         </Alert>
     </div>
-    <CourseDialog IsVisible="displayCourseDialog"
-                  IsEditCourseEnabled="false"
-                  CourseModel="CourseModel"
-                  OnSave="SaveCourse"
-                  OnCancel="CloseCourseDialog">
-    </CourseDialog>
+    <CreateUpdateCourseDialog IsVisible="displayCourseDialog"
+                              IsEditCourseEnabled="false"
+                              CourseModel="CourseModel"
+                              OnSave="SaveCourse"
+                              OnCancel="CloseCourseDialog">
+    </CreateUpdateCourseDialog>
 
     @if (isEditCourseModeEnabled)
     {
-        <CourseDialog IsVisible="displayCourseDialog"
-                  IsEditCourseEnabled="true"
-                  CourseModel="CourseModel"
-                  OnSave="EditCourseAsync"
-                  OnCancel="CancelEditCourse">
-        </CourseDialog>
+        <CreateUpdateCourseDialog IsVisible="displayCourseDialog"
+                              IsEditCourseEnabled="true"
+                              CourseModel="CourseModel"
+                              OnSave="EditCourseAsync"
+                              OnCancel="CancelEditCourse">
+        </CreateUpdateCourseDialog>
     }
 </AuthorizeView>
 
@@ -35,7 +35,8 @@
              IsLoading="isLoading"
              CoursesNotFoundMessage="@noCoursesMessage"
              OnEditCourse="EditCourseHandler"
-             OnArchiveCourse="ArchiveCourseHandler">
+             OnArchiveCourse="ArchiveCourseHandler"
+             OnCourseClicked="CourseClickedHandler">
 </CoursesList>
 
 <MatSnackbar @bind-IsOpen="showArchiveCourseResult">

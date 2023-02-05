@@ -23,6 +23,9 @@ namespace PeerStudy.Components.Courses
         [Parameter]
         public EventCallback<Guid> OnArchiveCourse { get; set; }
 
+        [Parameter]
+        public EventCallback<CourseDetailsModel> OnCourseClicked { get; set; }
+
         private async Task EditCourseHandler(CourseDetailsModel course)
         {
             await OnEditCourse.InvokeAsync(course);
@@ -31,6 +34,11 @@ namespace PeerStudy.Components.Courses
         private async Task ArchiveCourseHandler(Guid courseId)
         {
             await OnArchiveCourse.InvokeAsync(courseId);
+        }
+
+        private async Task ClickedCourseHandler(CourseDetailsModel course)
+        {
+            await OnCourseClicked.InvokeAsync(course);
         }
     }
 }

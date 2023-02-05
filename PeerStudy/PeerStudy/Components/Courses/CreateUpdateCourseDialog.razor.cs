@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class CourseDialog
+    public partial class CreateUpdateCourseDialog
     {
         [Parameter]
         public EventCallback OnSave { get; set; }

@@ -68,3 +68,26 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+.nav-item ::deep a {
+    color: #606060;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
+
+.nav-item ::deep a.active {
+    background-color: #B9D9EB;
+    color: blue;
+}
+
+.nav-item ::deep a:hover {
+    background-color: #E0E0E0;
+    color: #808080;
+}
