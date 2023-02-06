@@ -1,10 +1,16 @@
 ﻿using PeerStudy.Core.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace PeerStudy.Core.DomainEntities
 {
     public class Course
     {
+        public Course()
+        {
+            Students = new HashSet<Student>();
+        }
+
         public Guid Id { get; set; }
 
         public string Title { get; set; }
@@ -26,5 +32,7 @@ namespace PeerStudy.Core.DomainEntities
         public DateTime EndDate { get; set; }
 
         public Teacher Teacher { get; set; }
+
+        public ICollection<Student> Students { get; set; }
     }
 }

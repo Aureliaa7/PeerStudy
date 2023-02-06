@@ -14,6 +14,13 @@ namespace PeerStudy.Core.Interfaces.DomainServices
 
         Task<bool> ArchiveCourseAsync(Guid teacherId, Guid courseId);
 
-        Task<CourseDetailsModel> UpdateAsync(UpdateCourseModel courseModel);  
+        Task<CourseDetailsModel> UpdateAsync(UpdateCourseModel courseModel);
+
+        /// <summary>
+        /// Returns a list of courses a student can enroll in
+        /// </summary>
+        /// <param name="studentId">The student id</param>
+        /// <returns></returns>
+        Task<List<CourseDetailsModel>> GetCoursesToEnroll(Guid studentId);
     }
 }

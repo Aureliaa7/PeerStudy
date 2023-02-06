@@ -19,6 +19,9 @@ namespace PeerStudy.Components.Courses
         [Parameter]
         public EventCallback<CourseDetailsModel> OnCourseClicked { get; set; }
 
+        [Parameter]
+        public EventCallback<CourseDetailsModel> OnEnroll { get; set; }
+
         private string cardStyles = "width: 80%; height: 90%;";
 
         public async Task EditCourse()
@@ -34,6 +37,11 @@ namespace PeerStudy.Components.Courses
         private async Task ClickedCourseHandler()
         {
             await OnCourseClicked.InvokeAsync(Course);
+        }
+
+        private async Task Enroll()
+        {
+            await OnEnroll.InvokeAsync(Course);
         }
     }
 }

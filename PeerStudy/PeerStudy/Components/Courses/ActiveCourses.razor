@@ -36,7 +36,8 @@
              CoursesNotFoundMessage="@noCoursesMessage"
              OnEditCourse="EditCourseHandler"
              OnArchiveCourse="ArchiveCourseHandler"
-             OnCourseClicked="CourseClickedHandler">
+             OnCourseClicked="CourseClickedHandler"
+             OnEnroll="EnrollHandler">
 </CoursesList>
 
 <MatSnackbar @bind-IsOpen="showArchiveCourseResult">
@@ -46,3 +47,7 @@
 <Alert Style="@courseCreationMessageStyle" Color="Color.Info" @bind-Visible="@displayCourseCreationMessage">
     <AlertDescription>@courseCreationMessage</AlertDescription>
 </Alert>
+
+<MatSnackbar @bind-IsOpen="displayCreateEnrollmentMessage">
+    <MatSnackbarContent>@createEnrollmentMessage</MatSnackbarContent>
+</MatSnackbar>

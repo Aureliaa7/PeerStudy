@@ -51,6 +51,7 @@ namespace PeerStudy
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<ICourseEnrollmentService, CourseEnrollmentService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)
