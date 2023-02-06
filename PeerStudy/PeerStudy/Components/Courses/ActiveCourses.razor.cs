@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class ActiveCourses : CoursesBase
+    public partial class ActiveCourses : PeerStudyComponentBase<CourseDetailsModel>
     {
         [Inject]
         private ICourseService CourseService { get; set; }
@@ -35,7 +35,7 @@ namespace PeerStudy.Components.Courses
         private bool displayCreateEnrollmentMessage;
         private string createEnrollmentMessage;
 
-        protected override Task<List<CourseDetailsModel>> GetCoursesAsync()
+        protected override Task<List<CourseDetailsModel>> GetDataAsync()
         {
             if (isTeacher)
             {
@@ -50,7 +50,7 @@ namespace PeerStudy.Components.Courses
 
         protected override async Task OnInitializedAsync()
         {
-            await InitializeCoursesListAsync();
+            await InitializeDataAsync();
             if (isTeacher)
             {
                 noCoursesMessage = "There are no active courses. You can create one by clicking on the plus button.";
@@ -77,7 +77,7 @@ namespace PeerStudy.Components.Courses
                     displayCourseDialog = false;
                     CourseModel.TeacherId = currentUserId;
                     var addedCourse = await CourseService.AddAsync(CourseModel);
-                    courses.Add(addedCourse);
+                    data.Add(addedCourse);
                     CourseModel = new CourseModel();
                 }
                 catch (Exception)
@@ -118,7 +118,7 @@ namespace PeerStudy.Components.Courses
         private async Task EditCourseAsync()
         {
             var course = (UpdateCourseModel)CourseModel;
-            var courseToBeUpdated = courses.First(x => x.Id == course.Id);
+            var courseToBeUpdated = data.First(x => x.Id == course.Id);
 
             displayCourseDialog = false;
             var updatedCourse = await CourseService.UpdateAsync((UpdateCourseModel)CourseModel);
@@ -132,7 +132,7 @@ namespace PeerStudy.Components.Courses
         {
             if (await CourseService.ArchiveCourseAsync(currentUserId, courseId))
             {
-                courses = courses.Where(x => x.Id != courseId).ToList();
+                data = data.Where(x => x.Id != courseId).ToList();
                 showArchiveCourseResult = true;
                 archiveCourseMessage = "The course was successfully archived...";
             }
@@ -166,7 +166,7 @@ namespace PeerStudy.Components.Courses
             try
             {
                 await CourseEnrollmentService.CreateEnrollmentRequestAsync(currentUserId, courseDetails.Id);
-                courses = courses.Except(new List<CourseDetailsModel> { courseDetails }).ToList();
+                data = data.Except(new List<CourseDetailsModel> { courseDetails }).ToList();
                 createEnrollmentMessage = "The enrollment request was successfully created";
             }
             catch (Exception ex)

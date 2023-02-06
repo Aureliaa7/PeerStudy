@@ -1,30 +1,29 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
-using PeerStudy.Core.Models.Courses;
 using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PeerStudy.Components.Courses
+namespace PeerStudy.Components
 {
-    public abstract class CoursesBase : ComponentBase
+    public abstract class PeerStudyComponentBase<T> : ComponentBase where T: new()
     {
         [Inject]
         IAuthService AuthService { get; set; }
 
-        protected List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
+        protected List<T> data;
 
         protected Guid currentUserId;
         protected bool isTeacher;
         protected bool isStudent;
         protected bool isLoading;
 
-        protected async Task InitializeCoursesListAsync()
+        protected async Task InitializeDataAsync()
         {
             isLoading = true;
             await InitializeAsync();
-            courses = await GetCoursesAsync();
+            data = await GetDataAsync();
             isLoading = false;
         }
 
@@ -36,6 +35,6 @@ namespace PeerStudy.Components.Courses
             isStudent = userRole == Role.Student.ToString();
         }
 
-        protected abstract Task<List<CourseDetailsModel>> GetCoursesAsync();
+        protected abstract Task<List<T>> GetDataAsync();
     }
 }

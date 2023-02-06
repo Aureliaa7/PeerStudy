@@ -1,9 +1,11 @@
-﻿@page "/archived-courses"
+﻿@using PeerStudy.Core.Models.Courses
+
+@page "/archived-courses"
 @attribute [Authorize]
-@inherits CoursesBase
+@inherits PeerStudyComponentBase<CourseDetailsModel>
 
 
-<CoursesList Courses="courses"
+<CoursesList Courses="data"
              IsLoading="isLoading"
              CoursesNotFoundMessage="@noCoursesMessage">
 </CoursesList>

@@ -44,6 +44,11 @@ namespace PeerStudy.Components.Courses
                     {
                         Href = "#",
                         Name = "Study groups"
+                    },
+                       new MenuItem
+                    {
+                        Href = $"/{TeacherId}/courses{CourseId}/pending-requests",
+                        Name = "Pending requests"
                     }
                 });
             NavigationMenuService.NotifyChanged();

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class ArchivedCourses : CoursesBase
+    public partial class ArchivedCourses : PeerStudyComponentBase<CourseDetailsModel>
     {
         [Inject]
         private ICourseService CourseService { get; set; }
 
-        private string noCoursesMessage = "There are no archived courses yet...";
+        private const string noCoursesMessage = "There are no archived courses yet...";
 
-        protected override Task<List<CourseDetailsModel>> GetCoursesAsync()
+        protected override Task<List<CourseDetailsModel>> GetDataAsync()
         {
             if (isTeacher)
             {
@@ -30,7 +30,7 @@ namespace PeerStudy.Components.Courses
 
         protected override async Task OnInitializedAsync()
         {
-            await InitializeCoursesListAsync();
+            await InitializeDataAsync();
         }
     }
 }

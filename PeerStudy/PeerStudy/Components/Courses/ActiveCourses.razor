@@ -1,6 +1,8 @@
-﻿@page "/active-courses"
+﻿@using PeerStudy.Core.Models.Courses
+
+@page "/active-courses"
 @attribute [Authorize]
-@inherits CoursesBase
+@inherits PeerStudyComponentBase<CourseDetailsModel>
 
 
 <AuthorizeView Roles="Teacher">
@@ -31,7 +33,7 @@
     }
 </AuthorizeView>
 
-<CoursesList Courses="courses"
+<CoursesList Courses="data"
              IsLoading="isLoading"
              CoursesNotFoundMessage="@noCoursesMessage"
              OnEditCourse="EditCourseHandler"
