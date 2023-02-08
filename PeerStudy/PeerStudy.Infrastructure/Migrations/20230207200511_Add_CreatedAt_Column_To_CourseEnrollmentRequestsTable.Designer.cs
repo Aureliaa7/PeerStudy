@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PeerStudy.Infrastructure.AppDbContext;
 
@@ -11,9 +12,10 @@ using PeerStudy.Infrastructure.AppDbContext;
 namespace PeerStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230207200511_Add_CreatedAt_Column_To_CourseEnrollmentRequestsTable")]
+    partial class Add_CreatedAt_Column_To_CourseEnrollmentRequestsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace PeerStudy.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("CourseStudent", b =>
+                {
+                    b.Property<Guid>("CoursesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StudentsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CoursesId", "StudentsId");
+
+                    b.HasIndex("StudentsId");
+
+                    b.ToTable("CourseStudent");
+                });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Course", b =>
                 {
@@ -177,6 +194,21 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("Teacher");
                 });
 
+            modelBuilder.Entity("CourseStudent", b =>
+                {
+                    b.HasOne("PeerStudy.Core.DomainEntities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PeerStudy.Core.DomainEntities.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Course", b =>
                 {
                     b.HasOne("PeerStudy.Core.DomainEntities.Teacher", "Teacher")
@@ -210,13 +242,13 @@ namespace PeerStudy.Infrastructure.Migrations
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentCourse", b =>
                 {
                     b.HasOne("PeerStudy.Core.DomainEntities.Course", "Course")
-                        .WithMany("CourseEnrollments")
+                        .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PeerStudy.Core.DomainEntities.Student", "Student")
-                        .WithMany("CourseEnrollments")
+                        .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -224,16 +256,6 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("PeerStudy.Core.DomainEntities.Course", b =>
-                {
-                    b.Navigation("CourseEnrollments");
-                });
-
-            modelBuilder.Entity("PeerStudy.Core.DomainEntities.Student", b =>
-                {
-                    b.Navigation("CourseEnrollments");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Teacher", b =>

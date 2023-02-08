@@ -1,0 +1,18 @@
+﻿@using PeerStudy.Core.Models.CourseEnrollments
+
+@page "/{teacherId:guid}/courses/{courseId:guid}/pending-requests"
+@inherits PeerStudyComponentBase<CourseEnrollmentRequestDetailsModel>
+@attribute [Authorize(Roles = "Teacher")]
+
+
+<CourseEnrollmentRequest Requests="@data"
+                         DisplayActionButtons="true"
+                         IsLoading="isLoading"
+                         NoRequestsMessage="@noPendingRequestsMessage"
+                         OnApproveRequests="ApproveRequests"
+                         OnRejectRequests="RejectRequests">
+</CourseEnrollmentRequest>
+
+<MatSnackbar @bind-IsOpen="displayChangeRequestResult">
+    <MatSnackbarContent>@changeRequestStatusResult</MatSnackbarContent>
+</MatSnackbar>

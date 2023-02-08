@@ -170,7 +170,7 @@ namespace PeerStudy.Core.DomainServices
             var courses = (await unitOfWork.CoursesRepository.GetAllAsync(x => x.StartDate.Date > DateTime.Today.Date &&
                     x.Status == CourseStatus.Active && 
                     !excludedCoursesIds.Contains(x.Id) && 
-                    x.Students.Count < x.NoStudents, includeProperties: nameof(Teacher)))
+                    x.CourseEnrollments.Count < x.NoStudents, includeProperties: nameof(Teacher)))
                 .ToList();
 
             var coursesToEnroll = new List<CourseDetailsModel>();

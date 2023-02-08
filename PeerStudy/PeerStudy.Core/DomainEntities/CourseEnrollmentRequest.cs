@@ -13,6 +13,8 @@ namespace PeerStudy.Core.DomainEntities
 
         public CourseEnrollmentRequestStatus Status { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public Student Student { get; set; }
 
         public Course Course { get; set; }

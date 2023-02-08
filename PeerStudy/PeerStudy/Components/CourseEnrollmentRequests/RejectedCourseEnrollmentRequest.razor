@@ -1,0 +1,11 @@
+﻿@using PeerStudy.Core.Models.CourseEnrollments
+
+@page "/{teacherId:guid}/courses/{courseId:guid}/rejected-requests"
+@inherits PeerStudyComponentBase<CourseEnrollmentRequestDetailsModel>
+@attribute [Authorize(Roles = "Teacher")]
+
+
+<CourseEnrollmentRequest Requests="@data"
+                         IsLoading="isLoading"
+                         NoRequestsMessage="@noRequestsMessage">
+</CourseEnrollmentRequest>

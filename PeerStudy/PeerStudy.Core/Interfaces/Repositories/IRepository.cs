@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace PeerStudy.Core.Interfaces.Repositories
         Task<T> GetByIdAsync(Guid id);
 
         Task<T> AddAsync(T entity);
+
+        Task<List<T>> AddRangeAsync(List<T> entities);
 
         Task<T> RemoveAsync(Guid id);
 
@@ -23,7 +26,8 @@ namespace PeerStudy.Core.Interfaces.Repositories
             Expression<Func<T, bool>>? filter = null,
             string? includeProperties = null,
             int? skip = null,
-            int? take = null);
+            int? take = null,
+            bool trackChanges = true);
 
         Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null);
 

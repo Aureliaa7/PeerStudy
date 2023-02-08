@@ -2,6 +2,7 @@
 using PeerStudy.Core.Interfaces.Repositories;
 using PeerStudy.Infrastructure.AppDbContext;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -22,6 +23,12 @@ namespace PeerStudy.Infrastructure.Repositories
         {
             Context.Set<T>().Add(entity);
             return Task.FromResult(entity);
+        }
+
+        public Task<List<T>> AddRangeAsync(List<T> entities)
+        {
+            Context.Set<T>().AddRange(entities);
+            return Task.FromResult(entities);
         }
 
         public async Task<T> GetAsync(Guid id)
@@ -71,9 +78,10 @@ namespace PeerStudy.Infrastructure.Repositories
             Expression<Func<T, bool>>? filter = null,
             string? includeProperties = null,
             int? skip = null,
-            int? take = null)
+            int? take = null,
+            bool trackChanges = true)
         {
-            var entities = Context.Set<T>().AsNoTracking();
+            IQueryable<T> entities = trackChanges ? Context.Set<T>() : Context.Set<T>().AsNoTracking();
 
             if (filter != null)
             {

@@ -29,6 +29,7 @@ namespace PeerStudy.Components.Courses
         protected override void OnInitialized()
         {
             //TODO: to be implemented
+            //TODO: should remove these nav items when navigating back to courses
             NavigationMenuService.AdditionalMenuItems.AddRange(new List<MenuItem> {
                   new MenuItem
                     {
@@ -45,10 +46,15 @@ namespace PeerStudy.Components.Courses
                         Href = "#",
                         Name = "Study groups"
                     },
-                       new MenuItem
+                    new MenuItem
                     {
-                        Href = $"/{TeacherId}/courses{CourseId}/pending-requests",
+                        Href = $"/{TeacherId}/courses/{CourseId}/pending-requests",
                         Name = "Pending requests"
+                    },
+                    new MenuItem
+                    {
+                        Href = $"/{TeacherId}/courses/{CourseId}/rejected-requests",
+                        Name = "Rejected requests"
                     }
                 });
             NavigationMenuService.NotifyChanged();
