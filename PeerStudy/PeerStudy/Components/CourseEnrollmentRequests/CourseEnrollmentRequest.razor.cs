@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazorise.DataGrid;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models.CourseEnrollments;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,20 @@ namespace PeerStudy.Components.CourseEnrollmentRequests
         public string NoRequestsMessage { get; set; }
 
         [Parameter]
+        public bool AllowMultipleSelection
+        {
+            get 
+            { 
+                return allowSelection; 
+            }
+            set
+            {
+                allowSelection = value;
+                selectionMode = allowSelection ? DataGridSelectionMode.Multiple : DataGridSelectionMode.Single;
+            }
+        }
+
+        [Parameter]
         public EventCallback<List<CourseEnrollmentRequestDetailsModel>> OnApproveRequests { get; set; }
 
         [Parameter]
@@ -29,6 +44,10 @@ namespace PeerStudy.Components.CourseEnrollmentRequests
         private List<CourseEnrollmentRequestDetailsModel> selectedRequests;
         private CourseEnrollmentRequestDetailsModel selectedRequest;
 
+        private bool allowSelection;
+        private DataGridSelectionMode selectionMode;
+
+
         private async Task ApproveRequests()
         {
             //send the list of requests bc. the selectedRequest is always null even if there is only one item selected
@@ -36,7 +55,7 @@ namespace PeerStudy.Components.CourseEnrollmentRequests
             ResetSelectedRequests();
         }
 
-        private async void RejectRequests()
+        private async Task RejectRequests()
         {
             await OnRejectRequests.InvokeAsync(selectedRequests);
             ResetSelectedRequests();
@@ -50,7 +69,7 @@ namespace PeerStudy.Components.CourseEnrollmentRequests
 
         private bool AreButtonsDisabled()
         {
-            return !(selectedRequests != null && selectedRequests.Any());
+            return selectedRequests == null || !selectedRequests.Any();
         }
     }
 }

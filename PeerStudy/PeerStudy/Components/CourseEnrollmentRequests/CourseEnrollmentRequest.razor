@@ -23,7 +23,7 @@ else
     <DataGrid TItem="CourseEnrollmentRequestDetailsModel"
           Data="@Requests"
           @bind-SelectedRow="@selectedRequest"
-          SelectionMode="DataGridSelectionMode.Multiple"
+          SelectionMode="selectionMode"
           @bind-SelectedRows="selectedRequests"
           Responsive
           ShowPager
@@ -31,7 +31,10 @@ else
           PagerPosition="DataGridPagerPosition.Bottom"
           PagerOptions="new(){ ButtonSize=Size.Small }">
         <DataGridColumns>
-            <DataGridMultiSelectColumn Width="30px"></DataGridMultiSelectColumn>
+            @if (allowSelection)
+            {
+                <DataGridMultiSelectColumn Width="30px"></DataGridMultiSelectColumn>
+            }
             <DataGridCommandColumn />
             <DataGridColumn Field="@nameof(CourseEnrollmentRequestDetailsModel.StudentName)" Caption="Student" />
             <DataGridColumn Field="@nameof(CourseEnrollmentRequestDetailsModel.CreatedAt)" Caption="Created At" />
