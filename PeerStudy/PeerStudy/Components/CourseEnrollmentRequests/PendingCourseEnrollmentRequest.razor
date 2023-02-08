@@ -4,9 +4,8 @@
 @inherits PeerStudyComponentBase<CourseEnrollmentRequestDetailsModel>
 @attribute [Authorize(Roles = "Teacher")]
 
-
 <CourseEnrollmentRequest Requests="@data"
-                         DisplayActionButtons="true"
+                         DisplayActionButtons=true
                          IsLoading="isLoading"
                          NoRequestsMessage="@noPendingRequestsMessage"
                          AllowMultipleSelection=true

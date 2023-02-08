@@ -6,7 +6,11 @@ namespace PeerStudy.Services.Interfaces
 {
     public interface INavigationMenuService
     {
-        List<MenuItem> AdditionalMenuItems { get; set; }
+        List<MenuItem> GetMenuItems();
+
+        void AddMenuItems(List<MenuItem> items);
+
+        void RemoveAll();
 
         event EventHandler<EventArgs> OnChanged;
         

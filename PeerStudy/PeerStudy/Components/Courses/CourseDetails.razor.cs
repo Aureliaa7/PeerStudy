@@ -30,7 +30,7 @@ namespace PeerStudy.Components.Courses
         {
             //TODO: to be implemented
             //TODO: should remove these nav items when navigating back to courses
-            NavigationMenuService.AdditionalMenuItems.AddRange(new List<MenuItem> {
+            NavigationMenuService.AddMenuItems(new List<MenuItem> {
                   new MenuItem
                     {
                         Href = "#",

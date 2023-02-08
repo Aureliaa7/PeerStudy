@@ -30,6 +30,7 @@ namespace PeerStudy.Components.Courses
 
         protected override async Task OnInitializedAsync()
         {
+            ResetNavigationBar();
             await InitializeDataAsync();
         }
     }

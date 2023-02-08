@@ -50,7 +50,9 @@ namespace PeerStudy.Components.Courses
 
         protected override async Task OnInitializedAsync()
         {
+            ResetNavigationBar();
             await InitializeDataAsync();
+
             if (isTeacher)
             {
                 noCoursesMessage = "There are no active courses. You can create one by clicking on the plus button.";

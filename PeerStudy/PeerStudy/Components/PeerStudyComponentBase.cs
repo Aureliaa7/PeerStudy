@@ -12,6 +12,9 @@ namespace PeerStudy.Components
         [Inject]
         IAuthService AuthService { get; set; }
 
+        [Inject]
+        INavigationMenuService NavigationMenuService { get; set; }
+
         protected List<T> data;
 
         protected Guid currentUserId;
@@ -36,5 +39,11 @@ namespace PeerStudy.Components
         }
 
         protected abstract Task<List<T>> GetDataAsync();
+
+        protected void ResetNavigationBar()
+        {
+            NavigationMenuService.RemoveAll();
+            NavigationMenuService.NotifyChanged();
+        }
     }
 }
