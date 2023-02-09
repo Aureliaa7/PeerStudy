@@ -59,6 +59,13 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task<CourseEnrollmentRequest> CreateEnrollmentRequestAsync(Guid studentId, Guid courseId)
         {
+            bool studentIsAlreadyEnrolled = await unitOfWork.StudentCourseRepository.ExistsAsync(
+                x => x.StudentId == studentId && x.CourseId == courseId);
+            if (studentIsAlreadyEnrolled)
+            {
+                throw new DuplicateEntityException($"Student with id {studentId} is already enrolled in course with id {courseId}");
+            }
+
             bool requestExists = await unitOfWork.CourseEnrollmentRequestsRepository.ExistsAsync(x => x.StudentId == studentId && x.CourseId == courseId);
 
             if (requestExists)

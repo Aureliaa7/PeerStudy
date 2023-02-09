@@ -22,5 +22,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         /// <param name="studentId">The student id</param>
         /// <returns></returns>
         Task<List<CourseDetailsModel>> GetCoursesToEnroll(Guid studentId);
+
+        Task<List<CourseDetailsModel>> GetCoursesForStudentAsync(Guid studentId, CourseStatus status);
     }
 }

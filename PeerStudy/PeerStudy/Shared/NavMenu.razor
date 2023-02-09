@@ -15,16 +15,6 @@
                     <span class="oi oi-home" aria-hidden="true"></span> Home
                 </NavLink>
             </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/active-courses">
-                    <span class="oi oi-book" aria-hidden="true"></span> Active Courses
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/archived-courses">
-                    <span class="oi oi-book" aria-hidden="true"></span> Archived Courses
-                </NavLink>
-            </div>
         </AuthorizeView>
 
         <AuthorizeView Roles="Student">
@@ -34,8 +24,21 @@
                 </NavLink>
             </div>
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="#">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Link for students...
+                <NavLink class="nav-link" href="/courses/enroll">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Enroll in courses
+                </NavLink>
+            </div>
+        </AuthorizeView>
+
+        <AuthorizeView>
+             <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/active-courses">
+                    <span class="oi oi-book" aria-hidden="true"></span> Active Courses
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/archived-courses">
+                    <span class="oi oi-book" aria-hidden="true"></span> Archived Courses
                 </NavLink>
             </div>
         </AuthorizeView>

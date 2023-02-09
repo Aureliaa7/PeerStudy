@@ -15,6 +15,7 @@
             @foreach (var course in Courses)
             {
                 <CourseCard Course="course"
+                    CanEnrollInCourse="CanEnrollInCourse"
                     OnEditCourse="EditCourseHandler"
                     OnArchiveCourse="ArchiveCourseHandler"
                     OnCourseClicked="ClickedCourseHandler"

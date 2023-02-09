@@ -173,10 +173,21 @@ namespace PeerStudy.Core.DomainServices
                     x.CourseEnrollments.Count < x.NoStudents, includeProperties: nameof(Teacher)))
                 .ToList();
 
-            var coursesToEnroll = new List<CourseDetailsModel>();
-            courses.ForEach(x => coursesToEnroll.Add(MapToCourseDetails(x)));
+            var coursesToEnroll = courses.Select(x => MapToCourseDetails(x)).ToList();
 
             return coursesToEnroll;
+        }
+
+        public async Task<List<CourseDetailsModel>> GetCoursesForStudentAsync(Guid studentId, CourseStatus status)
+        {
+            var courses = (await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.StudentId == studentId
+                    && x.Course.Status == status, includeProperties: nameof(Course), trackChanges: false))
+                .Select(x => x.Course)
+                .ToList();
+
+            var courseDetails = courses.Select(x => MapToCourseDetails(x)).ToList();
+
+            return courseDetails;
         }
     }
 }

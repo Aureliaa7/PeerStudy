@@ -8,6 +8,9 @@ namespace PeerStudy.Components.Courses
     public partial class CourseCard
     {
         [Parameter]
+        public bool CanEnrollInCourse { get; set; }
+        
+        [Parameter]
         public CourseDetailsModel Course { get; set; }
 
         [Parameter]

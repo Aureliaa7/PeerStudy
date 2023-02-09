@@ -33,11 +33,13 @@
             </MatCardActions>
         </AuthorizeView>
 
-        <AuthorizeView Roles="Student">
-            <MatCardActions>
-                <MatButton OnClick="Enroll" Raised=true>Enroll now</MatButton>
-            </MatCardActions>
-        </AuthorizeView>
+        @if (CanEnrollInCourse)
+        {
+            <AuthorizeView Roles="Student">
+                <MatCardActions>
+                    <MatButton OnClick="Enroll" Raised=true>Enroll now</MatButton>
+                </MatCardActions>
+            </AuthorizeView>
+        }
     }
 </MatCard>
-

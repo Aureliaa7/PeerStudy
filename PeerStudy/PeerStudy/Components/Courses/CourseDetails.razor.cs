@@ -29,7 +29,7 @@ namespace PeerStudy.Components.Courses
         protected override void OnInitialized()
         {
             //TODO: to be implemented
-            //TODO: should remove these nav items when navigating back to courses
+            //TODO: update additional nav items depending on the user's role
             NavigationMenuService.AddMenuItems(new List<MenuItem> {
                   new MenuItem
                     {

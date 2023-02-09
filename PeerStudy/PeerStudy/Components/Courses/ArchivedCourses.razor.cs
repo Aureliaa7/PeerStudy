@@ -22,8 +22,7 @@ namespace PeerStudy.Components.Courses
             }
             else if (isStudent)
             {
-                // get all archived courses for student
-                //TODO: should use pagination
+                return CourseService.GetCoursesForStudentAsync(currentUserId, CourseStatus.Archived);
             }
             return Task.FromResult(new List<CourseDetailsModel>());
         }

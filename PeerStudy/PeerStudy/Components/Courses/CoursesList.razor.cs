@@ -18,6 +18,9 @@ namespace PeerStudy.Components.Courses
         public string CoursesNotFoundMessage { get; set; }
 
         [Parameter]
+        public bool CanEnrollInCourse { get; set; }
+
+        [Parameter]
         public EventCallback<CourseDetailsModel> OnEditCourse { get; set; }
 
         [Parameter]

@@ -17,9 +17,6 @@ namespace PeerStudy.Components.Courses
         [Inject]
         private NavigationManager NavigationManager { get; set; }
 
-        [Inject]
-        private ICourseEnrollmentService CourseEnrollmentService { get; set; }
-
         private const string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
         private const string courseCreationMessage = "Course creation is in progress...";
         private const string courseCreationMessageStyle = "position: absolute; bottom: 10px; width: 50%; left: 0; right: 0; margin: auto; text-align: center;";
@@ -32,8 +29,6 @@ namespace PeerStudy.Components.Courses
         private bool isEditCourseModeEnabled;
         private CourseModel CourseModel = new();
         private bool displayCourseCreationMessage;
-        private bool displayCreateEnrollmentMessage;
-        private string createEnrollmentMessage;
 
         protected override Task<List<CourseDetailsModel>> GetDataAsync()
         {
@@ -43,7 +38,7 @@ namespace PeerStudy.Components.Courses
             } 
             else if (isStudent)
             {
-                return CourseService.GetCoursesToEnroll(currentUserId);
+                return CourseService.GetCoursesForStudentAsync(currentUserId, CourseStatus.Active);
             }
             return Task.FromResult(new List<CourseDetailsModel>());
         }
@@ -152,31 +147,14 @@ namespace PeerStudy.Components.Courses
             {
                 NavigationManager.NavigateTo($"/{currentUserId}/courses/{courseDetails.Id}");
             }
-            //TODO:
-            //else if (isStudent && isEnrolledToCourse(courseId))
-            //{
-                // NavigationManager.NavigateTo($"/{currentUserId}/my-courses/{courseDetails.Id}");
-            //}
+            else if (isStudent)
+            {
+                NavigationManager.NavigateTo($"/{currentUserId}/my-courses/{courseDetails.Id}");
+            }
             else
             {
                 NavigationManager.NavigateTo("/forbidden");  //TOD0: create forbidden comp.
             }
-        }
-
-        private async Task EnrollHandler(CourseDetailsModel courseDetails)
-        {
-            try
-            {
-                await CourseEnrollmentService.CreateEnrollmentRequestAsync(currentUserId, courseDetails.Id);
-                data = data.Except(new List<CourseDetailsModel> { courseDetails }).ToList();
-                createEnrollmentMessage = "The enrollment request was successfully created";
-            }
-            catch (Exception ex)
-            {
-                createEnrollmentMessage = "The enrollment request could not be created...";
-            }
-
-            displayCreateEnrollmentMessage = true;
         }
     }
 }
