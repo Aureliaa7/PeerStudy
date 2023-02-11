@@ -72,5 +72,10 @@ namespace PeerStudy.Services
         {
             return GetClaimByNameAsync(ClaimTypes.Role);
         }
+
+        public Task<string> GetCurrentUserEmailAsync()
+        {
+            return GetClaimByNameAsync(ClaimTypes.Email);
+        }
     }
 }

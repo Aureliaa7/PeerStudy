@@ -19,10 +19,10 @@ builder.Services.RegisterBlazorComponentLibraries();
 var app = builder.Build();
 
 
-var serviceProvider = builder.Services.BuildServiceProvider();
-var service = serviceProvider.GetService<IDatabaseSeedingService>();
+//var serviceProvider = builder.Services.BuildServiceProvider();
+//var service = serviceProvider.GetService<IDatabaseSeedingService>();
 
-service?.InsertTeachers();
+//service?.InsertTeachers();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

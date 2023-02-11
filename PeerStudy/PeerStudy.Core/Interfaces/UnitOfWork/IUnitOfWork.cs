@@ -14,6 +14,8 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<StudentCourse> StudentCourseRepository { get; }
 
+        IRepository<CourseResource> CourseResourcesRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

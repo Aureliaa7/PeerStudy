@@ -16,6 +16,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<StudentCourse> StudentCourses { get; set; }
 
+        public DbSet<CourseResource> CourseResources { get; set;}
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

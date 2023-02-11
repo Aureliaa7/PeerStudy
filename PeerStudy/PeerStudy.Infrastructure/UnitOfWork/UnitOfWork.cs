@@ -14,6 +14,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<Course> coursesRepository;
         private IRepository<CourseEnrollmentRequest> courseEnrollmentRequestsRepository;
         private IRepository<StudentCourse> studentCoursesRepository;
+        private IRepository<CourseResource> courseResourcesRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -64,6 +65,18 @@ namespace PeerStudy.Infrastructure.UnitOfWork
                     studentCoursesRepository = new Repository<StudentCourse>(dbContext);
                 }
                 return studentCoursesRepository;
+            }
+        }
+
+        public IRepository<CourseResource> CourseResourcesRepository
+        {
+            get
+            {
+                if (courseResourcesRepository == null)
+                {
+                    courseResourcesRepository = new Repository<CourseResource>(dbContext);
+                }
+                return courseResourcesRepository;
             }
         }
 

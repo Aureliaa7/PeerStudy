@@ -1,0 +1,13 @@
+﻿.upload-file-control {
+    border-radius: 30px;
+    background-color: #F5F5F5;
+    height: 30px;
+}
+
+.create-menu {
+    width: 135px;
+    height: 120px;
+    background-color: #BCD4E6;
+    margin-top: 10px;
+    border-radius: 10px;
+}

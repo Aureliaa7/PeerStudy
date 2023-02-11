@@ -1,15 +1,29 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazorise;
+using MatBlazor;
+using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Models.Courses;
+using PeerStudy.Core.Models.Resources;
 using PeerStudy.Models;
 using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
     public partial class CourseDetails
     {
         [Inject]
-        INavigationMenuService NavigationMenuService { get; set; }  
+        private INavigationMenuService NavigationMenuService { get; set; }  
+
+        [Inject]
+        private IAuthService AuthService { get; set; }
+
+        [Inject]
+        private ICourseResourceService CourseResourceService { get; set; } 
+
 
         [Parameter]
         public Guid TeacherId { get; set; }
@@ -20,14 +34,26 @@ namespace PeerStudy.Components.Courses
         [Parameter]
         public Guid CourseId { get; set; }
 
+        [Parameter]
+        public CourseDetailsModel Course { get; set; }
 
-        public CourseDetails()
-        {
+
+        private bool showCreateMenu;
+        private bool showUploadFileDialog;
+
+        private const string uploadFileControlStyles = "border-radius: 30px; background-color: #F5F5F5; height: 30px;";
         
-        }
+        private string uploadFilesMessage;
+        private bool showUploadFilesMessage;
 
-        protected override void OnInitialized()
+        private IMatFileUploadEntry[] uploadedFiles;
+        private string userEmail;
+        private Color alertColor;
+
+        protected override async Task OnInitializedAsync()
         {
+            userEmail = await AuthService.GetCurrentUserEmailAsync();
+
             //TODO: to be implemented
             //TODO: update additional nav items depending on the user's role
             NavigationMenuService.AddMenuItems(new List<MenuItem> {
@@ -58,6 +84,78 @@ namespace PeerStudy.Components.Courses
                     }
                 });
             NavigationMenuService.NotifyChanged();
+        }
+
+        private void ToggleShowCreateMenu()
+        {
+            showCreateMenu = !showCreateMenu;
+        }
+
+        private void GetUploadedFiles(IMatFileUploadEntry[] files)
+        {
+            uploadedFiles = files;
+        }
+
+        private async Task UploadFiles()
+        {
+            showCreateMenu = false;
+            alertColor = Color.Info;
+            uploadFilesMessage = "Uploading file(s)...";
+            showUploadFilesMessage = true;
+
+            CloseUploadFileDialog();
+
+            await Task.Run(async () => 
+            {
+                var uploadFileModels = await GetCreateResourceModelsAsync();
+                await CourseResourceService.UploadResourcesAsync(uploadFileModels); 
+            });
+
+            uploadedFiles = null;
+            uploadFilesMessage = "Files were successfully uploaded.";
+            alertColor = Color.Success;
+
+            //go back on the main thread
+            StateHasChanged();
+
+            await Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                showUploadFilesMessage = false;
+            });
+        }
+
+        private async Task<List<UploadCourseResourceModel>> GetCreateResourceModelsAsync()
+        {
+            var uploadFileModels = new List<UploadCourseResourceModel>();
+
+            foreach (var file in uploadedFiles)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.WriteToStreamAsync(stream);
+                    uploadFileModels.Add(new UploadCourseResourceModel
+                    {
+                        FileContent = stream.ToArray(),
+                        Name = file.Name,
+                        OwnerEmail = userEmail,
+                        Type = file.Type,
+                        CourseId = CourseId
+                    });
+                }
+            }
+
+            return uploadFileModels;
+        }
+
+        private void CloseUploadFileDialog()
+        {
+            showUploadFileDialog = false;
+        }
+
+        private bool IsUploadFileButtonEnabled()
+        {
+            return uploadedFiles != null;
         }
     }
 }

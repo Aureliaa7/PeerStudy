@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using PeerStudy.Core.Models.Resources;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Core.Interfaces.Services
@@ -7,6 +7,6 @@ namespace PeerStudy.Core.Interfaces.Services
     {
         Task<string> CreateFolderAsync(string folderName, string parent = null);
 
-        Task<string> UploadFileAsync(string parentId, Stream file, string fileName);
+        Task<string> UploadFileAsync(UploadFileModel model);
     }
 }
