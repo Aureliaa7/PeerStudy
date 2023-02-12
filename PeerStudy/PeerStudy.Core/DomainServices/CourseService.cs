@@ -189,6 +189,18 @@ namespace PeerStudy.Core.DomainServices
 
             return courseDetails;
         }
+
+        public async Task<CourseDetailsModel> GetDetailsAsync(Guid courseId)
+        {
+            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId, includeProperties: nameof(Teacher));
+
+            if (course == null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            return MapToCourseDetails(course);
+        }
     }
 }
  

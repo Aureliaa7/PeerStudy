@@ -1,0 +1,36 @@
+﻿a:hover {
+    text-decoration: none;
+}
+
+.course-resource-container:hover {
+    background-color: #E0E0E0;
+}
+
+img {
+    width: 30px;
+    height: 30px;
+}
+
+.file-name {
+    display: inline-block;
+}
+
+.created-at {
+    float: right;
+}
+
+@media (max-width: 570px) {
+    .panel-header {
+        display: none;
+    }
+}
+
+.course-resource-container {
+    width: 50%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+a {
+    float: left;
+}

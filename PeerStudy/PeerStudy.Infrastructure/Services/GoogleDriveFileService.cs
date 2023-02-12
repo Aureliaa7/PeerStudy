@@ -1,8 +1,11 @@
 ﻿using Google.Apis.Drive.v3;
+using Google.Apis.Requests;
 using PeerStudy.Core.Interfaces.Services;
+using PeerStudy.Core.Models.GoogleDriveModels;
 using PeerStudy.Core.Models.Resources;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using DriveFile = Google.Apis.Drive.v3.Data.File;
@@ -42,7 +45,7 @@ namespace PeerStudy.Infrastructure.Services
             return file.Id;
         }
 
-        public async Task<string> UploadFileAsync(UploadFileModel model)
+        public async Task<FileDetailsModel> UploadFileAsync(UploadFileModel model)
         {
             using (var ms = new MemoryStream(model.FileContent))
             {
@@ -52,7 +55,7 @@ namespace PeerStudy.Infrastructure.Services
                 driveFile.Parents = new string[] { model.ParentFolderId };
 
                 var request = driveService.Files.Create(driveFile, ms, fileMimeType);
-                request.Fields = "id";
+                request.Fields = "*";
 
                 var response = await request.UploadAsync();
                 if (response.Status != Google.Apis.Upload.UploadStatus.Completed)
@@ -63,8 +66,60 @@ namespace PeerStudy.Infrastructure.Services
                 //Note: add app email as writer for validation purposes
                 await permissionService.SetPermissionsAsync(request.ResponseBody.Id, new List<string> { model.OwnerEmail, configuration.AppEmail }, writerRole);
 
-                return request.ResponseBody.Id;
+                return new FileDetailsModel
+                {
+                    FileDriveId = request.ResponseBody.Id,
+                    IconLink = request.ResponseBody.IconLink,
+                    Name = request.ResponseBody.Name,
+                    WebViewLink = request.ResponseBody.WebViewLink
+                };
             }
+        }
+
+        public async Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds)
+        {
+
+            var fileDetailsPairs = new Dictionary<string, FileDetailsModel>();
+
+            BatchRequest.OnResponse<DriveFile> callback = delegate (
+                   DriveFile fileDetails,
+                   RequestError error,
+                   int index,
+                   HttpResponseMessage message)
+            {
+                if (error != null)
+                {
+                    // TODO: log the err
+                }
+                else
+                {
+                    fileDetailsPairs.Add(fileDetails.Id, MapToFileDetailsModel(fileDetails));
+                }
+            };
+
+
+            var batchRequest = new BatchRequest(driveService);
+            foreach (var fileId in fileIds)
+            {
+                var request = driveService.Files.Get(fileId);
+                request.Fields = "*"; //TODO: request only the needed props
+                batchRequest.Queue(request, callback);
+            }
+
+            await batchRequest.ExecuteAsync();
+
+            return fileDetailsPairs;
+        }
+
+        private FileDetailsModel MapToFileDetailsModel(DriveFile file)
+        {
+            return new FileDetailsModel
+            {
+                FileDriveId = file.Id,
+                Name = file.Name,
+                WebViewLink = file.WebViewLink,
+                IconLink = file.IconLink
+            };
         }
     }
 }

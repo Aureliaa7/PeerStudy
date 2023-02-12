@@ -1,7 +1,9 @@
 ﻿using PeerStudy.Core.DomainEntities;
+using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
+using PeerStudy.Core.Models.GoogleDriveModels;
 using PeerStudy.Core.Models.Resources;
 using System;
 using System.Collections.Generic;
@@ -21,25 +23,48 @@ namespace PeerStudy.Core.DomainServices
             this.fileService = fileService;
         }
 
+        public async Task<List<CourseResourceDetailsModel>> GetAsync(Guid courseId)
+        {
+            bool courseExist = await unitOfWork.CoursesRepository.ExistsAsync(x => x.Id == courseId);
+            if (!courseExist)
+            {
+                throw new EntityNotFoundException($"Cannot retrieve resources for course with id {courseId}. The course does not exist...");
+            }
+
+            var resources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => x.CourseId == courseId,
+                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
+                .ToList();
+
+            var fileIds = resources.Select(x => x.DriveFileId).ToList();
+
+            var fileDetails = await fileService.GetFilesDetailsAsync(fileIds);
+
+            return MapToCourseResourceDetailsModels(resources, fileDetails);
+        }
+
         public async Task<List<CourseResourceDetailsModel>> UploadResourcesAsync(List<UploadCourseResourceModel> resources)
         {
            var updatedResourcesModels = await GetUpdatedResourceModelsAsync(resources);
 
             var courseResources = new List<CourseResource>();   
 
+            var uploadedFilesDetails = new Dictionary<string, FileDetailsModel>();
+
             foreach (var resource in updatedResourcesModels)
             {
                 try
                 {
-                    string fileId = await fileService.UploadFileAsync(resource);
+                    var googleDriveFildeDetails = await fileService.UploadFileAsync(resource);
+                    var createdAt = DateTime.UtcNow;
                     courseResources.Add(new CourseResource
                     {
-                        CreatedAt = DateTime.UtcNow,
+                        CreatedAt = createdAt,
                         CourseId = resource.CourseId,
-                        DriveFileId = fileId,
+                        DriveFileId = googleDriveFildeDetails.FileDriveId,
                         Title = resource.Name,
                         Type = Enums.ResourceType.File
                     });
+                    uploadedFilesDetails.Add(googleDriveFildeDetails.FileDriveId, googleDriveFildeDetails);
                 }
                 catch (Exception ex)
                 {
@@ -51,7 +76,7 @@ namespace PeerStudy.Core.DomainServices
             var savedResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(courseResources);
             await unitOfWork.SaveChangesAsync();
 
-            return MapToCourseResourceDetailsModels(savedResources);
+            return MapToCourseResourceDetailsModels(savedResources, uploadedFilesDetails);
         }
 
         private async Task<List<UploadCourseResourceModel>> GetUpdatedResourceModelsAsync(List<UploadCourseResourceModel> resources)
@@ -77,17 +102,25 @@ namespace PeerStudy.Core.DomainServices
             return resources;
         }
 
-        private List<CourseResourceDetailsModel> MapToCourseResourceDetailsModels(List<CourseResource> resources)
+        private List<CourseResourceDetailsModel> MapToCourseResourceDetailsModels(List<CourseResource> resources, IDictionary<string, FileDetailsModel> driveFileDetails)
         {
             var resourcesModels = new List<CourseResourceDetailsModel>();
             foreach (var resource in resources)
             {
-                resourcesModels.Add(new CourseResourceDetailsModel
+                if (driveFileDetails.TryGetValue(resource.DriveFileId, out var fileDriveDetails))
                 {
-                    CreatedAt = resource.CreatedAt,
-                    Id = resource.Id,
-                    Title = resource.Title
-                });
+                    resourcesModels.Add(new CourseResourceDetailsModel
+                    {
+                        CreatedAt = resource.CreatedAt,
+                        Id = resource.Id,
+                        Title = resource.Title,
+                        IconLink = fileDriveDetails.IconLink,
+                        TeacherName = $"{resource.Course?.Teacher?.FirstName} {resource.Course?.Teacher?.LastName}",
+                        WebViewLink = fileDriveDetails.WebViewLink,
+                        FileDriveId = fileDriveDetails.FileDriveId,
+                        TeacherId = resource.Course.TeacherId
+                    });
+                }
             }
 
             return resourcesModels;

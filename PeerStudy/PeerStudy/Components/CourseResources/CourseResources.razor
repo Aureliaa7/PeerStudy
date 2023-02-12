@@ -1,0 +1,23 @@
+﻿@if (IsLoading)
+{
+    <div class="center-elements">
+        <MatProgressCircle Indeterminate="@IsLoading" Size="MatProgressCircleSize.Large" />
+    </div>
+}
+else if (!IsLoading && (Resources == null || !Resources.Any()))
+{
+    <NotFound Message="There are no resources yet..."></NotFound>
+}
+else
+{
+    <div class="resources-container">
+        @foreach (var resource in Resources)
+        {
+            <div class="resource">
+                <CourseResource Expanded=false
+                        ResourceDetails=resource>
+                </CourseResource>
+            </div>
+        }
+    </div>
+}

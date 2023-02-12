@@ -1,4 +1,6 @@
-﻿using PeerStudy.Core.Models.Resources;
+﻿using PeerStudy.Core.Models.GoogleDriveModels;
+using PeerStudy.Core.Models.Resources;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Core.Interfaces.Services
@@ -7,6 +9,8 @@ namespace PeerStudy.Core.Interfaces.Services
     {
         Task<string> CreateFolderAsync(string folderName, string parent = null);
 
-        Task<string> UploadFileAsync(UploadFileModel model);
+        Task<FileDetailsModel> UploadFileAsync(UploadFileModel model);
+
+        Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds);
     }
 }

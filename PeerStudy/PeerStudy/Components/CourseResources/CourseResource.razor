@@ -1,0 +1,26 @@
+﻿<div class="course-resource-container center-items">
+    <MatAccordion>
+        <MatExpansionPanel @bind-Expanded="Expanded">
+            <MatExpansionPanelSummary Style="padding: 10px;">
+                <MatExpansionPanelHeader>
+                    <div class="panel-header">
+                        @ResourceDetails.TeacherName uploaded:
+                    </div>
+                </MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                    @ResourceDetails.Title
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                @if (ResourceDetails != null)
+                {
+                    <a href="@ResourceDetails.WebViewLink" target="_blank">
+                        <img src="@ResourceDetails.IconLink" />
+                        <p class="file-name">@ResourceDetails.Title</p>
+                    </a>
+                    <div class="created-at">@ResourceDetails.CreatedAt</div>
+                }
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+    </MatAccordion>
+</div>

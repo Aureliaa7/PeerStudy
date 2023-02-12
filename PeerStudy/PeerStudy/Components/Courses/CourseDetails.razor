@@ -1,7 +1,14 @@
-﻿@page "/{teacherId:guid}/courses/{courseId:guid}"
+﻿@using PeerStudy.Core.Models.Resources
+@using PeerStudy.Components.CourseResources
+
+@page "/{teacherId:guid}/courses/{courseTitle}/{courseId:guid}"
 @page "/{studentId:guid}/my-courses/{courseId:guid}"
 @attribute [Authorize]
+@inherits PeerStudyComponentBase<CourseResourceDetailsModel>
 
+<AuthorizeView>
+    <div class="course-header">@CourseTitle</div>
+</AuthorizeView>
 
 <AuthorizeView Roles="Teacher">
     <div>
@@ -38,5 +45,10 @@
     <Alert Color="@alertColor" @bind-Visible="showUploadFilesMessage">
         <AlertDescription>@uploadFilesMessage</AlertDescription>
     </Alert>
+</AuthorizeView>
 
+<AuthorizeView>
+    <CourseResources Resources="data"
+                     IsLoading="isLoading">
+    </CourseResources>
 </AuthorizeView>

@@ -2,7 +2,6 @@
 using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
-using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.Resources;
 using PeerStudy.Models;
 using PeerStudy.Services.Interfaces;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class CourseDetails
+    public partial class CourseDetails : PeerStudyComponentBase<CourseResourceDetailsModel>
     {
         [Inject]
         private INavigationMenuService NavigationMenuService { get; set; }  
@@ -35,8 +34,7 @@ namespace PeerStudy.Components.Courses
         public Guid CourseId { get; set; }
 
         [Parameter]
-        public CourseDetailsModel Course { get; set; }
-
+        public string CourseTitle { get; set; }
 
         private bool showCreateMenu;
         private bool showUploadFileDialog;
@@ -50,8 +48,15 @@ namespace PeerStudy.Components.Courses
         private string userEmail;
         private Color alertColor;
 
+        protected override Task<List<CourseResourceDetailsModel>> GetDataAsync()
+        {
+            return CourseResourceService.GetAsync(CourseId);
+        }
+
         protected override async Task OnInitializedAsync()
         {
+            await InitializeDataAsync();
+
             userEmail = await AuthService.GetCurrentUserEmailAsync();
 
             //TODO: to be implemented
@@ -120,7 +125,7 @@ namespace PeerStudy.Components.Courses
 
             await Task.Run(async () =>
             {
-                await Task.Delay(4000);
+                await Task.Delay(3500);
                 showUploadFilesMessage = false;
             });
         }

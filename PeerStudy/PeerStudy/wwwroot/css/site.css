@@ -72,6 +72,17 @@ a, .btn-link {
 }
 
 
+body {
+    overflow: scroll;
+    overflow-x: hidden;
+    width: 100vw;
+}
+
+body::-webkit-scrollbar {
+    width: 0.25em;
+    background-color: grey;
+}
+
 /* custom styling rules applied globally - MatBlazor */
 .alert {
     border-radius: 50px;
