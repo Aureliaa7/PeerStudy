@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Components\Teachers\" />
-    <Folder Include="Components\Students\" />
   </ItemGroup>
 
 </Project>

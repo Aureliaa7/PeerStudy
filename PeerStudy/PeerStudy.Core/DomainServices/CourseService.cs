@@ -5,6 +5,7 @@ using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Courses;
+using PeerStudy.Core.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,6 +201,24 @@ namespace PeerStudy.Core.DomainServices
             }
 
             return MapToCourseDetails(course);
+        }
+
+        public async Task<List<EnrolledStudentModel>> GetStudentsAsync(Guid courseId)
+        {
+            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId, includeProperties: $"{nameof(Course.CourseEnrollments)}.{nameof(StudentCourse.Student)}");  
+            if (course == null)
+            {
+                throw new EntityNotFoundException($"Course with id: {courseId} was not found!");
+            }
+
+            var students = course.CourseEnrollments.Select(x => new EnrolledStudentModel
+            {
+                FirstName = x.Student.FirstName,
+                LastName = x.Student.LastName
+            })
+            .ToList();
+
+            return students;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.Courses;
+using PeerStudy.Core.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,5 +27,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<List<CourseDetailsModel>> GetCoursesForStudentAsync(Guid studentId, CourseStatus status);
 
         Task<CourseDetailsModel> GetDetailsAsync(Guid courseId);
+
+        Task<List<EnrolledStudentModel>> GetStudentsAsync(Guid courseId);
     }
 }

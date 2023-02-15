@@ -1,0 +1,29 @@
+﻿@using PeerStudy.Core.Models.Users
+
+@page "/courses/{courseId:guid}/students"
+@inherits PeerStudyComponentBase<EnrolledStudentModel>
+@attribute [Authorize(Roles = "Teacher")]
+
+<h3>Enrolled students</h3>
+
+@if (isLoading)
+{
+    <div class="center-elements">
+        <MatProgressCircle Indeterminate="@isLoading" Size="MatProgressCircleSize.Large" />
+    </div>
+}
+else if (!isLoading && (data == null || !data.Any()))
+{
+    <NotFound Message="@noEnrolledStudentsMessage"></NotFound>
+}
+else
+{
+    <div class="students-container">
+        @foreach (var student in data)
+        {
+            <div class="student-card">
+                @student.FirstName @student.LastName
+            </div>
+        }
+    </div>
+}

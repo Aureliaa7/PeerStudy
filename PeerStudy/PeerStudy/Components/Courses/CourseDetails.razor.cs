@@ -69,7 +69,7 @@ namespace PeerStudy.Components.Courses
                     },
                     new MenuItem
                     {
-                        Href = "#",
+                        Href = $"/courses/{CourseId}/students",
                         Name = "Students"
                     },
                     new MenuItem

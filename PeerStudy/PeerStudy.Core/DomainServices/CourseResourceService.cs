@@ -73,6 +73,8 @@ namespace PeerStudy.Core.DomainServices
                 }
             }
 
+            //TODO: give students read permissions
+
             var savedResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(courseResources);
             await unitOfWork.SaveChangesAsync();
 
