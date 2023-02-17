@@ -1,7 +1,7 @@
 ﻿@using PeerStudy.Core.Models.CourseEnrollments
 
-@page "/{teacherId:guid}/courses/{courseId:guid}/pending-requests"
-@inherits PeerStudyComponentBase<CourseEnrollmentRequestDetailsModel>
+@page "/{teacherId:guid}/courses/{courseTitle}/{courseId:guid}/pending-requests"
+@inherits CourseEnrollmentRequestBase
 @attribute [Authorize(Roles = "Teacher")]
 
 <CourseEnrollmentRequest Requests="@data"
@@ -9,6 +9,7 @@
                          IsLoading="isLoading"
                          NoRequestsMessage="@noPendingRequestsMessage"
                          AllowMultipleSelection=true
+                         CourseTitle="@CourseTitle"
                          OnApproveRequests="ApproveRequests"
                          OnRejectRequests="RejectRequests">
 </CourseEnrollmentRequest>

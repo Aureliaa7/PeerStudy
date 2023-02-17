@@ -145,11 +145,11 @@ namespace PeerStudy.Components.Courses
             // redirect the user to specific page
             if (isTeacher && courseDetails.TeacherId == currentUserId)
             {
-                NavigationManager.NavigateTo($"/{currentUserId}/courses/{courseDetails.Title}/{courseDetails.Id}");
+                NavigationManager.NavigateTo($"/{currentUserId}/courses/{courseDetails.Title}/{courseDetails.Id}/resources");
             }
             else if (isStudent)
             {
-                NavigationManager.NavigateTo($"/{currentUserId}/my-courses/{courseDetails.Id}");
+                NavigationManager.NavigateTo($"/{currentUserId}/my-courses/{courseDetails.Id}/resources");
             }
             else
             {

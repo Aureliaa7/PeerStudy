@@ -1,8 +1,11 @@
-﻿@using PeerStudy.Core.Models.Users
+﻿@using PeerStudy.Components.Courses
+@using PeerStudy.Core.Models.Users
 
-@page "/courses/{courseId:guid}/students"
+@page "/courses/{courseTitle}/{courseId:guid}/students"
 @inherits PeerStudyComponentBase<EnrolledStudentModel>
 @attribute [Authorize(Roles = "Teacher")]
+
+<CourseHeader title="@CourseTitle"></CourseHeader>
 
 <h3>Enrolled students</h3>
 

@@ -1,25 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
-using PeerStudy.Core.Enums;
-using PeerStudy.Core.Interfaces.DomainServices;
+﻿using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.CourseEnrollments;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Components.CourseEnrollmentRequests
 {
-    public partial class PendingCourseEnrollmentRequest : PeerStudyComponentBase<CourseEnrollmentRequestDetailsModel>
+    public partial class PendingCourseEnrollmentRequest : CourseEnrollmentRequestBase
     {
-        [Inject]
-        public ICourseEnrollmentService CourseEnrollmentService { get; set; }
-
-        [Parameter]
-        public Guid TeacherId { get; set; }
-
-        [Parameter]
-        public Guid CourseId { get; set; }
-
         private bool displayChangeRequestResult;
         private string changeRequestStatusResult;
         private const string noPendingRequestsMessage = "There are no pending requests...";

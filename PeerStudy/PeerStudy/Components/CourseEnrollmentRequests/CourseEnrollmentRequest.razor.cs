@@ -22,6 +22,9 @@ namespace PeerStudy.Components.CourseEnrollmentRequests
         public string NoRequestsMessage { get; set; }
 
         [Parameter]
+        public string CourseTitle { get; set; }
+
+        [Parameter]
         public bool AllowMultipleSelection
         {
             get 

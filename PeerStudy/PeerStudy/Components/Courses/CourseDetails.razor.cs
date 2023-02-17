@@ -64,27 +64,22 @@ namespace PeerStudy.Components.Courses
             NavigationMenuService.AddMenuItems(new List<MenuItem> {
                   new MenuItem
                     {
-                        Href = "#",
+                        Href = $"/{TeacherId}/courses/{CourseTitle}/{CourseId}/resources",
                         Name = "Resources"
                     },
                     new MenuItem
                     {
-                        Href = $"/courses/{CourseId}/students",
+                        Href = $"/courses/{CourseTitle}/{CourseId}/students",
                         Name = "Students"
                     },
                     new MenuItem
                     {
-                        Href = "#",
-                        Name = "Study groups"
-                    },
-                    new MenuItem
-                    {
-                        Href = $"/{TeacherId}/courses/{CourseId}/pending-requests",
+                        Href = $"/{TeacherId}/courses/{CourseTitle}/{CourseId}/pending-requests",
                         Name = "Pending requests"
                     },
                     new MenuItem
                     {
-                        Href = $"/{TeacherId}/courses/{CourseId}/rejected-requests",
+                        Href = $"/{TeacherId}/courses/{CourseTitle}/{CourseId}/rejected-requests",
                         Name = "Rejected requests"
                     }
                 });

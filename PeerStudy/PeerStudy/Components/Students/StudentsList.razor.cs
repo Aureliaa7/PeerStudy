@@ -12,6 +12,9 @@ namespace PeerStudy.Components.Students
         [Parameter]
         public Guid CourseId { get; set; }
 
+        [Parameter]
+        public string CourseTitle { get; set; }
+
         [Inject]
         public ICourseService CourseService { get; set; }
 
