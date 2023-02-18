@@ -6,7 +6,9 @@
 }
 else if (!IsLoading && (Resources == null || !Resources.Any()))
 {
-    <NotFound Message="There are no resources yet..."></NotFound>
+    <NotFound Message="There are no resources yet..."
+          ShowCloseButton=true>
+    </NotFound>
 }
 else
 {
@@ -15,7 +17,8 @@ else
         {
             <div class="resource">
                 <CourseResource Expanded=false
-                        ResourceDetails=resource>
+                        ResourceDetails="resource"
+                        OnDeleteResource="HandleDeleteResource">
                 </CourseResource>
             </div>
         }

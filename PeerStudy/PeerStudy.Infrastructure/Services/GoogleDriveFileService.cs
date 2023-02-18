@@ -121,5 +121,11 @@ namespace PeerStudy.Infrastructure.Services
                 IconLink = file.IconLink
             };
         }
+
+        public async Task DeleteAsync(string resourceId)
+        {
+            var deleteRequest = driveService.Files.Delete(resourceId);
+            await deleteRequest.ExecuteAsync();
+        }
     }
 }

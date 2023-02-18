@@ -1,12 +1,19 @@
 ﻿<div class="container">
     <Alert Color="Color.Info" @bind-Visible="@isVisible">
         <AlertDescription>@Message</AlertDescription>
+        @if (ShowCloseButton)
+        {
+            <CloseButton />
+        }
     </Alert>
 </div>
 
 @code {
     [Parameter]
     public string Message { get; set; }
+
+    [Parameter]
+    public bool ShowCloseButton { get; set; }
 
     private bool isVisible = true;
 }

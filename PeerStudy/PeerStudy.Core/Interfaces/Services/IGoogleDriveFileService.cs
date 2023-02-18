@@ -12,5 +12,7 @@ namespace PeerStudy.Core.Interfaces.Services
         Task<FileDetailsModel> UploadFileAsync(UploadFileModel model);
 
         Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds);
+
+        Task DeleteAsync(string resourceId);
     }
 }

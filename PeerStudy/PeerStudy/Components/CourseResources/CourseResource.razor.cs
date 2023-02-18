@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models.Resources;
+using System;
+using System.Threading.Tasks;
 
 namespace PeerStudy.Components.CourseResources
 {
@@ -10,5 +12,13 @@ namespace PeerStudy.Components.CourseResources
 
         [Parameter]
         public CourseResourceDetailsModel ResourceDetails { get; set; }
+
+        [Parameter]
+        public EventCallback<Guid> OnDeleteResource { get; set; }   
+
+        private async Task HandleDeleteResource()
+        {
+            await OnDeleteResource.InvokeAsync(ResourceDetails.Id);
+        }
     }
 }

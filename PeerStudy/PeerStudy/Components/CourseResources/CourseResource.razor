@@ -9,16 +9,24 @@
                 </MatExpansionPanelHeader>
                 <MatExpansionPanelSubHeader>
                     @ResourceDetails.Title
+
                 </MatExpansionPanelSubHeader>
             </MatExpansionPanelSummary>
             <MatExpansionPanelDetails>
                 @if (ResourceDetails != null)
                 {
-                    <a href="@ResourceDetails.WebViewLink" target="_blank">
-                        <img src="@ResourceDetails.IconLink" />
-                        <p class="file-name">@ResourceDetails.Title</p>
-                    </a>
-                    <div class="created-at">@ResourceDetails.CreatedAt</div>
+                    <div class="details-container">
+                        <a href="@ResourceDetails.WebViewLink" target="_blank">
+                            <img src="@ResourceDetails.IconLink" />
+                            <p class="file-name">@ResourceDetails.Title</p>
+                        </a>
+                        <div class="created-at">@ResourceDetails.CreatedAt</div>
+                    </div>
+                    <AuthorizeView Roles="Teacher">
+                        <div class="delete-button">
+                            <MatButton Icon="@MatIconNames.Delete" OnClick="HandleDeleteResource"></MatButton>
+                        </div>
+                    </AuthorizeView>
                 }
             </MatExpansionPanelDetails>
         </MatExpansionPanel>

@@ -23,6 +23,19 @@ namespace PeerStudy.Core.DomainServices
             this.fileService = fileService;
         }
 
+        public async Task DeleteAsync(Guid resourceId)
+        {
+            var resource = await unitOfWork.CourseResourcesRepository.GetFirstOrDefaultAsync(x => x.Id == resourceId);
+            if (resource == null)
+            {
+                throw new EntityNotFoundException($"Resource with id {resourceId} was not found!");
+            }
+
+            await fileService.DeleteAsync(resource.DriveFileId);
+            await unitOfWork.CourseResourcesRepository.RemoveAsync(resourceId);
+            await unitOfWork.SaveChangesAsync();
+        }
+
         public async Task<List<CourseResourceDetailsModel>> GetAsync(Guid courseId)
         {
             bool courseExist = await unitOfWork.CoursesRepository.ExistsAsync(x => x.Id == courseId);
@@ -75,8 +88,14 @@ namespace PeerStudy.Core.DomainServices
 
             //TODO: give students read permissions
 
-            var savedResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(courseResources);
+            var createdResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(courseResources);
             await unitOfWork.SaveChangesAsync();
+
+            var createdResourcesIds = createdResources.Select(x => x.Id).ToList();
+
+            var savedResources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => createdResourcesIds.Contains(x.Id),
+                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
+                .ToList();
 
             return MapToCourseResourceDetailsModels(savedResources, uploadedFilesDetails);
         }

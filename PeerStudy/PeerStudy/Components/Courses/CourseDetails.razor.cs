@@ -8,6 +8,7 @@ using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
@@ -41,13 +42,15 @@ namespace PeerStudy.Components.Courses
 
         private const string uploadFileControlStyles = "border-radius: 30px; background-color: #F5F5F5; height: 30px;";
         
-        private string uploadFilesMessage;
-        private bool showUploadFilesMessage;
+        private string alertMessage;
+        private bool showMessage;
 
         private IMatFileUploadEntry[] uploadedFiles;
         private string userEmail;
         private Color alertColor;
 
+        private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
+      
         protected override Task<List<CourseResourceDetailsModel>> GetDataAsync()
         {
             return CourseResourceService.GetAsync(CourseId);
@@ -55,12 +58,6 @@ namespace PeerStudy.Components.Courses
 
         protected override async Task OnInitializedAsync()
         {
-            await InitializeDataAsync();
-
-            userEmail = await AuthService.GetCurrentUserEmailAsync();
-
-            //TODO: to be implemented
-            //TODO: update additional nav items depending on the user's role
             NavigationMenuService.AddMenuItems(new List<MenuItem> {
                   new MenuItem
                     {
@@ -84,6 +81,13 @@ namespace PeerStudy.Components.Courses
                     }
                 });
             NavigationMenuService.NotifyChanged();
+            await InitializeDataAsync();
+
+            userEmail = await AuthService.GetCurrentUserEmailAsync();
+
+            //TODO: to be implemented
+            //TODO: update additional nav items depending on the user's role
+            
         }
 
         private void ToggleShowCreateMenu()
@@ -100,19 +104,20 @@ namespace PeerStudy.Components.Courses
         {
             showCreateMenu = false;
             alertColor = Color.Info;
-            uploadFilesMessage = "Uploading file(s)...";
-            showUploadFilesMessage = true;
+            alertMessage = "Uploading file(s)...";
+            showMessage = true;
 
             CloseUploadFileDialog();
 
             await Task.Run(async () => 
             {
                 var uploadFileModels = await GetCreateResourceModelsAsync();
-                await CourseResourceService.UploadResourcesAsync(uploadFileModels); 
+                var createdResources = await CourseResourceService.UploadResourcesAsync(uploadFileModels); 
+                data.AddRange(createdResources);
             });
 
             uploadedFiles = null;
-            uploadFilesMessage = "Files were successfully uploaded.";
+            alertMessage = "Files were successfully uploaded.";
             alertColor = Color.Success;
 
             //go back on the main thread
@@ -121,7 +126,7 @@ namespace PeerStudy.Components.Courses
             await Task.Run(async () =>
             {
                 await Task.Delay(3500);
-                showUploadFilesMessage = false;
+                showMessage = false;
             });
         }
 
@@ -156,6 +161,26 @@ namespace PeerStudy.Components.Courses
         private bool IsUploadFileButtonEnabled()
         {
             return uploadedFiles != null;
+        }
+
+        private async Task DeleteResource(Guid resourceId)
+        {
+            alertColor = Color.Info;
+            showMessage = true;
+            alertMessage = "Deleting resource...";
+
+            try
+            {
+                await CourseResourceService.DeleteAsync(resourceId);
+                showMessage = false;
+                data = data.Where(x => x.Id != resourceId).ToList();
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                alertColor = Color.Danger;
+                alertMessage = deleteResourceErrorMessage;
+            }
         }
     }
 }

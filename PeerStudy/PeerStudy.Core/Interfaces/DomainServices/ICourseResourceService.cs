@@ -10,5 +10,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<List<CourseResourceDetailsModel>> UploadResourcesAsync(List<UploadCourseResourceModel> resources);
 
         Task<List<CourseResourceDetailsModel>> GetAsync(Guid courseId);
+
+        Task DeleteAsync(Guid resourceId);
     }
 }

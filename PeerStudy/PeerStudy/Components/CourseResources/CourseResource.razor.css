@@ -16,7 +16,7 @@ img {
 }
 
 .created-at {
-    float: right;
+    grid-column: 2;
 }
 
 @media (max-width: 570px) {
@@ -32,5 +32,14 @@ img {
 }
 
 a {
-    float: left;
+    grid-column: 1;
+}
+
+.delete-button {
+    float: right;
+}
+
+.details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }

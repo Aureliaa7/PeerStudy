@@ -40,13 +40,15 @@
         </MatDialogActions>
     </MatDialog>
 
-    <Alert Color="@alertColor" @bind-Visible="showUploadFilesMessage">
-        <AlertDescription>@uploadFilesMessage</AlertDescription>
+    <Alert Color="@alertColor" @bind-Visible="showMessage">
+        <AlertDescription>@alertMessage</AlertDescription>
+        <CloseButton />
     </Alert>
 </AuthorizeView>
 
 <AuthorizeView>
     <CourseResources Resources="data"
-                     IsLoading="isLoading">
+                     IsLoading="isLoading"
+                     OnDeleteResource="@DeleteResource">
     </CourseResources>
 </AuthorizeView>
