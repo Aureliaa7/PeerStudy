@@ -24,6 +24,9 @@ namespace PeerStudy.Components.Courses
         [Inject]
         private ICourseResourceService CourseResourceService { get; set; } 
 
+        [Inject]
+        private IStudyGroupService StudyGroupService { get; set; }
+
 
         [Parameter]
         public Guid TeacherId { get; set; }
@@ -43,14 +46,17 @@ namespace PeerStudy.Components.Courses
         private const string uploadFileControlStyles = "border-radius: 30px; background-color: #F5F5F5; height: 30px;";
         
         private string alertMessage;
-        private bool showMessage;
+        private bool showAlertMessage;
 
         private IMatFileUploadEntry[] uploadedFiles;
         private string userEmail;
         private Color alertColor;
 
+        private bool showCreateStudyGroupsDialog;
+
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
-      
+        private int[] studyGroupsNoMembers = new int[3] { 3, 4, 5 };
+
         protected override Task<List<CourseResourceDetailsModel>> GetDataAsync()
         {
             return CourseResourceService.GetAsync(CourseId);
@@ -100,12 +106,21 @@ namespace PeerStudy.Components.Courses
             uploadedFiles = files;
         }
 
-        private async Task UploadFiles()
+        private void ShowUploadFileDialog()
         {
             showCreateMenu = false;
-            alertColor = Color.Info;
-            alertMessage = "Uploading file(s)...";
-            showMessage = true;
+            showUploadFileDialog = true;
+        }
+
+        private void ShowCreateGroupsDialog()
+        {
+            showCreateMenu = false;
+            showCreateStudyGroupsDialog = true;
+        }
+
+        private async Task UploadFiles()
+        {
+            ShowAlert(Color.Info, "Uploading file(s)...");
 
             CloseUploadFileDialog();
 
@@ -117,8 +132,8 @@ namespace PeerStudy.Components.Courses
             });
 
             uploadedFiles = null;
-            alertMessage = "Files were successfully uploaded.";
-            alertColor = Color.Success;
+
+            ShowAlert(Color.Success, "Files were successfully uploaded.");
 
             //go back on the main thread
             StateHasChanged();
@@ -126,7 +141,7 @@ namespace PeerStudy.Components.Courses
             await Task.Run(async () =>
             {
                 await Task.Delay(3500);
-                showMessage = false;
+                showAlertMessage = false;
             });
         }
 
@@ -165,22 +180,48 @@ namespace PeerStudy.Components.Courses
 
         private async Task DeleteResource(Guid resourceId)
         {
-            alertColor = Color.Info;
-            showMessage = true;
-            alertMessage = "Deleting resource...";
+            ShowAlert(Color.Info, "Deleting resource...");
 
             try
             {
                 await CourseResourceService.DeleteAsync(resourceId);
-                showMessage = false;
+                showAlertMessage = false;
                 data = data.Where(x => x.Id != resourceId).ToList();
                 StateHasChanged();
             }
             catch (Exception ex)
             {
-                alertColor = Color.Danger;
-                alertMessage = deleteResourceErrorMessage;
+                ShowAlert(Color.Danger, deleteResourceErrorMessage);
             }
+        }
+
+        private void CancelCreateStudyGroups()
+        {
+            showCreateStudyGroupsDialog = false;
+        }
+
+        private async Task CreateGroups(string noStudentsPerGroup)
+        {
+            showCreateStudyGroupsDialog = false;
+            ShowAlert(Color.Info, "Creating study groups...");
+
+            try
+            {
+                await StudyGroupService.CreateStudyGroupsAsync(currentUserId, CourseId, Convert.ToInt16(noStudentsPerGroup));
+                ShowAlert(Color.Success, "Study groups were successfully created.");
+            }
+            catch (Exception ex)
+            {
+                ShowAlert(Color.Danger, "An error occurred while creating the study groups...");
+            }
+        }
+
+        private void ShowAlert(Color alertColor, string message)
+        {
+            this.alertColor = alertColor;
+            this.alertMessage = message;
+
+            showAlertMessage = true;
         }
     }
 }

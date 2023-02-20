@@ -16,7 +16,9 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<StudentCourse> StudentCourses { get; set; }
 
-        public DbSet<CourseResource> CourseResources { get; set;}
+        public DbSet<CourseResource> CourseResources { get; set; }
+
+        public DbSet<StudyGroup> StudyGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +31,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
         {
             new UserConfiguration().Configure(modelBuilder.Entity<User>());
             new CourseConfiguration().Configure(modelBuilder.Entity<Course>());
+            new StudentStudyGroupConfiguration().Configure(modelBuilder.Entity<StudentStudyGroup>());
         }
     }
 }

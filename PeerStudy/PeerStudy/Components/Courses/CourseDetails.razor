@@ -1,4 +1,5 @@
-﻿@using PeerStudy.Core.Models.Resources
+﻿@using PeerStudy.Components.StudyGroups
+@using PeerStudy.Core.Models.Resources
 @using PeerStudy.Components.CourseResources
 
 @page "/{teacherId:guid}/courses/{courseTitle}/{courseId:guid}/resources"
@@ -17,8 +18,8 @@
         @if (showCreateMenu)
         {
             <div class="create-menu">
-                <MatButton Style="display: block;" OnClick="@(() => showUploadFileDialog = true)">Upload file(s)</MatButton>
-                <MatButton Style="display: block; width:130px;">Create study groups</MatButton>
+                <MatButton Style="display: block;" OnClick="@ShowUploadFileDialog">Upload file(s)</MatButton>
+                <MatButton Style="display: block; width:130px;" OnClick="@ShowCreateGroupsDialog">Create study groups</MatButton>
             </div>
         }
     </div>
@@ -40,7 +41,13 @@
         </MatDialogActions>
     </MatDialog>
 
-    <Alert Color="@alertColor" @bind-Visible="showMessage">
+    <CreateStudyGroups IsVisible="showCreateStudyGroupsDialog"
+                       DropDownItems="studyGroupsNoMembers"
+                       OnCancel="CancelCreateStudyGroups"
+                       OnConfirm="CreateGroups">
+    </CreateStudyGroups>
+
+    <Alert Color="@alertColor" @bind-Visible="showAlertMessage">
         <AlertDescription>@alertMessage</AlertDescription>
         <CloseButton />
     </Alert>

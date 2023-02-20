@@ -7,8 +7,11 @@ namespace PeerStudy.Core.DomainEntities
         public Student()
         {
             CourseEnrollments = new HashSet<StudentCourse>();
+            StudentStudyGroups = new HashSet<StudentStudyGroup>();
         }
 
         public ICollection<StudentCourse> CourseEnrollments { get; set; }
+
+        public ICollection<StudentStudyGroup> StudentStudyGroups { get; set; }
     }
 }
