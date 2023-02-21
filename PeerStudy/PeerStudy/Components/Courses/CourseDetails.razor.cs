@@ -212,7 +212,7 @@ namespace PeerStudy.Components.Courses
             }
             catch (Exception ex)
             {
-                ShowAlert(Color.Danger, "An error occurred while creating the study groups...");
+                ShowAlert(Color.Danger, ex.Message);
             }
         }
 

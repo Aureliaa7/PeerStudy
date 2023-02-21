@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Models.Courses;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,9 @@ namespace PeerStudy.Components.Courses
 
         [Inject]
         private NavigationManager NavigationManager { get; set; }
+
+        [Inject]
+        private ICacheService CacheService { get; set; }
 
         private const string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
         private const string courseCreationMessage = "Course creation is in progress...";
@@ -34,11 +38,13 @@ namespace PeerStudy.Components.Courses
         {
             if (isTeacher)
             {
-                return CourseService.GetAsync(currentUserId, CourseStatus.Active);
+                return CacheService.GetAsync($"{currentUserId}_{ClientConstants.ActiveCoursesCacheKey}", 
+                    () => CourseService.GetAsync(currentUserId, CourseStatus.Active));
             } 
             else if (isStudent)
             {
-                return CourseService.GetCoursesForStudentAsync(currentUserId, CourseStatus.Active);
+                return CacheService.GetAsync($"{currentUserId}_{ClientConstants.ActiveCoursesCacheKey}",
+                    () => CourseService.GetCoursesForStudentAsync(currentUserId, CourseStatus.Active));
             }
             return Task.FromResult(new List<CourseDetailsModel>());
         }

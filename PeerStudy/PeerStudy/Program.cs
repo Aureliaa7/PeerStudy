@@ -16,6 +16,8 @@ builder.Services.RegisterDbContext(builder.Configuration.GetConnectionString("DB
 builder.Services.RegisterServices();
 builder.Services.RegisterBlazorComponentLibraries();
 
+builder.Services.AddMemoryCache();
+
 var app = builder.Build();
 
 

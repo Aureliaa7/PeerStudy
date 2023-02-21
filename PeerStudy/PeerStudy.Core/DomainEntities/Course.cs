@@ -31,6 +31,8 @@ namespace PeerStudy.Core.DomainEntities
 
         public DateTime EndDate { get; set; }
 
+        public bool HasStudyGroups { get; set; }
+
         public Teacher Teacher { get; set; }
 
         public ICollection<StudentCourse> CourseEnrollments { get; set; }

@@ -1,10 +1,13 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Models;
 using PeerStudy.Infrastructure;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Services.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -15,15 +18,18 @@ namespace PeerStudy.Services
         private readonly ILocalStorageService localStorageService;
         private readonly IAccountService accountService;
         private readonly AuthenticationStateProvider authStateProvider;
+        private readonly ICacheService cacheService;
 
         public AuthService(
             ILocalStorageService localStorageService,
             IAccountService accountService,
-            AuthenticationStateProvider authStateProvider)
+            AuthenticationStateProvider authStateProvider,
+            ICacheService cacheService)
         {
             this.localStorageService = localStorageService;
             this.accountService = accountService;
             this.authStateProvider = authStateProvider;
+            this.cacheService = cacheService;
         }
 
         public async Task<string> GetCurrentUserFullNameAsync()
@@ -64,6 +70,8 @@ namespace PeerStudy.Services
 
         public async Task LogoutAsync()
         {
+            await ClearCacheAsync();
+
             await localStorageService.RemoveItemAsync(ClientConstants.Token);
             ((PeerStudyAuthStateProvider)authStateProvider).NotifyUserLogout();
         }
@@ -76,6 +84,18 @@ namespace PeerStudy.Services
         public Task<string> GetCurrentUserEmailAsync()
         {
             return GetClaimByNameAsync(ClaimTypes.Email);
+        }
+
+        private async Task ClearCacheAsync()
+        {
+            var currentUserId = await GetCurrentUserIdAsync();
+            var keysToBeRemoved = GetCacheKeysByUser(currentUserId);
+            await cacheService.RemoveByKeysAsync(keysToBeRemoved);
+        }
+
+        private List<string> GetCacheKeysByUser(string userId)
+        {
+            return ClientConstants.CacheConstants.Select(x => $"{userId}_{x}").ToList();
         }
     }
 }

@@ -157,7 +157,8 @@ namespace PeerStudy.Core.DomainServices
                 EndDate = course.EndDate,
                 Title = course.Title,
                 TeacherName = $"{course.Teacher?.FirstName} {course.Teacher?.LastName}",
-                Status = course.Status
+                Status = course.Status,
+                HasStudyGroups = course.HasStudyGroups
             };
         }
 

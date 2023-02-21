@@ -27,6 +27,11 @@ namespace PeerStudy.Core.DomainServices
                 throw new EntityNotFoundException($"Course with id {courseId} and teacher id {teacherId} was not found!");
             }
 
+            if (course.HasStudyGroups)
+            {
+                throw new PreconditionFailedException($"Study groups have already been created for course with id {courseId}");
+            }
+
             if (course.StartDate > DateTime.UtcNow)
             {
                 throw new PreconditionFailedException("Cannot create study groups before the start of the course!");
@@ -67,6 +72,8 @@ namespace PeerStudy.Core.DomainServices
             }
 
             await unitOfWork.StudyGroupRepository.AddRangeAsync(groups);
+            course.HasStudyGroups = true;
+            await unitOfWork.CoursesRepository.UpdateAsync(course);
             await unitOfWork.SaveChangesAsync();
         }
     }
