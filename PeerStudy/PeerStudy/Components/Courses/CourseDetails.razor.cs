@@ -2,6 +2,8 @@
 using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
+using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.Resources;
 using PeerStudy.Models;
 using PeerStudy.Services.Interfaces;
@@ -16,16 +18,16 @@ namespace PeerStudy.Components.Courses
     public partial class CourseDetails : PeerStudyComponentBase<CourseResourceDetailsModel>
     {
         [Inject]
-        private INavigationMenuService NavigationMenuService { get; set; }  
-
-        [Inject]
-        private IAuthService AuthService { get; set; }
-
-        [Inject]
         private ICourseResourceService CourseResourceService { get; set; } 
 
         [Inject]
         private IStudyGroupService StudyGroupService { get; set; }
+
+        [Inject]
+        private ICacheService CacheService { get; set; }
+
+        [Inject]
+        private ICourseService CourseService { get; set; }
 
 
         [Parameter]
@@ -36,9 +38,6 @@ namespace PeerStudy.Components.Courses
 
         [Parameter]
         public Guid CourseId { get; set; }
-
-        [Parameter]
-        public string CourseTitle { get; set; }
 
         private bool showCreateMenu;
         private bool showUploadFileDialog;
@@ -55,7 +54,9 @@ namespace PeerStudy.Components.Courses
         private bool showCreateStudyGroupsDialog;
 
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
-        private int[] studyGroupsNoMembers = new int[3] { 3, 4, 5 };
+        private int[] studyGroupsNoMembers = new int[3] { 3, 4, 5 };  //TODO: should be moved to constants file
+
+        private CourseDetailsModel courseDetails; 
 
         protected override Task<List<CourseResourceDetailsModel>> GetDataAsync()
         {
@@ -64,36 +65,54 @@ namespace PeerStudy.Components.Courses
 
         protected override async Task OnInitializedAsync()
         {
-            NavigationMenuService.AddMenuItems(new List<MenuItem> {
-                  new MenuItem
-                    {
-                        Href = $"/{TeacherId}/courses/{CourseTitle}/{CourseId}/resources",
-                        Name = "Resources"
-                    },
-                    new MenuItem
-                    {
-                        Href = $"/courses/{CourseTitle}/{CourseId}/students",
-                        Name = "Students"
-                    },
-                    new MenuItem
-                    {
-                        Href = $"/{TeacherId}/courses/{CourseTitle}/{CourseId}/pending-requests",
-                        Name = "Pending requests"
-                    },
-                    new MenuItem
-                    {
-                        Href = $"/{TeacherId}/courses/{CourseTitle}/{CourseId}/rejected-requests",
-                        Name = "Rejected requests"
-                    }
-                });
-            NavigationMenuService.NotifyChanged();
             await InitializeDataAsync();
+            await SetCurrentCourseDetailsAsync();
+            UpdateNavigationMenu();
 
             userEmail = await AuthService.GetCurrentUserEmailAsync();
+        }
 
-            //TODO: to be implemented
-            //TODO: update additional nav items depending on the user's role
-            
+        private async Task SetCurrentCourseDetailsAsync()
+        {
+            var activeCourses = CacheService.Get<List<CourseDetailsModel>>($"{currentUserId}_{ClientConstants.ActiveCoursesCacheKey}");
+            if (activeCourses == null)
+            {
+                courseDetails = await CourseService.GetDetailsAsync(CourseId);
+            }
+            else
+            {
+                courseDetails = activeCourses.FirstOrDefault(x => x.Id == CourseId) ??
+                    await CourseService.GetDetailsAsync(CourseId);
+            }
+        }
+
+        private void UpdateNavigationMenu()
+        {
+            //TODO: update additional nav items depending on the user's role 
+
+            NavigationMenuService.AddMenuItems(new List<MenuItem> {
+                new MenuItem
+                {
+                    Href = $"/{TeacherId}/courses/{CourseId}/resources",
+                    Name = "Resources"
+                },
+                new MenuItem
+                {
+                    Href = $"/courses/{courseDetails.Title}/{CourseId}/students",
+                    Name = "Students"
+                },
+                new MenuItem
+                {
+                    Href = $"/{TeacherId}/courses/{courseDetails.Title}/{CourseId}/pending-requests",
+                    Name = "Pending requests"
+                },
+                new MenuItem
+                {
+                    Href = $"/{TeacherId}/courses/{courseDetails.Title}/{CourseId}/rejected-requests",
+                    Name = "Rejected requests"
+                }
+            });
+            NavigationMenuService.NotifyChanged();
         }
 
         private void ToggleShowCreateMenu()

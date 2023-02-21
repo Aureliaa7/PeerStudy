@@ -51,5 +51,10 @@ namespace PeerStudy.Core.Services
         {
             await memoryCache.RemoveRangeAsync(keys);
         }
+
+        public T? Get<T>(string key)
+        {
+            return (T?)memoryCache.Get(key);
+        }
     }
 }

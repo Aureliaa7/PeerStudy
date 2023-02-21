@@ -9,6 +9,8 @@ namespace PeerStudy.Core.Interfaces.Services
     {
         Task<T> GetAsync<T>(string key, Func<Task<T>> action, MemoryCacheEntryOptions cacheEntryOptions = null);
 
+        T? Get<T>(string key);
+
         Task RemoveByKeysAsync(List<string> keys);
     }
 }

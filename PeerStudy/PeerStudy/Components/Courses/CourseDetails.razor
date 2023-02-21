@@ -2,12 +2,12 @@
 @using PeerStudy.Core.Models.Resources
 @using PeerStudy.Components.CourseResources
 
-@page "/{teacherId:guid}/courses/{courseTitle}/{courseId:guid}/resources"
+@page "/{teacherId:guid}/courses/{courseId:guid}/resources"
 @page "/{studentId:guid}/my-courses/{courseId:guid}/resources"
 @attribute [Authorize]
 @inherits PeerStudyComponentBase<CourseResourceDetailsModel>
 
-<CourseHeader title="@CourseTitle"></CourseHeader>
+<CourseHeader title="@courseDetails?.Title"></CourseHeader>
 
 <AuthorizeView Roles="Teacher">
     <div>

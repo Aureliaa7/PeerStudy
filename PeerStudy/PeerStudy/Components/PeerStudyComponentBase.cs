@@ -10,10 +10,10 @@ namespace PeerStudy.Components
     public abstract class PeerStudyComponentBase<T> : ComponentBase where T: new()
     {
         [Inject]
-        IAuthService AuthService { get; set; }
+        protected IAuthService AuthService { get; set; }
 
         [Inject]
-        INavigationMenuService NavigationMenuService { get; set; }
+        protected INavigationMenuService NavigationMenuService { get; set; }
 
         protected List<T> data;
 

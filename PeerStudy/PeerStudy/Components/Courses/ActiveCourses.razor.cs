@@ -146,12 +146,12 @@ namespace PeerStudy.Components.Courses
             }
         }
 
-        private async Task CourseClickedHandler(CourseDetailsModel courseDetails)
+        private void CourseClickedHandler(CourseDetailsModel courseDetails)
         {
             // redirect the user to specific page
             if (isTeacher && courseDetails.TeacherId == currentUserId)
             {
-                NavigationManager.NavigateTo($"/{currentUserId}/courses/{courseDetails.Title}/{courseDetails.Id}/resources");
+                NavigationManager.NavigateTo($"/{currentUserId}/courses/{courseDetails.Id}/resources");
             }
             else if (isStudent)
             {
