@@ -5,9 +5,9 @@
 @inherits PeerStudyComponentBase<EnrolledStudentModel>
 @attribute [Authorize(Roles = "Teacher")]
 
-<CourseHeader title="@CourseTitle"></CourseHeader>
+<CourseHeader Title="@CourseTitle"></CourseHeader>
 
-<h3>Enrolled students</h3>
+<h3 class="page-title">Enrolled students</h3>
 
 @if (isLoading)
 {
@@ -21,6 +21,9 @@ else if (!isLoading && (data == null || !data.Any()))
 }
 else
 {
+    <div class="study-groups-link">
+        <a href=@($"/courses/{CourseTitle}/{CourseId}/study-groups")>Study Groups</a>
+    </div>
     <div class="students-container">
         @foreach (var student in data)
         {

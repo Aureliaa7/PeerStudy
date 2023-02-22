@@ -109,7 +109,8 @@ namespace PeerStudy.Core.DomainServices
                     Title = x.Title,
                     TeacherName = $"{x.Teacher.FirstName} {x.Teacher.LastName}",
                     Status = x.Status,
-                    TeacherId = x.TeacherId
+                    TeacherId = x.TeacherId,
+                    HasStudyGroups = x.HasStudyGroups
                 })  //TODO: add the number of enrolled students
             .ToList();
 

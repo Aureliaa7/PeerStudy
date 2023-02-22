@@ -11,8 +11,9 @@ namespace PeerStudy
 
         // caching constants
         public static string ActiveCoursesCacheKey = "ActiveCourses";
+        public static string StudentStudyGroupsKey = "StudentStudyGroups";
 
-        public static IReadOnlyCollection<string> CacheConstants = new List<string> { ActiveCoursesCacheKey };
+        public static IReadOnlyCollection<string> CacheConstants = new List<string> { ActiveCoursesCacheKey, StudentStudyGroupsKey };
 
     }
 }

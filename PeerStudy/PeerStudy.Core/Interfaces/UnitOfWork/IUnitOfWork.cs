@@ -18,6 +18,8 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<StudyGroup> StudyGroupRepository { get; }
 
+        IRepository<StudentStudyGroup> StudentStudyGroupRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

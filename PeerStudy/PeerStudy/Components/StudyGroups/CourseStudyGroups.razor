@@ -1,0 +1,12 @@
+﻿@using PeerStudy.Components.Courses
+@using PeerStudy.Core.Models.StudyGroups
+
+@page "/courses/{courseTitle}/{courseId:guid}/study-groups"
+@inherits PeerStudyComponentBase<StudyGroupDetailsModel>
+@attribute [Authorize(Roles = "Teacher")]
+
+<CourseHeader Title="@CourseTitle"></CourseHeader>
+<h3 class="page-title">Study Groups</h3>
+<StudyGroupsList StudyGroups="data"
+                 IsLoading="isLoading">
+</StudyGroupsList>

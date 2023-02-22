@@ -2,6 +2,8 @@
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
+using PeerStudy.Core.Models.StudyGroups;
+using PeerStudy.Core.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +77,51 @@ namespace PeerStudy.Core.DomainServices
             course.HasStudyGroups = true;
             await unitOfWork.CoursesRepository.UpdateAsync(course);
             await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<StudyGroupDetailsModel>> GetByCourseIdAsync(Guid courseId)
+        {
+            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId);
+            if (course == null)
+            {
+                throw new EntityNotFoundException($"Course with id {courseId} was not found!");
+            }
+
+            var studyGroups = (await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.CourseId == courseId,
+                includeProperties: $"{nameof(StudyGroup.StudentStudyGroups)}.{nameof(StudentStudyGroup.Student)}", trackChanges: false))
+                .Select(x => new StudyGroupDetailsModel
+                {
+                    Title = x.Name,
+                    CourseTitle = course.Title,
+                    Students = x.StudentStudyGroups.Select(x => new EnrolledStudentModel
+                    {
+                        FirstName = x.Student.FirstName,
+                        LastName = x.Student.LastName
+                    }).ToList()
+                })
+                .ToList();
+
+            return studyGroups;
+        }
+
+        public async Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId)
+        {
+            var studyGroups = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(
+                x => x.StudentId == studentId, includeProperties: $"{nameof(StudentStudyGroup.Student)}," +
+                $"{nameof(StudentStudyGroup.StudyGroup)}.{nameof(StudentStudyGroup.StudyGroup.StudentStudyGroups)}"))
+                .Select(x => new StudyGroupDetailsModel
+                {
+                    CourseTitle = x.StudyGroup.Course.Title,
+                    Students = x.StudyGroup.StudentStudyGroups.Select(x => new EnrolledStudentModel
+                    {
+                        FirstName = x.Student.FirstName,
+                        LastName = x.Student.LastName
+                    }).ToList(),
+                    Title = x.StudyGroup.Name
+                })
+                .ToList();
+
+            return studyGroups;
         }
     }
 }

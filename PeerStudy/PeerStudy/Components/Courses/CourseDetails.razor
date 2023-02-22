@@ -7,7 +7,7 @@
 @attribute [Authorize]
 @inherits PeerStudyComponentBase<CourseResourceDetailsModel>
 
-<CourseHeader title="@courseDetails?.Title"></CourseHeader>
+<CourseHeader Title="@courseDetails?.Title"></CourseHeader>
 
 <AuthorizeView Roles="Teacher">
     <div>
@@ -19,7 +19,10 @@
         {
             <div class="create-menu">
                 <MatButton Style="display: block;" OnClick="@ShowUploadFileDialog">Upload file(s)</MatButton>
-                <MatButton Style="display: block; width:130px;" OnClick="@ShowCreateGroupsDialog">Create study groups</MatButton>
+                @if (courseDetails != null && !courseDetails.HasStudyGroups)
+                {
+                    <MatButton Style="display: block; width:130px;" OnClick="@ShowCreateGroupsDialog">Create study groups</MatButton>
+                }
             </div>
         }
     </div>
