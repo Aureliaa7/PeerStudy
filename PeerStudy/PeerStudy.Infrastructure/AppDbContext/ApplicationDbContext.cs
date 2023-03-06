@@ -20,6 +20,12 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<StudyGroup> StudyGroups { get; set; }
 
+        public DbSet<Assignment> Assignments { get; set; }
+
+        public DbSet<StudentAssignment> StudentAssignments { get; set; }
+
+        public DbSet<StudentAssignmentFile> StudentAssignmentFiles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -32,6 +38,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new UserConfiguration().Configure(modelBuilder.Entity<User>());
             new CourseConfiguration().Configure(modelBuilder.Entity<Course>());
             new StudentStudyGroupConfiguration().Configure(modelBuilder.Entity<StudentStudyGroup>());
+            new AssignmentConfiguration().Configure(modelBuilder.Entity<Assignment>());
+            new StudentAssignmentConfiguration().Configure(modelBuilder.Entity<StudentAssignment>());
         }
     }
 }

@@ -24,6 +24,57 @@ namespace PeerStudy.Services
             }
         }
 
+        public void AddNavigationMenuItemsForStudent(NavigationDataModel data)
+        {
+            additionalMenuItems.AddRange(new List<MenuItem> {
+                new MenuItem
+                {
+                    Href = $"/{data.UserId}/my-courses/{data.CourseId}/resources",
+                    Name = "Resources"
+                },
+                  new MenuItem
+                {
+                    Href = $"{data.CourseTitle}/{data.CourseId}/{data.UserId}/my-assignments",
+                    Name = "Assignments"
+                } }
+            );
+
+            NotifyChanged();
+        }
+
+        public void AddNavigationMenuItemsForTeacher(NavigationDataModel data)
+        {
+            additionalMenuItems.AddRange(new List<MenuItem> {
+                new MenuItem
+                {
+                    Href = $"/{data.UserId}/courses/{data.CourseId}/resources",
+                    Name = "Resources"
+                },
+                  new MenuItem
+                {
+                    Href = $"/{data.CourseTitle}/{data.CourseId}/assignments",
+                    Name = "Assignments"
+                },
+                new MenuItem
+                {
+                    Href = $"/courses/{data.CourseTitle}/{data.CourseId}/students",
+                    Name = "Students"
+                },
+                new MenuItem
+                {
+                    Href = $"/{data.UserId}/courses/{data.CourseTitle}/{data.CourseId}/pending-requests",
+                    Name = "Pending requests"
+                },
+                new MenuItem
+                {
+                    Href = $"/{data.UserId}/courses/{data.CourseTitle}/{data.CourseId}/rejected-requests",
+                    Name = "Rejected requests"
+                }
+            });
+
+            NotifyChanged();
+        }
+
         public List<MenuItem> GetMenuItems()
         {
             return additionalMenuItems;

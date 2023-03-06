@@ -45,7 +45,7 @@ namespace PeerStudy.Infrastructure.Services
             return file.Id;
         }
 
-        public async Task<FileDetailsModel> UploadFileAsync(UploadFileModel model)
+        public async Task<FileDetailsModel> UploadFileAsync(UploadDriveFileModel model)
         {
             using (var ms = new MemoryStream(model.FileContent))
             {

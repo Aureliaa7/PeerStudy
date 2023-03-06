@@ -2,7 +2,7 @@
 
 namespace PeerStudy.Core.Models.Resources
 {
-    public class UploadCourseResourceModel : UploadFileModel
+    public class UploadCourseResourceModel : UploadDriveFileModel
     {
         public Guid CourseId { get; set; }
     }

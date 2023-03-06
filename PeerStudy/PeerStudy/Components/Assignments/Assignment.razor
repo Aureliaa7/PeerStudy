@@ -1,0 +1,14 @@
+﻿<div class="assignment" @onclick="HandleClickedAssignment">
+    <div>
+        @Data.Title
+    </div>
+    <div>
+        @Data.Deadline
+    </div>
+    @if (Data.Points != null)
+    {
+        <div>
+            @Data.Points points
+        </div>
+    }
+</div>

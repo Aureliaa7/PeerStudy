@@ -1,0 +1,63 @@
+﻿@using PeerStudy.Components.Courses
+
+@page "/{courseTitle}/{studentId:guid}/{assignmentId:guid}/assignment-details"
+@attribute [Authorize]
+
+<CourseHeader Title="@CourseTitle"></CourseHeader>
+
+<Loading IsLoading="isLoading"
+         HasData="@(assignmentDetails != null)"
+         NotFoundMessage="@noFilesMessage">
+
+    <div>
+        <h3>@assignmentDetails.Title</h3>
+        <hr />
+        <div>
+            @assignmentDetails.Deadline
+        </div>
+        <div>
+            @assignmentDetails.Description
+        </div>
+
+        <div>
+            @foreach (var file in assignmentDetails.StudentAssignmentFiles)
+            {
+                <AuthorizeView Roles="Student">
+                    <PeerStudyFile IconLink="@file.IconLink"
+                               Title="@file.Name"
+                               WebViewLink="@file.WebViewLink"
+                               DisplayDeleteButton="true">
+                    </PeerStudyFile>
+                </AuthorizeView>
+
+                <AuthorizeView Roles="Teacher">
+                    <PeerStudyFile IconLink="@file.IconLink"
+                               Title="@file.Name"
+                               WebViewLink="@file.WebViewLink">
+                    </PeerStudyFile>
+                </AuthorizeView>
+            }
+        </div>
+        <AuthorizeView Roles="Student">
+            @if (assignmentDetails.StudentAssignmentFiles == null || !assignmentDetails.StudentAssignmentFiles.Any())
+            {
+                <MatButton Raised="true" OnClick="DisplayUploadFilesDialog">Upload files</MatButton>
+            }
+            else
+            {
+                <MatButton Raised="true" OnClick="Unsubmit">Unsubmit</MatButton>
+            }
+
+            <UploadFiles IsVisible="showUploadFileDialog"
+                         OnCancel="CloseUploadFilesDialog"
+                         OnUpload="Upload">
+            </UploadFiles>
+
+            <Alert Color="@alertColor" @bind-Visible="showAlertMessage">
+                <AlertDescription>@alertMessage</AlertDescription>
+                <CloseButton />
+            </Alert>
+        </AuthorizeView>
+
+    </div>
+</Loading>

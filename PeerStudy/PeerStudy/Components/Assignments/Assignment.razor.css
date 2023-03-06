@@ -1,0 +1,16 @@
+﻿.assignment {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    border: 1px solid grey;
+    padding: 7px;
+    border-radius: 7px;
+}
+
+.assignment:hover {
+    cursor: pointer;
+}
+
+div {
+    margin: 7px;
+}

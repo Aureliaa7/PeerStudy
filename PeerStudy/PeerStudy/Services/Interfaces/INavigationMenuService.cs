@@ -10,6 +10,10 @@ namespace PeerStudy.Services.Interfaces
 
         void AddMenuItems(List<MenuItem> items);
 
+        void AddNavigationMenuItemsForTeacher(NavigationDataModel data);
+
+        void AddNavigationMenuItemsForStudent(NavigationDataModel data);
+
         void RemoveAll();
 
         event EventHandler<EventArgs> OnChanged;

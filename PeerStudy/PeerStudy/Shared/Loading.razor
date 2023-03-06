@@ -1,0 +1,16 @@
+﻿@if (IsLoading)
+{
+    <div class="center-elements">
+        <MatProgressCircle Indeterminate="@IsLoading" Size="MatProgressCircleSize.Large" />
+    </div>
+}
+else if (!IsLoading && !HasData)
+{
+    <NotFound Message="@NotFoundMessage"
+          ShowCloseButton=true>
+    </NotFound>
+}
+else
+{
+    @ChildContent
+}

@@ -1,27 +1,20 @@
-﻿<div class="container center-elements">
-    @if (IsLoading)
-    {
-        <div>
-            <MatProgressCircle Indeterminate="@IsLoading" Size="MatProgressCircleSize.Large" />
-        </div>
-    }
-    else if (!IsLoading && !Courses.Any())
-    {
-        <NotFound Message="@CoursesNotFoundMessage"></NotFound>
-    }
-    else
-    {
+﻿@using PeerStudy.Core.Models.Courses
+
+<div class="container center-elements">
+    <Loading IsLoading="IsLoading"
+             HasData="@(Courses != null && Courses.Any())"
+             NotFoundMessage="@CoursesNotFoundMessage">
         <div class="courses-container">
             @foreach (var course in Courses)
             {
                 <CourseCard Course="course"
-                    CanEnrollInCourse="CanEnrollInCourse"
-                    OnEditCourse="EditCourseHandler"
-                    OnArchiveCourse="ArchiveCourseHandler"
-                    OnCourseClicked="ClickedCourseHandler"
-                    OnEnroll="EnrollHandler">
+                        CanEnrollInCourse="CanEnrollInCourse"
+                        OnEditCourse="EditCourseHandler"
+                        OnArchiveCourse="ArchiveCourseHandler"
+                        OnCourseClicked="ClickedCourseHandler"
+                        OnEnroll="EnrollHandler">
                 </CourseCard>
             }
         </div>
-    }
+    </Loading>
 </div>

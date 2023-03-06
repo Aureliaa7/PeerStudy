@@ -9,7 +9,7 @@ namespace PeerStudy.Core.Interfaces.Services
     {
         Task<string> CreateFolderAsync(string folderName, string parent = null);
 
-        Task<FileDetailsModel> UploadFileAsync(UploadFileModel model);
+        Task<FileDetailsModel> UploadFileAsync(UploadDriveFileModel model);
 
         Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds);
 

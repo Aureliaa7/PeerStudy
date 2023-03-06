@@ -1,15 +1,13 @@
 ﻿using Blazorise;
-using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
+using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.Resources;
 using PeerStudy.Models;
-using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,6 +27,9 @@ namespace PeerStudy.Components.Courses
         [Inject]
         private ICourseService CourseService { get; set; }
 
+        [Inject]
+        private IAssignmentService AssignmentService { get; set; }
+
 
         [Parameter]
         public Guid TeacherId { get; set; }
@@ -42,12 +43,11 @@ namespace PeerStudy.Components.Courses
         private bool showCreateMenu;
         private bool showUploadFileDialog;
 
-        private const string uploadFileControlStyles = "border-radius: 30px; background-color: #F5F5F5; height: 30px;";
-        
+        private const string menuButtonsStyles = "color: white;";
+
         private string alertMessage;
         private bool showAlertMessage;
 
-        private IMatFileUploadEntry[] uploadedFiles;
         private string userEmail;
         private Color alertColor;
 
@@ -56,7 +56,11 @@ namespace PeerStudy.Components.Courses
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
         private int[] studyGroupsNoMembers = new int[3] { 3, 4, 5 };  //TODO: should be moved to constants file
 
-        private CourseDetailsModel courseDetails; 
+        private CourseDetailsModel courseDetails;
+
+        // assignments
+        private CreateAssignmentModel assignmentModel = new CreateAssignmentModel();
+        private bool showAddAssigmentDialog;
 
         protected override Task<List<CourseResourceDetailsModel>> GetDataAsync()
         {
@@ -88,41 +92,26 @@ namespace PeerStudy.Components.Courses
 
         private void UpdateNavigationMenu()
         {
-            //TODO: update additional nav items depending on the user's role 
+            var navigationData = new NavigationDataModel
+            {
+                CourseId = CourseId,
+                CourseTitle = courseDetails.Title,
+                UserId = currentUserId
+            };
 
-            NavigationMenuService.AddMenuItems(new List<MenuItem> {
-                new MenuItem
-                {
-                    Href = $"/{TeacherId}/courses/{CourseId}/resources",
-                    Name = "Resources"
-                },
-                new MenuItem
-                {
-                    Href = $"/courses/{courseDetails.Title}/{CourseId}/students",
-                    Name = "Students"
-                },
-                new MenuItem
-                {
-                    Href = $"/{TeacherId}/courses/{courseDetails.Title}/{CourseId}/pending-requests",
-                    Name = "Pending requests"
-                },
-                new MenuItem
-                {
-                    Href = $"/{TeacherId}/courses/{courseDetails.Title}/{CourseId}/rejected-requests",
-                    Name = "Rejected requests"
-                }
-            });
-            NavigationMenuService.NotifyChanged();
+            if (isTeacher)
+            {
+                NavigationMenuService.AddNavigationMenuItemsForTeacher(navigationData);
+            }
+            else if (isStudent)
+            {
+                NavigationMenuService.AddNavigationMenuItemsForStudent(navigationData);
+            }
         }
 
         private void ToggleShowCreateMenu()
         {
             showCreateMenu = !showCreateMenu;
-        }
-
-        private void GetUploadedFiles(IMatFileUploadEntry[] files)
-        {
-            uploadedFiles = files;
         }
 
         private void ShowUploadFileDialog()
@@ -137,7 +126,7 @@ namespace PeerStudy.Components.Courses
             showCreateStudyGroupsDialog = true;
         }
 
-        private async Task UploadFiles()
+        private async Task UploadFiles(List<UploadFileModel> filesModels)
         {
             ShowAlert(Color.Info, "Uploading file(s)...");
 
@@ -145,12 +134,10 @@ namespace PeerStudy.Components.Courses
 
             await Task.Run(async () => 
             {
-                var uploadFileModels = await GetCreateResourceModelsAsync();
+                var uploadFileModels = await GetCreateResourceModelsAsync(filesModels);
                 var createdResources = await CourseResourceService.UploadResourcesAsync(uploadFileModels); 
                 data.AddRange(createdResources);
             });
-
-            uploadedFiles = null;
 
             ShowAlert(Color.Success, "Files were successfully uploaded.");
 
@@ -164,24 +151,20 @@ namespace PeerStudy.Components.Courses
             });
         }
 
-        private async Task<List<UploadCourseResourceModel>> GetCreateResourceModelsAsync()
+        private async Task<List<UploadCourseResourceModel>> GetCreateResourceModelsAsync(List<UploadFileModel> files)
         {
             var uploadFileModels = new List<UploadCourseResourceModel>();
 
-            foreach (var file in uploadedFiles)
+            foreach (var file in files)
             {
-                using (var stream = new MemoryStream())
+                uploadFileModels.Add(new UploadCourseResourceModel
                 {
-                    await file.WriteToStreamAsync(stream);
-                    uploadFileModels.Add(new UploadCourseResourceModel
-                    {
-                        FileContent = stream.ToArray(),
-                        Name = file.Name,
-                        OwnerEmail = userEmail,
-                        Type = file.Type,
-                        CourseId = CourseId
-                    });
-                }
+                    FileContent = file.FileContent,
+                    Name = file.Name,
+                    OwnerEmail = userEmail,
+                    // Type = file.Type,
+                    CourseId = CourseId
+                });
             }
 
             return uploadFileModels;
@@ -190,11 +173,6 @@ namespace PeerStudy.Components.Courses
         private void CloseUploadFileDialog()
         {
             showUploadFileDialog = false;
-        }
-
-        private bool IsUploadFileButtonEnabled()
-        {
-            return uploadedFiles != null;
         }
 
         private async Task DeleteResource(Guid resourceId)
@@ -241,6 +219,43 @@ namespace PeerStudy.Components.Courses
             this.alertMessage = message;
 
             showAlertMessage = true;
+        }
+
+        private void ShowCreateAssignmentDialog()
+        {
+            showCreateMenu = false;
+            showAddAssigmentDialog = true;
+        }
+
+        private async Task SaveAssignment()
+        {
+            showAddAssigmentDialog = false;
+            ShowAlert(Color.Info, "Adding assignment...");
+            assignmentModel.CourseId = CourseId;
+            assignmentModel.TeacherId = currentUserId;
+      
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    await AssignmentService.CreateAsync(assignmentModel);
+                });
+                ShowAlert(Color.Success, "Assignment was successfully added.");
+            }
+            catch (Exception ex)
+            {
+                ShowAlert(Color.Danger, "An error occurred. Please try again later.");
+            }
+
+            StateHasChanged();
+
+            assignmentModel = new CreateAssignmentModel();  // after saving the assignment, reset the form
+        }
+
+        private void CancelCreateAssignment()
+        {
+            showAddAssigmentDialog = false;
+            assignmentModel = new CreateAssignmentModel();
         }
     }
 }

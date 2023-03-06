@@ -1,26 +1,17 @@
-﻿@if (IsLoading)
-{
-    <div class="center-elements">
-        <MatProgressCircle Indeterminate="@IsLoading" Size="MatProgressCircleSize.Large" />
-    </div>
-}
-else if (!IsLoading && (Resources == null || !Resources.Any()))
-{
-    <NotFound Message="There are no resources yet..."
-          ShowCloseButton=true>
-    </NotFound>
-}
-else
-{
+﻿@using PeerStudy.Core.Models.Resources
+
+<Loading IsLoading="IsLoading"
+         HasData="@(Resources != null && Resources.Any())"
+         NotFoundMessage="@coursesNotFoundMessage">
     <div class="resources-container">
         @foreach (var resource in Resources)
         {
             <div class="resource">
                 <CourseResource Expanded=false
-                        ResourceDetails="resource"
-                        OnDeleteResource="HandleDeleteResource">
+                            ResourceDetails="resource"
+                            OnDeleteResource="HandleDeleteResource">
                 </CourseResource>
             </div>
         }
     </div>
-}
+</Loading>

@@ -1,0 +1,17 @@
+﻿
+<MatDialog @bind-IsOpen="@IsVisible">
+    <MatDialogTitle>Upload file(s)</MatDialogTitle>
+    <MatDialogContent>
+        <div>
+            <PeerStudyFileUpload Style="@uploadFileControlStyles"
+                                 OnChange="GetUploadedFiles"
+                                 Label="Choose files"
+                                 AllowMultiple=true>
+            </PeerStudyFileUpload>
+        </div>
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton OnClick="Upload" Raised=true Disabled=@(!IsUploadFileButtonEnabled())>Upload</MatButton>
+        <MatButton OnClick="Cancel">Cancel</MatButton>
+    </MatDialogActions>
+</MatDialog>

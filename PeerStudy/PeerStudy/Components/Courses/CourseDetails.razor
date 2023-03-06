@@ -1,9 +1,11 @@
-﻿@using PeerStudy.Components.StudyGroups
-@using PeerStudy.Core.Models.Resources
+﻿@using PeerStudy.Components.Assignments
 @using PeerStudy.Components.CourseResources
+@using PeerStudy.Components.StudyGroups
+@using PeerStudy.Core.Models.Resources
 
 @page "/{teacherId:guid}/courses/{courseId:guid}/resources"
 @page "/{studentId:guid}/my-courses/{courseId:guid}/resources"
+
 @attribute [Authorize]
 @inherits PeerStudyComponentBase<CourseResourceDetailsModel>
 
@@ -18,37 +20,38 @@
         @if (showCreateMenu)
         {
             <div class="create-menu">
-                <MatButton Style="display: block;" OnClick="@ShowUploadFileDialog">Upload file(s)</MatButton>
-                @if (courseDetails != null && !courseDetails.HasStudyGroups)
-                {
-                    <MatButton Style="display: block; width:130px;" OnClick="@ShowCreateGroupsDialog">Create study groups</MatButton>
-                }
+                <div class="create-menu-btn">
+                    <MatButton Style="@menuButtonsStyles" OnClick="ShowUploadFileDialog">File</MatButton>
+                </div>
+                <div class="create-menu-btn">
+                    <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateAssignmentDialog">Assignment</MatButton>
+                </div>
+                <div class="create-menu-btn">
+                    @if (courseDetails != null && !courseDetails.HasStudyGroups)
+                    {
+                        <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateGroupsDialog">Study groups</MatButton>
+                    }
+                </div>
             </div>
         }
     </div>
 
-    <MatDialog @bind-IsOpen="@showUploadFileDialog">
-        <MatDialogTitle>Upload file(s)</MatDialogTitle>
-        <MatDialogContent>
-            <div>
-                <PeerStudyFileUpload Style="@uploadFileControlStyles"
-                                     OnChange="@GetUploadedFiles"
-                                     Label="Choose files"
-                                     AllowMultiple=true>
-                </PeerStudyFileUpload>
-            </div>
-        </MatDialogContent>
-        <MatDialogActions>
-            <MatButton OnClick="@UploadFiles" Raised=true Disabled=@(!IsUploadFileButtonEnabled())>Upload</MatButton>
-            <MatButton OnClick="@CloseUploadFileDialog">Cancel</MatButton>
-        </MatDialogActions>
-    </MatDialog>
+    <UploadFiles IsVisible="showUploadFileDialog"
+                 OnCancel="CloseUploadFileDialog"
+                 OnUpload="UploadFiles">
+    </UploadFiles>
 
     <CreateStudyGroups IsVisible="showCreateStudyGroupsDialog"
                        DropDownItems="studyGroupsNoMembers"
                        OnCancel="CancelCreateStudyGroups"
                        OnConfirm="CreateGroups">
     </CreateStudyGroups>
+
+    <CreateAssignment AssignmentModel="assignmentModel"
+                      IsVisible="showAddAssigmentDialog"
+                      OnCancel=CancelCreateAssignment
+                      OnConfirm="SaveAssignment">
+    </CreateAssignment>
 
     <Alert Color="@alertColor" @bind-Visible="showAlertMessage">
         <AlertDescription>@alertMessage</AlertDescription>
@@ -59,6 +62,6 @@
 <AuthorizeView>
     <CourseResources Resources="data"
                      IsLoading="isLoading"
-                     OnDeleteResource="@DeleteResource">
+                     OnDeleteResource="DeleteResource">
     </CourseResources>
 </AuthorizeView>

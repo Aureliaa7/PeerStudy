@@ -20,6 +20,12 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<StudentStudyGroup> StudentStudyGroupRepository { get; }
 
+        IRepository<Assignment> AssignmentsRepository { get; }
+
+        IRepository<StudentAssignment> StudentAssignmentsRepository { get; }
+
+        IRepository<StudentAssignmentFile> StudentAssignmentFilesRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

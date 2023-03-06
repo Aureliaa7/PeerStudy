@@ -119,3 +119,7 @@ body::-webkit-scrollbar {
     width: 0;
     height: 0;
 }
+
+.mat-dialog-styles {
+    background-color: #BCD4E6;
+}

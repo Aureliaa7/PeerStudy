@@ -17,6 +17,8 @@ namespace PeerStudy.Components.CourseResources
         [Parameter]
         public EventCallback<Guid> OnDeleteResource { get; set; }
 
+        private const string coursesNotFoundMessage = "There are no resources yet...";
+
         private async Task HandleDeleteResource(Guid resourceId)
         {
             await OnDeleteResource.InvokeAsync(resourceId);
