@@ -36,7 +36,7 @@ namespace PeerStudy.Components.Assignments
         private bool isUploadingFilesInProgress;
         private string alertMessage;
         private Color alertColor;
-        private List<UploadFileModel> filesToBeUploaded = new List<UploadFileModel>();
+        private List<UploadFileModel> allFiles = new List<UploadFileModel>();
         private List<UploadFileModel> newlyAddedFiles = new List<UploadFileModel>();
 
         private const string noFilesMessage = "There are no files yet...";
@@ -62,7 +62,7 @@ namespace PeerStudy.Components.Assignments
         {
             showUploadFileDialog = false;
             newlyAddedFiles.AddRange(files);
-            filesToBeUploaded.AddRange(files);
+            allFiles.AddRange(files);
         }
 
         private void DisplayAlert(Color alertColor, string message)
@@ -85,10 +85,10 @@ namespace PeerStudy.Components.Assignments
                 await AssignmentService.ResetSubmitDateAsync(assignmentDetails.StudentAssignmentId);
 
                 assignmentDetails.CompletedAt = null;
-                filesToBeUploaded.Clear();
+                allFiles.Clear();
                 foreach (var file in assignmentDetails.StudentAssignmentFiles)
                 {
-                    filesToBeUploaded.Add(new UploadFileModel
+                    allFiles.Add(new UploadFileModel
                     {
                         Name = file.Name
                     });
@@ -108,7 +108,7 @@ namespace PeerStudy.Components.Assignments
         private async Task DeleteFile(string fileName)
         {
             showUploadFilesButton = true;
-            filesToBeUploaded = filesToBeUploaded.Where(x => x.Name != fileName).ToList();
+            allFiles = allFiles.Where(x => x.Name != fileName).ToList();
             newlyAddedFiles = newlyAddedFiles.Where(x => x.Name != fileName).ToList();
             if (assignmentDetails.StudentAssignmentFiles != null && 
                 assignmentDetails.StudentAssignmentFiles.Any(x => x.Name == fileName))
@@ -146,7 +146,7 @@ namespace PeerStudy.Components.Assignments
                     }, completedAt);
                     assignmentDetails.StudentAssignmentFiles.AddRange(createdResources);
                     assignmentDetails.CompletedAt = completedAt;
-                    filesToBeUploaded.Clear();
+                    allFiles.Clear();
                 });
 
                 DisplayAlert(Color.Success, "Files were successfully uploaded.");

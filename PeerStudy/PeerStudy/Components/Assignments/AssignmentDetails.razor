@@ -20,9 +20,9 @@
         </div>
         <div class="student-work">
             <div class="files">
-                @if (filesToBeUploaded.Any())
+                @if (allFiles.Any())
                 {
-                    @foreach (var file in filesToBeUploaded)
+                    @foreach (var file in allFiles)
                     {
                         <AuthorizeView Roles="Student">
                             <div class="assignment-file">
@@ -63,11 +63,11 @@
 
             <AuthorizeView Roles="Student">
                 <div class="center-elements">
-                    @if (assignmentDetails.CompletedAt != null && assignmentDetails.StudentAssignmentFiles != null && assignmentDetails.StudentAssignmentFiles.Any() && !filesToBeUploaded.Any())
+                    @if (assignmentDetails.CompletedAt != null && assignmentDetails.StudentAssignmentFiles != null && assignmentDetails.StudentAssignmentFiles.Any() && !allFiles.Any())
                     {
                         <MatButton Style="@buttonStyles" Raised="true" OnClick="Unsubmit">Unsubmit</MatButton>
                     }
-                    else if (assignmentDetails.CompletedAt == null && filesToBeUploaded.Any())
+                    else if (assignmentDetails.CompletedAt == null && allFiles.Any())
                     {
                         <MatButton Style="@buttonStyles"
                                Raised="true"
