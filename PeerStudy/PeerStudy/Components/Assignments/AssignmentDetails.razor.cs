@@ -5,6 +5,7 @@ using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Resources;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Assignments
@@ -13,6 +14,9 @@ namespace PeerStudy.Components.Assignments
     {
         [Inject]
         public IAssignmentFileService AssignmentFileService { get; set; }
+
+        [Inject]
+        public IAssignmentService AssignmentService { get; set; }
 
         [Parameter]
         public Guid StudentId { get; set; }
@@ -27,15 +31,25 @@ namespace PeerStudy.Components.Assignments
         private bool isLoading;
         private bool showUploadFileDialog; 
         private bool showAlertMessage;
+        private bool showDeleteFileButton;
+        private bool showUploadFilesButton;
+        private bool isUploadingFilesInProgress;
         private string alertMessage;
         private Color alertColor;
+        private List<UploadFileModel> filesToBeUploaded = new List<UploadFileModel>();
+        private List<UploadFileModel> newlyAddedFiles = new List<UploadFileModel>();
 
         private const string noFilesMessage = "There are no files yet...";
+        private const string buttonStyles = "margin: 10px;";
 
         protected override async Task OnInitializedAsync()
         {
             isLoading = true;
             assignmentDetails = await AssignmentFileService.GetUploadedFilesByStudentAsync(AssignmentId, StudentId);
+            if (assignmentDetails.CompletedAt == null)
+            {
+                showUploadFilesButton = true;
+            }
             isLoading = false;
         }
 
@@ -46,30 +60,9 @@ namespace PeerStudy.Components.Assignments
 
         private async void Upload(List<UploadFileModel> files)
         {
-            // create models and call method from service
             showUploadFileDialog = false;
-            DisplayAlert(Color.Info, "Uploading file(s)...");
-
-            await Task.Run(async () =>
-            {
-                var createdResources = await AssignmentFileService.UploadWorkAsync(new UploadAssignmentFilesModel
-                {
-                    AssignmentId = AssignmentId,
-                    StudentId = StudentId,
-                    Files = files
-                });
-                assignmentDetails.StudentAssignmentFiles.AddRange(createdResources);
-            });
-
-            DisplayAlert(Color.Success, "Files were successfully uploaded.");
-
-            StateHasChanged();
-
-            await Task.Run(async () =>
-            {
-                await Task.Delay(3500);
-                showAlertMessage = false;
-            });
+            newlyAddedFiles.AddRange(files);
+            filesToBeUploaded.AddRange(files);
         }
 
         private void DisplayAlert(Color alertColor, string message)
@@ -85,14 +78,96 @@ namespace PeerStudy.Components.Assignments
             showUploadFileDialog = true;
         }
 
-        private void Unsubmit()
+        private async void Unsubmit()
         {
-            //TODO
+            try
+            {
+                await AssignmentService.ResetSubmitDateAsync(assignmentDetails.StudentAssignmentId);
+
+                assignmentDetails.CompletedAt = null;
+                filesToBeUploaded.Clear();
+                foreach (var file in assignmentDetails.StudentAssignmentFiles)
+                {
+                    filesToBeUploaded.Add(new UploadFileModel
+                    {
+                        Name = file.Name
+                    });
+                }
+
+                showDeleteFileButton = true;
+                showUploadFilesButton = true;
+            }
+            catch(Exception ex)
+            {
+                DisplayAlert(Color.Danger, "An error occurred while unsubmitting your work...");
+            }
+
+            StateHasChanged();
         }
 
-        private void DeleteFile()
+        private async void DeleteFile(string fileName)
         {
-            //TODO
+            showUploadFilesButton = true;
+            filesToBeUploaded = filesToBeUploaded.Where(x => x.Name != fileName).ToList();
+            newlyAddedFiles = newlyAddedFiles.Where(x => x.Name != fileName).ToList();
+            if (assignmentDetails.StudentAssignmentFiles != null && 
+                assignmentDetails.StudentAssignmentFiles.Any(x => x.Name == fileName))
+            {
+                try
+                {
+                    var toBeDeleted = assignmentDetails.StudentAssignmentFiles.FirstOrDefault(x => x.Name == fileName);
+                    await AssignmentFileService.DeleteAsync(toBeDeleted.FileDriveId, toBeDeleted.Id);
+                    assignmentDetails.StudentAssignmentFiles.Remove(toBeDeleted);
+                }
+                catch (Exception ex)
+                {
+                    DisplayAlert(Color.Danger, "The file could not be deleted...");
+                }
+            }
+        }
+
+        private async Task Submit()
+        {
+            isUploadingFilesInProgress = true;
+            showDeleteFileButton = false;
+            showUploadFilesButton = false;
+            DisplayAlert(Color.Info, "Uploading file(s)...");
+
+            DateTime completedAt = DateTime.UtcNow;
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    var createdResources = await AssignmentFileService.UploadWorkAsync(new UploadAssignmentFilesModel
+                    {
+                        AssignmentId = AssignmentId,
+                        StudentId = StudentId,
+                        Files = newlyAddedFiles
+                    }, completedAt);
+                    assignmentDetails.StudentAssignmentFiles.AddRange(createdResources);
+                    assignmentDetails.CompletedAt = completedAt;
+                    filesToBeUploaded.Clear();
+                });
+
+                DisplayAlert(Color.Success, "Files were successfully uploaded.");
+            }
+            catch (Exception ex)
+            {
+                DisplayAlert(Color.Danger, "There was an error while uploading the files...");
+            }
+            finally
+            {
+                newlyAddedFiles.Clear();
+                isUploadingFilesInProgress = false;
+            }
+
+            StateHasChanged();
+
+            await Task.Run(async () =>
+            {
+                await Task.Delay(3500);
+                showAlertMessage = false;
+            });
         }
     }
 }

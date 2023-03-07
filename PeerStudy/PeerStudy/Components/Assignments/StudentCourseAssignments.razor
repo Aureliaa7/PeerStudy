@@ -7,7 +7,7 @@
 <CourseHeader Title="@CourseTitle"></CourseHeader>
 
 <Loading IsLoading="isLoading"
-         HasData="@((doneAssignments != null && doneAssignments.Any() && toDoAssignments != null && toDoAssignments.Any()))"
+         HasData="@((doneAssignments != null && doneAssignments.Any() || toDoAssignments != null && toDoAssignments.Any()))"
          NotFoundMessage="@noAssignmentsMessage">
     <div class="center-elements">
         <div class="assignments">

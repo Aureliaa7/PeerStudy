@@ -64,6 +64,7 @@ namespace PeerStudy.Core.DomainServices
             var assignments = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(filter, trackChanges: false))
             .Select(x => new AssignmentDetailsModel
             {
+                StudentAssignmentId = x.Id,
                 Deadline = x.Assignment.Deadline,
                 Description = x.Assignment.Description,
                 AssignmentId = x.Assignment.Id,
@@ -137,6 +138,18 @@ namespace PeerStudy.Core.DomainServices
             {
                 throw new EntityNotFoundException($"Assignment with id {id} was not found!");
             }
+        }
+
+        public async Task ResetSubmitDateAsync(Guid studentAssignmentId)
+        {
+            var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.Id == studentAssignmentId);
+            if (studentAssignment == null)
+            {
+                throw new EntityNotFoundException($"StudentAssignment with id {studentAssignmentId} was not found!");
+            }
+
+            studentAssignment.CompletedAt = null;
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -6,6 +6,8 @@ namespace PeerStudy.Core.Models.Assignments
     {
         public Guid AssignmentId { get; set; }
 
+        public Guid StudentAssignmentId { get; set; }
+
         public string Title { get; set; }
 
         public DateTime? Deadline { get; set; }

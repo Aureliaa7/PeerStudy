@@ -1,10 +1,10 @@
-﻿<div>
+﻿<div class="file">
     <a href="@WebViewLink" target="_blank">
         <img src="@IconLink" />
-        <p>@Title</p>
+        <span class="title">@Title</span>
     </a>
     @if (DisplayDeleteButton)
     {
-        <div>X</div>
+        <div class="remove"@onclick="HandleDelete">X</div>
     }
 </div>

@@ -78,7 +78,6 @@ namespace PeerStudy.Infrastructure.Services
 
         public async Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds)
         {
-
             var fileDetailsPairs = new Dictionary<string, FileDetailsModel>();
 
             BatchRequest.OnResponse<DriveFile> callback = delegate (
@@ -126,6 +125,23 @@ namespace PeerStudy.Infrastructure.Services
         {
             var deleteRequest = driveService.Files.Delete(resourceId);
             await deleteRequest.ExecuteAsync();
+        }
+
+        public async Task DeleteRangeAsync(List<string> fileIds)
+        {
+            var batchRequest = new BatchRequest(driveService);
+            foreach (var fileId in fileIds)
+            {
+                var request = driveService.Files.Delete(fileId);
+                batchRequest.Queue<DriveFile>(request, (content, error, i, message) => {
+                    if (error != null)
+                    {
+                        // log err
+                    }
+                });
+            }
+
+            await batchRequest.ExecuteAsync();
         }
     }
 }

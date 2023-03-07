@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace PeerStudy.Shared
 {
@@ -15,5 +16,13 @@ namespace PeerStudy.Shared
 
         [Parameter]
         public bool DisplayDeleteButton { get; set; }
+
+        [Parameter]
+        public EventCallback<string> OnDelete { get; set; }
+
+        private async Task HandleDelete()
+        {
+            await OnDelete.InvokeAsync(Title);
+        }
     }
 }

@@ -42,7 +42,8 @@ namespace PeerStudy.Core.DomainServices
                 Description = studentAssignment.Assignment.Description,
                 Title = studentAssignment.Assignment.Title,
                 Points = studentAssignment.Points,
-                CompletedAt = studentAssignment.CompletedAt
+                CompletedAt = studentAssignment.CompletedAt,
+                StudentAssignmentId = studentAssignment.Id
             };
 
             assignmentFilesModel.StudentAssignmentFiles = (await unitOfWork.StudentAssignmentFilesRepository.GetAllAsync(x =>
@@ -50,17 +51,16 @@ namespace PeerStudy.Core.DomainServices
             .Select(x => new StudentAssignmentFileModel
             {
                 FileDriveId = x.DriveFileId,
-                Name = x.FileName
+                Name = x.FileName,
+                Id = x.Id
             })
             .ToList();
 
             return assignmentFilesModel;
         }
 
-        public async Task<List<StudentAssignmentFileModel>> UploadWorkAsync(UploadAssignmentFilesModel model)
+        public async Task<List<StudentAssignmentFileModel>> UploadWorkAsync(UploadAssignmentFilesModel model, DateTime completedAt)
         {
-            // get student email and teacher email, also add app email
-            // get assignment resource folder id
             var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.AssignmentId ==
             model.AssignmentId && x.StudentId == model.StudentId, includeProperties: $"{nameof(Assignment)},{nameof(Student)}");
 
@@ -84,13 +84,14 @@ namespace PeerStudy.Core.DomainServices
 
             List<StudentAssignmentFileModel> uploadedFiles = new List<StudentAssignmentFileModel>();
 
-            return await SaveFilesAsync(model.Files, studentAssignment, assignmentDetails.AssignmentsDriveFolderId);
+            return await SaveFilesAsync(model.Files, studentAssignment, assignmentDetails.AssignmentsDriveFolderId, completedAt);
         }
 
         private async Task<List<StudentAssignmentFileModel>> SaveFilesAsync(
             List<UploadFileModel> files,
             StudentAssignment studentAssignment,
-            string driveFolderId)
+            string driveFolderId,
+            DateTime completedAt)
         {
             List<StudentAssignmentFile> studentAssignmentFiles = new List<StudentAssignmentFile>();
             var uploadedFilesDetails = new Dictionary<string, FileDetailsModel>();
@@ -124,8 +125,7 @@ namespace PeerStudy.Core.DomainServices
             }
 
             var savedFiles = await unitOfWork.StudentAssignmentFilesRepository.AddRangeAsync(studentAssignmentFiles);
-            studentAssignment.CompletedAt = DateTime.UtcNow;
-            await unitOfWork.StudentAssignmentsRepository.UpdateAsync(studentAssignment);
+            studentAssignment.CompletedAt = completedAt;
             await unitOfWork.SaveChangesAsync();
             return MapToAssignmentFileDetailsModels(savedFiles, uploadedFilesDetails);
         }
@@ -149,6 +149,14 @@ namespace PeerStudy.Core.DomainServices
             }
 
             return resourcesModels;
+        }
+
+        public async Task DeleteAsync(string driveFileId, Guid studentAssignmentFileId)
+        {
+            await fileService.DeleteAsync(driveFileId);
+
+            await unitOfWork.StudentAssignmentFilesRepository.RemoveAsync(studentAssignmentFileId);
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -17,5 +17,13 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task DeleteAsync(Guid assignmentId);
 
         Task GradeAssignmentAsync(SaveGradeModel model);
+
+        /// <summary>
+        /// Called when a student cancels submission of work for an assignment.
+        /// Resets the CompletedAt field from a StudentAssignment entity
+        /// </summary>
+        /// <param name="studentAssignmentId">The StudentAssignmentId</param>
+        /// <returns></returns>
+        Task ResetSubmitDateAsync(Guid studentAssignmentId);
     }
 }

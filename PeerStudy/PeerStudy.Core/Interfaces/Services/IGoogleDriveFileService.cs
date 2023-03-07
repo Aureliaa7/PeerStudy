@@ -14,5 +14,7 @@ namespace PeerStudy.Core.Interfaces.Services
         Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds);
 
         Task DeleteAsync(string resourceId);
+
+        Task DeleteRangeAsync(List<string> fileIds);
     }
 }

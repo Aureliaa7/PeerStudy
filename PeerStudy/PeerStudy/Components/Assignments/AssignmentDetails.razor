@@ -9,55 +9,94 @@
          HasData="@(assignmentDetails != null)"
          NotFoundMessage="@noFilesMessage">
 
-    <div>
-        <h3>@assignmentDetails.Title</h3>
+    <div class="assignment-details">
+        <h3>@assignmentDetails?.Title</h3>
         <hr />
-        <div>
-            @assignmentDetails.Deadline
+        <div class="deadline">
+            @assignmentDetails?.Deadline
         </div>
         <div>
-            @assignmentDetails.Description
+            @assignmentDetails?.Description
         </div>
+        <div class="student-work">
+            <div class="files">
+                @if (filesToBeUploaded.Any())
+                {
+                    @foreach (var file in filesToBeUploaded)
+                    {
+                        <AuthorizeView Roles="Student">
+                            <div class="assignment-file">
+                                <PeerStudyFile Title="@file.Name"
+                                       DisplayDeleteButton="!isUploadingFilesInProgress"
+                                       OnDelete="DeleteFile">
+                                </PeerStudyFile>
+                            </div>
+                        </AuthorizeView>
+                    }
+                }
+                else
+                {
+                    @foreach (var file in assignmentDetails.StudentAssignmentFiles)
+                    {
+                        <AuthorizeView Roles="Student">
+                            <div class="assignment-file">
+                                <PeerStudyFile IconLink="@file.IconLink"
+                                       Title="@file.Name"
+                                       DisplayDeleteButton="showDeleteFileButton"
+                                       OnDelete="DeleteFile"
+                                       WebViewLink="@file.WebViewLink">
+                                </PeerStudyFile>
+                            </div>
+                        </AuthorizeView>
 
-        <div>
-            @foreach (var file in assignmentDetails.StudentAssignmentFiles)
-            {
-                <AuthorizeView Roles="Student">
-                    <PeerStudyFile IconLink="@file.IconLink"
-                               Title="@file.Name"
-                               WebViewLink="@file.WebViewLink"
-                               DisplayDeleteButton="true">
-                    </PeerStudyFile>
-                </AuthorizeView>
+                        <AuthorizeView Roles="Teacher">
+                            <div class="assignment-file">
+                                <PeerStudyFile IconLink="@file.IconLink"
+                                       Title="@file.Name"
+                                       WebViewLink="@file.WebViewLink">
+                                </PeerStudyFile>
+                            </div>
+                        </AuthorizeView>
+                    }
+                }
+            </div>
 
-                <AuthorizeView Roles="Teacher">
-                    <PeerStudyFile IconLink="@file.IconLink"
-                               Title="@file.Name"
-                               WebViewLink="@file.WebViewLink">
-                    </PeerStudyFile>
-                </AuthorizeView>
-            }
+            <AuthorizeView Roles="Student">
+                <div class="center-elements">
+                    @if (assignmentDetails.CompletedAt != null && assignmentDetails.StudentAssignmentFiles != null && assignmentDetails.StudentAssignmentFiles.Any() && !filesToBeUploaded.Any())
+                    {
+                        <MatButton Style="@buttonStyles" Raised="true" OnClick="Unsubmit">Unsubmit</MatButton>
+                    }
+                    else if (assignmentDetails.CompletedAt == null && filesToBeUploaded.Any())
+                    {
+                        <MatButton Style="@buttonStyles"
+                               Raised="true"
+                               OnClick="Submit"
+                               Disabled="isUploadingFilesInProgress">
+                            Submit
+                        </MatButton>
+                    }
+                    @if (showUploadFilesButton)
+                    {
+                        <MatButton Style="@buttonStyles"
+                               Raised="true"
+                               OnClick="DisplayUploadFilesDialog"
+                               Disabled="isUploadingFilesInProgress">
+                            Upload file(s)
+                        </MatButton>
+                    }
+                </div>
+
+                <UploadFiles IsVisible="showUploadFileDialog"
+                             OnCancel="CloseUploadFilesDialog"
+                             OnUpload="Upload">
+                </UploadFiles>
+            </AuthorizeView>
         </div>
-        <AuthorizeView Roles="Student">
-            @if (assignmentDetails.StudentAssignmentFiles == null || !assignmentDetails.StudentAssignmentFiles.Any())
-            {
-                <MatButton Raised="true" OnClick="DisplayUploadFilesDialog">Upload files</MatButton>
-            }
-            else
-            {
-                <MatButton Raised="true" OnClick="Unsubmit">Unsubmit</MatButton>
-            }
-
-            <UploadFiles IsVisible="showUploadFileDialog"
-                         OnCancel="CloseUploadFilesDialog"
-                         OnUpload="Upload">
-            </UploadFiles>
-
-            <Alert Color="@alertColor" @bind-Visible="showAlertMessage">
-                <AlertDescription>@alertMessage</AlertDescription>
-                <CloseButton />
-            </Alert>
-        </AuthorizeView>
-
     </div>
 </Loading>
+
+<Alert Color="@alertColor" @bind-Visible="showAlertMessage">
+    <AlertDescription>@alertMessage</AlertDescription>
+    <CloseButton />
+</Alert>

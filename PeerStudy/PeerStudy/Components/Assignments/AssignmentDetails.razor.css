@@ -1,0 +1,30 @@
+﻿.assignment-details {
+    width: 90%;
+}
+ 
+.deadline {
+    float: right;
+}
+
+.assignment-file {
+    width: 80%;
+    flex-basis: calc(50% - 20px); /* set the width of each child element to 50% minus the gap */
+    margin: 10px;
+}
+
+.files {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.student-work {
+    width: 70%;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 15px;
+
+    margin: 20px auto 20px;
+}

@@ -10,6 +10,8 @@ namespace PeerStudy.Core.Interfaces.DomainServices
     {
         Task<AssignmentFilesModel> GetUploadedFilesByStudentAsync(Guid assignmentId, Guid studentId);
 
-        Task<List<StudentAssignmentFileModel>> UploadWorkAsync(UploadAssignmentFilesModel model);
+        Task<List<StudentAssignmentFileModel>> UploadWorkAsync(UploadAssignmentFilesModel model, DateTime completedAt);
+
+        Task DeleteAsync(string driveFileId, Guid studentAssignmentFileId);
     }
 }

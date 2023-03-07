@@ -1,0 +1,29 @@
+﻿.file {
+    border: 1px solid grey;
+    padding: 3px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.remove {
+    display: inline-block;
+    float: right;
+    height: 30px;
+    vertical-align: middle;
+    width: 25%;
+    text-align: end;
+    cursor: pointer;
+}
+
+a {
+    display: inline-block;
+    width: 70%;
+}
+
+span {
+    display: inline-block;
+    max-width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
