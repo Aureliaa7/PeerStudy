@@ -58,7 +58,7 @@ namespace PeerStudy.Components.Assignments
             showUploadFileDialog = false;
         }
 
-        private async void Upload(List<UploadFileModel> files)
+        private void Upload(List<UploadFileModel> files)
         {
             showUploadFileDialog = false;
             newlyAddedFiles.AddRange(files);
@@ -78,7 +78,7 @@ namespace PeerStudy.Components.Assignments
             showUploadFileDialog = true;
         }
 
-        private async void Unsubmit()
+        private async Task Unsubmit()
         {
             try
             {
@@ -105,7 +105,7 @@ namespace PeerStudy.Components.Assignments
             StateHasChanged();
         }
 
-        private async void DeleteFile(string fileName)
+        private async Task DeleteFile(string fileName)
         {
             showUploadFilesButton = true;
             filesToBeUploaded = filesToBeUploaded.Where(x => x.Name != fileName).ToList();
