@@ -1,9 +1,11 @@
 ﻿.assignment-details {
     width: 90%;
 }
- 
+
 .deadline {
-    float: right;
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: right;
 }
 
 .assignment-file {

@@ -84,8 +84,8 @@ namespace PeerStudy.Components.Assignments
             {
                 await AssignmentService.ResetSubmitDateAsync(assignmentDetails.StudentAssignmentId);
 
-                assignmentDetails.CompletedAt = null;
                 allFiles.Clear();
+                assignmentDetails.CompletedAt = null;
                 foreach (var file in assignmentDetails.StudentAssignmentFiles)
                 {
                     allFiles.Add(new UploadFileModel
@@ -110,6 +110,8 @@ namespace PeerStudy.Components.Assignments
             showUploadFilesButton = true;
             allFiles = allFiles.Where(x => x.Name != fileName).ToList();
             newlyAddedFiles = newlyAddedFiles.Where(x => x.Name != fileName).ToList();
+            DisplayAlert(Color.Info, "Deleting file...");
+
             if (assignmentDetails.StudentAssignmentFiles != null && 
                 assignmentDetails.StudentAssignmentFiles.Any(x => x.Name == fileName))
             {
@@ -118,6 +120,7 @@ namespace PeerStudy.Components.Assignments
                     var toBeDeleted = assignmentDetails.StudentAssignmentFiles.FirstOrDefault(x => x.Name == fileName);
                     await AssignmentFileService.DeleteAsync(toBeDeleted.FileDriveId, toBeDeleted.Id);
                     assignmentDetails.StudentAssignmentFiles.Remove(toBeDeleted);
+                    showAlertMessage = false;
                 }
                 catch (Exception ex)
                 {

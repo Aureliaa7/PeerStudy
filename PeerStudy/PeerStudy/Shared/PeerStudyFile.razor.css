@@ -27,3 +27,11 @@ span {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+img, span {
+    vertical-align: middle;
+}
+
+a:hover {
+    text-decoration: none;
+}

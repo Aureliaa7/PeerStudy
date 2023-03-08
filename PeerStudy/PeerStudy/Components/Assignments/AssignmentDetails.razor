@@ -20,8 +20,8 @@
         </div>
         <div class="student-work">
             <div class="files">
-                @if (allFiles.Any())
-                {
+                @if (allFiles.Any() || showUploadFilesButton)
+                    {
                     @foreach (var file in allFiles)
                     {
                         <AuthorizeView Roles="Student">
