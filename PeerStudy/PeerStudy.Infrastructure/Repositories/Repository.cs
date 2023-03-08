@@ -105,7 +105,7 @@ namespace PeerStudy.Infrastructure.Repositories
 
         public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
-            IQueryable<T> entities = Context.Set<T>().AsNoTracking();
+            IQueryable<T> entities = Context.Set<T>();
 
             if (filter != null)
             {

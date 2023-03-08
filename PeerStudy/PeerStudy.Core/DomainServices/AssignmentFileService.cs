@@ -126,6 +126,7 @@ namespace PeerStudy.Core.DomainServices
 
             var savedFiles = await unitOfWork.StudentAssignmentFilesRepository.AddRangeAsync(studentAssignmentFiles);
             studentAssignment.CompletedAt = completedAt;
+            await unitOfWork.StudentAssignmentsRepository.UpdateAsync(studentAssignment);
             await unitOfWork.SaveChangesAsync();
             return MapToAssignmentFileDetailsModels(savedFiles, uploadedFilesDetails);
         }

@@ -149,6 +149,7 @@ namespace PeerStudy.Core.DomainServices
             }
 
             studentAssignment.CompletedAt = null;
+            await unitOfWork.StudentAssignmentsRepository.UpdateAsync(studentAssignment);
             await unitOfWork.SaveChangesAsync();
         }
     }
