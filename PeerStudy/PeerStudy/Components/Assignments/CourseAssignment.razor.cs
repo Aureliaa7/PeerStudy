@@ -13,6 +13,9 @@ namespace PeerStudy.Components.Assignments
         public ExtendedAssignmentDetailsModel Assignment { get; set; }
 
         [Parameter]
+        public bool IsReadOnly { get; set; }
+
+        [Parameter]
         public EventCallback<SaveGradeModel> OnSaveGrade { get; set; }
 
         [Parameter]

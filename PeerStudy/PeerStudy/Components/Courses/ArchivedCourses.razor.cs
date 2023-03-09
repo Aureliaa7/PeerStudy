@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class ArchivedCourses : PeerStudyComponentBase<CourseDetailsModel>
+    public partial class ArchivedCourses : CoursesBase
     {
         [Inject]
         private ICourseService CourseService { get; set; }

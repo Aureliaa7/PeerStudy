@@ -32,7 +32,7 @@ namespace PeerStudy.Components.Accounts
             }
             else
             {
-                NavigationManager.NavigateTo("/");  //TODO: navigate to user's home page. Create a home component for each user type
+                NavigationManager.NavigateTo("/");
             }
 
             loginModel = new();

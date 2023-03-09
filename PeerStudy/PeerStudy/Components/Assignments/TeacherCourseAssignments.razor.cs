@@ -1,5 +1,5 @@
-﻿using MatBlazor;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
 using System;
@@ -14,6 +14,12 @@ namespace PeerStudy.Components.Assignments
         [Inject]
         public IAssignmentService AssignmentService { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+        [Inject]
+        public ICourseService CourseService { get; set; }
+
         [Parameter]
         public Guid CourseId { get; set; }
 
@@ -24,10 +30,12 @@ namespace PeerStudy.Components.Assignments
         private const int snackBarTimeout = 6000;
 
         private bool showMessage;
+        private bool isReadOnly;
         private string message;
 
         protected override async Task OnInitializedAsync()
         {
+            isReadOnly = (await CourseService.GetCourseStatusAsync(CourseId)) == CourseStatus.Archived;
             await InitializeDataAsync();
         }
 
@@ -61,10 +69,9 @@ namespace PeerStudy.Components.Assignments
             }
         }
 
-        private async Task ViewSubmittedWork((Guid assignmentId, Guid studentId) data)
+        private void ViewSubmittedWork((Guid assignmentId, Guid studentId) data)
         {
-            // TODO: redirect to a page (this will also be used for students to upload/remove uploaded files for an assignment)
-            await Task.Delay(0);
+            NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{data.studentId}/{data.assignmentId}/assignment-details");
         }
 
         private void DisplayErrorMessage(string errorMessage)

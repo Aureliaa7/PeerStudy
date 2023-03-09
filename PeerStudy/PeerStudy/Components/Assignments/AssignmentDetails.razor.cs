@@ -1,5 +1,6 @@
 ﻿using Blazorise;
 using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Resources;
@@ -18,11 +19,17 @@ namespace PeerStudy.Components.Assignments
         [Inject]
         public IAssignmentService AssignmentService { get; set; }
 
+        [Inject]
+        public ICourseService CourseService { get; set; }
+
         [Parameter]
         public Guid StudentId { get; set; }
 
         [Parameter]
         public Guid AssignmentId { get; set; }
+
+        [Parameter]
+        public Guid CourseId { get; set; }
 
         [Parameter]
         public string CourseTitle { get; set; }
@@ -34,6 +41,7 @@ namespace PeerStudy.Components.Assignments
         private bool showDeleteFileButton;
         private bool showUploadFilesButton;
         private bool isUploadingFilesInProgress;
+        private bool isReadOnly;
         private string alertMessage;
         private Color alertColor;
         private List<UploadFileModel> allFiles = new List<UploadFileModel>();
@@ -46,6 +54,7 @@ namespace PeerStudy.Components.Assignments
         {
             isLoading = true;
             assignmentDetails = await AssignmentFileService.GetUploadedFilesByStudentAsync(AssignmentId, StudentId);
+            isReadOnly = (await CourseService.GetCourseStatusAsync(CourseId)) == CourseStatus.Archived;
             if (assignmentDetails.CompletedAt == null)
             {
                 showUploadFilesButton = true;
@@ -119,14 +128,14 @@ namespace PeerStudy.Components.Assignments
                 {
                     var toBeDeleted = assignmentDetails.StudentAssignmentFiles.FirstOrDefault(x => x.Name == fileName);
                     await AssignmentFileService.DeleteAsync(toBeDeleted.FileDriveId, toBeDeleted.Id);
-                    assignmentDetails.StudentAssignmentFiles.Remove(toBeDeleted);
-                    showAlertMessage = false;
+                    assignmentDetails.StudentAssignmentFiles.Remove(toBeDeleted);      
                 }
                 catch (Exception ex)
                 {
                     DisplayAlert(Color.Danger, "The file could not be deleted...");
                 }
             }
+            showAlertMessage = false;
         }
 
         private async Task Submit()
@@ -171,6 +180,14 @@ namespace PeerStudy.Components.Assignments
                 await Task.Delay(3500);
                 showAlertMessage = false;
             });
+        }
+
+        private bool ShowUnsubmitButton()
+        {
+            return assignmentDetails.CompletedAt != null &&
+                assignmentDetails.StudentAssignmentFiles != null &&
+                assignmentDetails.StudentAssignmentFiles.Any() &&
+                !allFiles.Any();
         }
     }
 }

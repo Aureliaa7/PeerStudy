@@ -14,10 +14,13 @@
                 </MatExpansionPanelSubHeader>
             </MatExpansionPanelSummary>
             <MatExpansionPanelDetails>
-                <div class="delete-assignment">
-                    <MatButton Icon="@MatIconNames.Delete" OnClick="DeleteAssignment"></MatButton>
-                </div>
-                <DataGrid TItem="GradeAssignmentModel"
+
+                @if (!IsReadOnly)
+                {
+                    <div class="delete-assignment">
+                        <MatButton Icon="@MatIconNames.Delete" OnClick="DeleteAssignment"></MatButton>
+                    </div>
+                    <DataGrid TItem="GradeAssignmentModel"
                           Data="@Assignment.Students"
                           Responsive
                           ShowPager
@@ -29,55 +32,55 @@
                           EditMode="DataGridEditMode.Inline"
                           PagerPosition="DataGridPagerPosition.Bottom"
                           PagerOptions="new(){ ButtonSize=Size.Small }">
-                    <DataGridColumns>
-                        <DataGridCommandColumn />
-                        <DataGridColumn Field="@nameof(GradeAssignmentModel.StudentName)" Caption="Name" />
-                        <DataGridColumn Field="@nameof(GradeAssignmentModel.Points)" Caption="Points" Editable>
-                            <EditTemplate>
-                                <NumericEdit TValue="int" Value="@((int)context.CellValue)" ValueChanged="@( v => context.CellValue = v)" />
-                            </EditTemplate>
-                        </DataGridColumn>
-                    </DataGridColumns>
+                        <DataGridColumns>
+                            <DataGridCommandColumn />
+                            <DataGridColumn Field="@nameof(GradeAssignmentModel.StudentName)" Caption="Name" />
+                            <DataGridColumn Field="@nameof(GradeAssignmentModel.Points)" Caption="Points" Editable>
+                                <EditTemplate>
+                                    <NumericEdit TValue="int" Value="@((int)context.CellValue)" ValueChanged="@( v => context.CellValue = v)" />
+                                </EditTemplate>
+                            </DataGridColumn>
+                        </DataGridColumns>
 
-                    <ButtonRowTemplate>
-                        <Button Color="Color.Primary" Disabled="(selectedRow?.Points is null)" Clicked="context.EditCommand.Clicked">Grade assignment</Button>
-                        <Button Color="Color.Primary" Disabled="(selectedRow is null)" Clicked="ViewSubmittedWork">View work</Button>
-                    </ButtonRowTemplate>
+                        <ButtonRowTemplate>
+                            <Button Color="Color.Primary" Disabled="(selectedRow?.Points is null)" Clicked="context.EditCommand.Clicked">Grade assignment</Button>
+                            <Button Color="Color.Primary" Disabled="(selectedRow is null)" Clicked="ViewSubmittedWork">View work</Button>
+                        </ButtonRowTemplate>
 
-                    <PageButtonTemplate>
-                        <Span TextColor="TextColor.Success">
-                            @context.PageNumber
-                        </Span>
-                    </PageButtonTemplate>
-                    <NextPageButtonTemplate><Icon Name="IconName.StepForward" TextColor="TextColor.Success" /></NextPageButtonTemplate>
-                    <PreviousPageButtonTemplate><Icon Name="IconName.StepBackward" TextColor="TextColor.Success" /></PreviousPageButtonTemplate>
-                    <LastPageButtonTemplate><Icon Name="IconName.Forward" TextColor="TextColor.Success" /></LastPageButtonTemplate>
-                    <FirstPageButtonTemplate><Icon Name="IconName.Backward" TextColor="TextColor.Success" /></FirstPageButtonTemplate>
-                    <TotalItemsTemplate><Badge Color="Color.Success">@context.TotalItems total items</Badge></TotalItemsTemplate>
-                    <TotalItemsShortTemplate><Badge Color="Color.Success">@context.TotalItems</Badge></TotalItemsShortTemplate>
-                    <ItemsPerPageTemplate></ItemsPerPageTemplate>
-                    <PageSelectorTemplate>
-                        <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPage" Size="Size.Small">
-                            @for (int i = context.FirstVisiblePage; i <= context.LastVisiblePage; ++i)
-                                {
-                                    var pageNumber = i;
-                                    <SelectItem Value="@pageNumber">@pageNumber</SelectItem>
-                                }
-                            </Select>
-                        </PageSelectorTemplate>
-                        <PageSizesTemplate>
-                            <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPageSize" Size="Size.Small">
-                                @foreach (var pageSize in context.PageSizes)
-                                {
-                                    <SelectItem Value="@pageSize">@pageSize</SelectItem>
-                                }
-                            </Select>
-                        </PageSizesTemplate>
-                    </DataGrid>
-
-                </MatExpansionPanelDetails>
-            </MatExpansionPanel>
-        </MatAccordion>
+                        <PageButtonTemplate>
+                            <Span TextColor="TextColor.Success">
+                                @context.PageNumber
+                            </Span>
+                        </PageButtonTemplate>
+                        <NextPageButtonTemplate><Icon Name="IconName.StepForward" TextColor="TextColor.Success" /></NextPageButtonTemplate>
+                        <PreviousPageButtonTemplate><Icon Name="IconName.StepBackward" TextColor="TextColor.Success" /></PreviousPageButtonTemplate>
+                        <LastPageButtonTemplate><Icon Name="IconName.Forward" TextColor="TextColor.Success" /></LastPageButtonTemplate>
+                        <FirstPageButtonTemplate><Icon Name="IconName.Backward" TextColor="TextColor.Success" /></FirstPageButtonTemplate>
+                        <TotalItemsTemplate><Badge Color="Color.Success">@context.TotalItems total items</Badge></TotalItemsTemplate>
+                        <TotalItemsShortTemplate><Badge Color="Color.Success">@context.TotalItems</Badge></TotalItemsShortTemplate>
+                        <ItemsPerPageTemplate></ItemsPerPageTemplate>
+                        <PageSelectorTemplate>
+                            <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPage" Size="Size.Small">
+                                @for (int i = context.FirstVisiblePage; i <= context.LastVisiblePage; ++i)
+                                    {
+                                        var pageNumber = i;
+                                        <SelectItem Value="@pageNumber">@pageNumber</SelectItem>
+                                    }
+                                </Select>
+                            </PageSelectorTemplate>
+                            <PageSizesTemplate>
+                                <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPageSize" Size="Size.Small">
+                                    @foreach (var pageSize in context.PageSizes)
+                                    {
+                                        <SelectItem Value="@pageSize">@pageSize</SelectItem>
+                                    }
+                                </Select>
+                            </PageSizesTemplate>
+                        </DataGrid>
+                }
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+    </MatAccordion>
 </div>
 
 <ConfirmationPopup IsOpen="showConfirmationPopup"

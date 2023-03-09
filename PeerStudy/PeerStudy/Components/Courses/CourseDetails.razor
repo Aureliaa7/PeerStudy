@@ -13,26 +13,29 @@
 
 <AuthorizeView Roles="Teacher">
     <div>
-        <MatButton OnClick="ToggleShowCreateMenu">
-            <img src="/images/icons8-plus.svg" />
-        </MatButton>
-
-        @if (showCreateMenu)
+        @if (!isReadOnly)
         {
-            <div class="create-menu">
-                <div class="create-menu-btn">
-                    <MatButton Style="@menuButtonsStyles" OnClick="ShowUploadFileDialog">File</MatButton>
+            <MatButton OnClick="ToggleShowCreateMenu">
+                <img src="/images/icons8-plus.svg" />
+            </MatButton>
+
+            @if (showCreateMenu)
+            {
+                <div class="create-menu">
+                    <div class="create-menu-btn">
+                        <MatButton Style="@menuButtonsStyles" OnClick="ShowUploadFileDialog">File</MatButton>
+                    </div>
+                    <div class="create-menu-btn">
+                        <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateAssignmentDialog">Assignment</MatButton>
+                    </div>
+                    <div class="create-menu-btn">
+                        @if (courseDetails != null && !courseDetails.HasStudyGroups)
+                        {
+                            <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateGroupsDialog">Study groups</MatButton>
+                        }
+                    </div>
                 </div>
-                <div class="create-menu-btn">
-                    <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateAssignmentDialog">Assignment</MatButton>
-                </div>
-                <div class="create-menu-btn">
-                    @if (courseDetails != null && !courseDetails.HasStudyGroups)
-                    {
-                        <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateGroupsDialog">Study groups</MatButton>
-                    }
-                </div>
-            </div>
+            }
         }
     </div>
 
@@ -62,6 +65,7 @@
 <AuthorizeView>
     <CourseResources Resources="data"
                      IsLoading="isLoading"
+                     IsReadOnly="isReadOnly"
                      OnDeleteResource="DeleteResource">
     </CourseResources>
 </AuthorizeView>

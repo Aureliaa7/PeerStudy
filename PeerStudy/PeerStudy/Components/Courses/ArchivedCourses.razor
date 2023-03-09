@@ -2,10 +2,11 @@
 
 @page "/archived-courses"
 @attribute [Authorize]
-@inherits PeerStudyComponentBase<CourseDetailsModel>
+@inherits CoursesBase
 
 
 <CoursesList Courses="data"
              IsLoading="isLoading"
-             CoursesNotFoundMessage="@noCoursesMessage">
+             CoursesNotFoundMessage="@noCoursesMessage"
+             OnCourseClicked="CourseClickedHandler">
 </CoursesList>

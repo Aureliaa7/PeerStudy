@@ -42,7 +42,7 @@ namespace PeerStudy.Components.Assignments
 
         private void HandleClickedAssignment(Guid assignmentId)
         {
-            NavigationManager.NavigateTo($"/{CourseTitle}/{StudentId}/{assignmentId}/assignment-details");
+            NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{StudentId}/{assignmentId}/assignment-details");
         }
     }
 }

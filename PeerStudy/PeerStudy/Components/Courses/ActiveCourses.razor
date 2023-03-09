@@ -1,8 +1,8 @@
 ﻿@using PeerStudy.Core.Models.Courses
 
-@page "/active-courses"
+@page "/"
 @attribute [Authorize]
-@inherits PeerStudyComponentBase<CourseDetailsModel>
+@inherits CoursesBase
 
 
 <AuthorizeView Roles="Teacher">

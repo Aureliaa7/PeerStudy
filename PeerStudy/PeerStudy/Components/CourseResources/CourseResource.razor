@@ -22,11 +22,15 @@
                         </a>
                         <div class="created-at">@ResourceDetails.CreatedAt</div>
                     </div>
-                    <AuthorizeView Roles="Teacher">
-                        <div class="delete-button">
-                            <MatButton Icon="@MatIconNames.Delete" OnClick="HandleDeleteResource"></MatButton>
-                        </div>
-                    </AuthorizeView>
+
+                    @if (!IsReadOnly)
+                    {
+                        <AuthorizeView Roles="Teacher">
+                            <div class="delete-button">
+                                <MatButton Icon="@MatIconNames.Delete" OnClick="HandleDeleteResource"></MatButton>
+                            </div>
+                        </AuthorizeView>
+                    }
                 }
             </MatExpansionPanelDetails>
         </MatExpansionPanel>

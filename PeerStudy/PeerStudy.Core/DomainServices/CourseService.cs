@@ -195,23 +195,14 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task<CourseDetailsModel> GetDetailsAsync(Guid courseId)
         {
-            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId, includeProperties: nameof(Teacher));
-
-            if (course == null)
-            {
-                throw new EntityNotFoundException();
-            }
+            var course = await GetByIdAsync(courseId, nameof(Teacher));
 
             return MapToCourseDetails(course);
         }
 
         public async Task<List<EnrolledStudentModel>> GetStudentsAsync(Guid courseId)
         {
-            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId, includeProperties: $"{nameof(Course.CourseEnrollments)}.{nameof(StudentCourse.Student)}");  
-            if (course == null)
-            {
-                throw new EntityNotFoundException($"Course with id: {courseId} was not found!");
-            }
+            var course = await GetByIdAsync(courseId, $"{nameof(Course.CourseEnrollments)}.{nameof(StudentCourse.Student)}");
 
             var students = course.CourseEnrollments.Select(x => new EnrolledStudentModel
             {
@@ -221,6 +212,24 @@ namespace PeerStudy.Core.DomainServices
             .ToList();
 
             return students;
+        }
+
+        public async Task<CourseStatus> GetCourseStatusAsync(Guid courseId)
+        {
+            var course = await GetByIdAsync(courseId);
+
+            return course.Status;
+        }
+
+        private async Task<Course> GetByIdAsync(Guid id, string propertiesToBeIncluded = "")
+        {
+            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == id, includeProperties: propertiesToBeIncluded);
+            if (course == null)
+            {
+                throw new EntityNotFoundException($"Course with id: {id} was not found!");
+            }
+
+            return course;
         }
     }
 }

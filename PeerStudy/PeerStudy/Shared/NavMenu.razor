@@ -9,20 +9,20 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <AuthorizeView Roles="Teacher">
+         <AuthorizeView>
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                <NavLink class="nav-link" href="/">
+                    <span class="oi oi-book" aria-hidden="true"></span> Active Courses
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/archived-courses">
+                    <span class="oi oi-book" aria-hidden="true"></span> Archived Courses
                 </NavLink>
             </div>
         </AuthorizeView>
 
         <AuthorizeView Roles="Student">
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
-                </NavLink>
-            </div>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/courses/enroll">
                     <span class="oi oi-plus" aria-hidden="true"></span> Enroll in courses
@@ -31,19 +31,6 @@
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/my-study-groups">
                     <span class="oi oi-people" aria-hidden="true"></span> My study groups
-                </NavLink>
-            </div>
-        </AuthorizeView>
-
-        <AuthorizeView>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/active-courses">
-                    <span class="oi oi-book" aria-hidden="true"></span> Active Courses
-                </NavLink>
-            </div>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/archived-courses">
-                    <span class="oi oi-book" aria-hidden="true"></span> Archived Courses
                 </NavLink>
             </div>
         </AuthorizeView>

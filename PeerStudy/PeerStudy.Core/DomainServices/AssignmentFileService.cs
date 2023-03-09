@@ -46,15 +46,13 @@ namespace PeerStudy.Core.DomainServices
                 StudentAssignmentId = studentAssignment.Id
             };
 
-            assignmentFilesModel.StudentAssignmentFiles = (await unitOfWork.StudentAssignmentFilesRepository.GetAllAsync(x =>
-                x.StudentAssignment.AssignmentId == assignmentId && x.StudentAssignment.StudentId == studentId))
-            .Select(x => new StudentAssignmentFileModel
-            {
-                FileDriveId = x.DriveFileId,
-                Name = x.FileName,
-                Id = x.Id
-            })
+            var studentAssignmentFiles = (await unitOfWork.StudentAssignmentFilesRepository.GetAllAsync(x =>
+                x.StudentAssignment.AssignmentId == assignmentId && x.StudentAssignment.StudentId == studentId, includeProperties: nameof(StudentAssignment)))
             .ToList();
+
+            var fileIds = studentAssignmentFiles.Select(x => x.DriveFileId).ToList();
+            var filesDetails = await fileService.GetFilesDetailsAsync(fileIds);
+            assignmentFilesModel.StudentAssignmentFiles = MapToAssignmentFileDetailsModels(studentAssignmentFiles, filesDetails);
 
             return assignmentFilesModel;
         }

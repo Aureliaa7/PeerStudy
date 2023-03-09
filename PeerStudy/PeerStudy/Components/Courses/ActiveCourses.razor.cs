@@ -10,13 +10,10 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Components.Courses
 {
-    public partial class ActiveCourses : PeerStudyComponentBase<CourseDetailsModel>
+    public partial class ActiveCourses : CoursesBase
     {
         [Inject]
         private ICourseService CourseService { get; set; }
-
-        [Inject]
-        private NavigationManager NavigationManager { get; set; }
 
         [Inject]
         private ICacheService CacheService { get; set; }
@@ -143,23 +140,6 @@ namespace PeerStudy.Components.Courses
             {
                 showArchiveCourseResult = true;
                 archiveCourseMessage = "The course could not be archived...";
-            }
-        }
-
-        private void CourseClickedHandler(CourseDetailsModel courseDetails)
-        {
-            // redirect the user to specific page
-            if (isTeacher && courseDetails.TeacherId == currentUserId)
-            {
-                NavigationManager.NavigateTo($"/{currentUserId}/courses/{courseDetails.Id}/resources");
-            }
-            else if (isStudent)
-            {
-                NavigationManager.NavigateTo($"/{currentUserId}/my-courses/{courseDetails.Id}/resources");
-            }
-            else
-            {
-                NavigationManager.NavigateTo("/forbidden");  //TOD0: create forbidden comp.
             }
         }
     }

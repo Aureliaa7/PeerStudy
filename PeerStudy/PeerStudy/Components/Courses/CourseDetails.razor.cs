@@ -1,7 +1,7 @@
 ﻿using Blazorise;
 using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
-using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.Resources;
@@ -20,9 +20,6 @@ namespace PeerStudy.Components.Courses
 
         [Inject]
         private IStudyGroupService StudyGroupService { get; set; }
-
-        [Inject]
-        private ICacheService CacheService { get; set; }
 
         [Inject]
         private ICourseService CourseService { get; set; }
@@ -52,6 +49,7 @@ namespace PeerStudy.Components.Courses
         private Color alertColor;
 
         private bool showCreateStudyGroupsDialog;
+        private bool isReadOnly;
 
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
         private int[] studyGroupsNoMembers = new int[3] { 3, 4, 5 };  //TODO: should be moved to constants file
@@ -71,6 +69,7 @@ namespace PeerStudy.Components.Courses
         {
             await InitializeDataAsync();
             await SetCurrentCourseDetailsAsync();
+            isReadOnly = courseDetails.Status == CourseStatus.Archived;
             UpdateNavigationMenu();
 
             userEmail = await AuthService.GetCurrentUserEmailAsync();
@@ -78,16 +77,7 @@ namespace PeerStudy.Components.Courses
 
         private async Task SetCurrentCourseDetailsAsync()
         {
-            var activeCourses = CacheService.Get<List<CourseDetailsModel>>($"{currentUserId}_{ClientConstants.ActiveCoursesCacheKey}");
-            if (activeCourses == null)
-            {
-                courseDetails = await CourseService.GetDetailsAsync(CourseId);
-            }
-            else
-            {
-                courseDetails = activeCourses.FirstOrDefault(x => x.Id == CourseId) ??
-                    await CourseService.GetDetailsAsync(CourseId);
-            }
+            courseDetails = await CourseService.GetDetailsAsync(CourseId);
         }
 
         private void UpdateNavigationMenu()

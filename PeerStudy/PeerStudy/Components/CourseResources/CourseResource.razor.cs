@@ -14,6 +14,9 @@ namespace PeerStudy.Components.CourseResources
         public CourseResourceDetailsModel ResourceDetails { get; set; }
 
         [Parameter]
+        public bool IsReadOnly { get; set; }
+
+        [Parameter]
         public EventCallback<Guid> OnDeleteResource { get; set; }   
 
         private async Task HandleDeleteResource()

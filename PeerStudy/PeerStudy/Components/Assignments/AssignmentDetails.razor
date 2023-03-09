@@ -1,6 +1,6 @@
 ﻿@using PeerStudy.Components.Courses
 
-@page "/{courseTitle}/{studentId:guid}/{assignmentId:guid}/assignment-details"
+@page "/{courseTitle}/{courseId:guid}/{studentId:guid}/{assignmentId:guid}/assignment-details"
 @attribute [Authorize]
 
 <CourseHeader Title="@CourseTitle"></CourseHeader>
@@ -18,27 +18,25 @@
         <div>
             @assignmentDetails?.Description
         </div>
-        <div class="student-work">
-            <div class="files">
-                @if (allFiles.Any() || showUploadFilesButton)
+        <AuthorizeView Roles="Student">
+            <div class="student-work">
+                <div class="files">
+                    @if (allFiles.Any() || showUploadFilesButton)
                     {
-                    @foreach (var file in allFiles)
-                    {
-                        <AuthorizeView Roles="Student">
+                        @foreach (var file in allFiles)
+                        {
                             <div class="assignment-file">
                                 <PeerStudyFile Title="@file.Name"
                                        DisplayDeleteButton="!isUploadingFilesInProgress"
                                        OnDelete="DeleteFile">
                                 </PeerStudyFile>
                             </div>
-                        </AuthorizeView>
+                        }
                     }
-                }
-                else
-                {
-                    @foreach (var file in assignmentDetails.StudentAssignmentFiles)
+                    else if (assignmentDetails.StudentAssignmentFiles != null)
                     {
-                        <AuthorizeView Roles="Student">
+                        @foreach (var file in assignmentDetails.StudentAssignmentFiles)
+                        {
                             <div class="assignment-file">
                                 <PeerStudyFile IconLink="@file.IconLink"
                                        Title="@file.Name"
@@ -47,52 +45,69 @@
                                        WebViewLink="@file.WebViewLink">
                                 </PeerStudyFile>
                             </div>
-                        </AuthorizeView>
-
-                        <AuthorizeView Roles="Teacher">
-                            <div class="assignment-file">
-                                <PeerStudyFile IconLink="@file.IconLink"
-                                       Title="@file.Name"
-                                       WebViewLink="@file.WebViewLink">
-                                </PeerStudyFile>
-                            </div>
-                        </AuthorizeView>
-                    }
-                }
-            </div>
-
-            <AuthorizeView Roles="Student">
-                <div class="center-elements">
-                    @if (assignmentDetails.CompletedAt != null && assignmentDetails.StudentAssignmentFiles != null && assignmentDetails.StudentAssignmentFiles.Any() && !allFiles.Any())
-                    {
-                        <MatButton Style="@buttonStyles" Raised="true" OnClick="Unsubmit">Unsubmit</MatButton>
-                    }
-                    else if (assignmentDetails.CompletedAt == null && allFiles.Any())
-                    {
-                        <MatButton Style="@buttonStyles"
-                               Raised="true"
-                               OnClick="Submit"
-                               Disabled="isUploadingFilesInProgress">
-                            Submit
-                        </MatButton>
-                    }
-                    @if (showUploadFilesButton)
-                    {
-                        <MatButton Style="@buttonStyles"
-                               Raised="true"
-                               OnClick="DisplayUploadFilesDialog"
-                               Disabled="isUploadingFilesInProgress">
-                            Upload file(s)
-                        </MatButton>
+                        }
                     }
                 </div>
 
-                <UploadFiles IsVisible="showUploadFileDialog"
+                @if (!isReadOnly)
+                {
+                    <div class="center-elements">
+                        @if (ShowUnsubmitButton())
+                        {
+                            <MatButton Style="@buttonStyles" Raised="true" OnClick="Unsubmit">Unsubmit</MatButton>
+                        }
+                        else if (assignmentDetails.CompletedAt == null && allFiles.Any())
+                        {
+                            <MatButton Style="@buttonStyles"
+                               Raised="true"
+                               OnClick="Submit"
+                               Disabled="isUploadingFilesInProgress">
+                                Submit
+                            </MatButton>
+                        }
+                        @if (showUploadFilesButton)
+                        {
+                            <MatButton Style="@buttonStyles"
+                               Raised="true"
+                               OnClick="DisplayUploadFilesDialog"
+                               Disabled="isUploadingFilesInProgress">
+                                Upload file(s)
+                            </MatButton>
+                        }
+                    </div>
+
+                    <UploadFiles IsVisible="showUploadFileDialog"
                              OnCancel="CloseUploadFilesDialog"
                              OnUpload="Upload">
-                </UploadFiles>
-            </AuthorizeView>
-        </div>
+                    </UploadFiles>
+                }
+            </div>
+        </AuthorizeView>
+
+
+        @* Teacher*@
+        <AuthorizeView Roles="Teacher">
+            <div class="student-work">
+                <div class="files">
+                    @if (assignmentDetails.StudentAssignmentFiles != null && assignmentDetails.StudentAssignmentFiles.Any())
+                    {
+                        @foreach (var file in assignmentDetails.StudentAssignmentFiles)
+                        {
+                            <div class="assignment-file">
+                                <PeerStudyFile IconLink="@file.IconLink"
+                                        Title="@file.Name"
+                                        WebViewLink="@file.WebViewLink">
+                                </PeerStudyFile>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <h5>Missing work...</h5>
+                    }
+                </div>
+            </div>
+        </AuthorizeView>
     </div>
 </Loading>
 
