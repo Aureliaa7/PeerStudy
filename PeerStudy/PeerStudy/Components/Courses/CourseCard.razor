@@ -18,7 +18,7 @@
                     @($"{Course.StartDate.ToString("dddd dd MMMM", CultureInfo.CreateSpecificCulture("en-US"))} - " +
                     $"{Course.EndDate.ToString("dddd dd MMMM", CultureInfo.CreateSpecificCulture("en-US"))}")
                 </div>
-                <div>x/y students enrolled</div>
+                <div>@Course.NoEnrolledStudents/@Course.NoMaxStudents students enrolled</div>
             </div>
         </MatBody2>
     </MatCardContent>
