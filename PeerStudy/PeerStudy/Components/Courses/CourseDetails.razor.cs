@@ -124,7 +124,7 @@ namespace PeerStudy.Components.Courses
 
             await Task.Run(async () => 
             {
-                var uploadFileModels = await GetCreateResourceModelsAsync(filesModels);
+                var uploadFileModels = GetCreateResourceModels(filesModels);
                 var createdResources = await CourseResourceService.UploadResourcesAsync(uploadFileModels); 
                 data.AddRange(createdResources);
             });
@@ -141,23 +141,26 @@ namespace PeerStudy.Components.Courses
             });
         }
 
-        private async Task<List<UploadCourseResourceModel>> GetCreateResourceModelsAsync(List<UploadFileModel> files)
+        private UploadCourseResourcesModel GetCreateResourceModels(List<UploadFileModel> files)
         {
-            var uploadFileModels = new List<UploadCourseResourceModel>();
+            var uploadFileModels = new List<UploadDriveFileModel>();
 
             foreach (var file in files)
             {
-                uploadFileModels.Add(new UploadCourseResourceModel
+                uploadFileModels.Add(new UploadDriveFileModel
                 {
                     FileContent = file.FileContent,
                     Name = file.Name,
                     OwnerEmail = userEmail,
-                    // Type = file.Type,
-                    CourseId = CourseId
+                    // Type = file.Type, //TODO: check why file.type was used
                 });
             }
 
-            return uploadFileModels;
+            return new UploadCourseResourcesModel
+            {
+                CourseId = CourseId,
+                Resources = uploadFileModels
+            };
         }
 
         private void CloseUploadFileDialog()
@@ -223,7 +226,8 @@ namespace PeerStudy.Components.Courses
             ShowAlert(Color.Info, "Adding assignment...");
             assignmentModel.CourseId = CourseId;
             assignmentModel.TeacherId = currentUserId;
-      
+            assignmentModel.DueDate = assignmentModel.DueDate.AddDays(1); // fix for MatDatePicker
+
             try
             {
                 await Task.Run(async () =>

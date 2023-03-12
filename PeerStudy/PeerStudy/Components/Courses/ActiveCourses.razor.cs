@@ -69,6 +69,10 @@ namespace PeerStudy.Components.Courses
         public async Task SaveCourse()
         {
             bool isValidData = ModelValidator.IsModelValid<CourseModel>(CourseModel);
+
+            // fix for MatDatePicker
+            CourseModel.StartDate = CourseModel.StartDate.AddDays(1);
+            CourseModel.EndDate = CourseModel.EndDate.AddDays(1);
             if (isValidData)
             {
                 displayCourseCreationMessage = true;

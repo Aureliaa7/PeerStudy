@@ -17,15 +17,18 @@ namespace PeerStudy.Core.DomainServices
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IGoogleDriveFileService fileService;
+        private readonly IGoogleDrivePermissionService drivePermissionService;
 
-        public AssignmentFileService(IUnitOfWork unitOfWork, IGoogleDriveFileService fileService)
+        public AssignmentFileService(
+            IUnitOfWork unitOfWork,
+            IGoogleDriveFileService fileService,
+            IGoogleDrivePermissionService drivePermissionService)
         {
             this.unitOfWork = unitOfWork;
             this.fileService = fileService;
+            this.drivePermissionService = drivePermissionService;
         }
 
-
-        //TODO: when uploading files, the teacher should have read permissions, and the student write permissions
         public async Task<AssignmentFilesModel> GetUploadedFilesByStudentAsync(Guid assignmentId, Guid studentId)
         {
             var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x =>
@@ -80,16 +83,20 @@ namespace PeerStudy.Core.DomainServices
                 throw new EntityNotFoundException($"Could not find details for assignment with id {model.AssignmentId}!");
             }
 
-            List<StudentAssignmentFileModel> uploadedFiles = new List<StudentAssignmentFileModel>();
-
-            return await SaveFilesAsync(model.Files, studentAssignment, assignmentDetails.AssignmentsDriveFolderId, completedAt);
+            return await SaveFilesAsync(
+                model.Files, 
+                studentAssignment, 
+                assignmentDetails.AssignmentsDriveFolderId, 
+                completedAt, 
+                assignmentDetails.TeacherEmail);
         }
 
         private async Task<List<StudentAssignmentFileModel>> SaveFilesAsync(
             List<UploadFileModel> files,
             StudentAssignment studentAssignment,
             string driveFolderId,
-            DateTime completedAt)
+            DateTime completedAt,
+            string teacherEmail)
         {
             List<StudentAssignmentFile> studentAssignmentFiles = new List<StudentAssignmentFile>();
             var uploadedFilesDetails = new Dictionary<string, FileDetailsModel>();
@@ -121,6 +128,11 @@ namespace PeerStudy.Core.DomainServices
                     //TODO: log ex
                 }
             }
+
+            await drivePermissionService.SetPermissionsAsync(
+                studentAssignmentFiles.Select(x => x.DriveFileId).ToList(), 
+                new List<string> { teacherEmail }, 
+                "reader");
 
             var savedFiles = await unitOfWork.StudentAssignmentFilesRepository.AddRangeAsync(studentAssignmentFiles);
             studentAssignment.CompletedAt = completedAt;

@@ -1,20 +1,23 @@
 ﻿@using PeerStudy.Core.Models.Courses
 
-@page "/"
+@page "/active-courses"
 @attribute [Authorize]
 @inherits CoursesBase
 
 
 <AuthorizeView Roles="Teacher">
-    <div>
-        <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
-            <img src="/images/icons8-plus.svg" />
-        </MatButton>
-        <Alert Color="Color.Danger" @bind-Visible="showErrorMessage">
-            <AlertDescription>An error occurred while saving the course...</AlertDescription>
-            <CloseButton />
-        </Alert>
-    </div>
+    @if (!isLoading)
+    {
+        <div>
+            <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
+                <img src="/images/icons8-plus.svg" />
+            </MatButton>
+            <Alert Color="Color.Danger" @bind-Visible="showErrorMessage">
+                <AlertDescription>An error occurred while saving the course...</AlertDescription>
+                <CloseButton />
+            </Alert>
+        </div>
+    }
     <CreateUpdateCourseDialog IsVisible="displayCourseDialog"
                               IsEditCourseEnabled="false"
                               CourseModel="CourseModel"

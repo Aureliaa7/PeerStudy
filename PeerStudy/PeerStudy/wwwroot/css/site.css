@@ -88,6 +88,13 @@ body::-webkit-scrollbar {
     color: #6699cc;
 }
 
+.app-background-image {
+    /*    background-image: url("/images/background-image2.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;*/
+    background-color: #E8E8E8;
+}
+
 /* custom styling rules applied globally - MatBlazor */
 .alert {
     border-radius: 50px;
@@ -113,6 +120,7 @@ body::-webkit-scrollbar {
 
 .mdc-dialog .mdc-dialog__surface {
     background-color: #BCD4E6;
+    top: -60px;
 }
 
 .mdc-button .mdc-button__ripple {

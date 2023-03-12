@@ -58,7 +58,7 @@ namespace PeerStudy.Core.DomainServices
             course.AssignmentsDriveFolderId = await fileService.CreateFolderAsync(assignmentsFolderName, course.DriveRootFolderId);
             course.ResourcesDriveFolderId = await fileService.CreateFolderAsync(resourcesFolderName, course.DriveRootFolderId);
 
-            await permissionService.SetPermissionsAsync(course.DriveRootFolderId, 
+            await permissionService.SetPermissionsAsync(new List<string> { course.ResourcesDriveFolderId }, 
                 new List<string> { teacher.Email, configurationService.AppEmail}, 
                 "writer");
 
@@ -110,8 +110,9 @@ namespace PeerStudy.Core.DomainServices
                     TeacherName = $"{x.Teacher.FirstName} {x.Teacher.LastName}",
                     Status = x.Status,
                     TeacherId = x.TeacherId,
-                    HasStudyGroups = x.HasStudyGroups
-                })  //TODO: add the number of enrolled students
+                    HasStudyGroups = x.HasStudyGroups,
+                    NoEnrolledStudents = x.CourseEnrollments.Count
+                })
             .ToList();
 
             return courses;

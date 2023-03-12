@@ -16,11 +16,16 @@ namespace PeerStudy.Core.DomainServices
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IGoogleDriveFileService fileService;
+        private readonly IGoogleDrivePermissionService drivePermissionService;
 
-        public CourseResourceService(IUnitOfWork unitOfWork, IGoogleDriveFileService fileService)
+        public CourseResourceService(
+            IUnitOfWork unitOfWork,
+            IGoogleDriveFileService fileService,
+            IGoogleDrivePermissionService drivePermissionService)
         {
             this.unitOfWork = unitOfWork;
             this.fileService = fileService;
+            this.drivePermissionService = drivePermissionService;
         }
 
         public async Task DeleteAsync(Guid resourceId)
@@ -55,15 +60,31 @@ namespace PeerStudy.Core.DomainServices
             return MapToCourseResourceDetailsModels(resources, fileDetails);
         }
 
-        public async Task<List<CourseResourceDetailsModel>> UploadResourcesAsync(List<UploadCourseResourceModel> resources)
+        public async Task<List<CourseResourceDetailsModel>> UploadResourcesAsync(UploadCourseResourcesModel resources)
         {
-           var updatedResourcesModels = await GetUpdatedResourceModelsAsync(resources);
+           var updatedData = await SetParentFolderIdAsync(resources);
 
-            var courseResources = new List<CourseResource>();   
+            var (FilesDetails, CourseResources) = await UploadFilesAsync(updatedData);
 
+            var createdResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(CourseResources);
+            await unitOfWork.SaveChangesAsync();
+
+            var createdResourcesIds = createdResources.Select(x => x.Id).ToList();
+
+            var savedResources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => createdResourcesIds.Contains(x.Id),
+                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
+                .ToList();
+
+            return MapToCourseResourceDetailsModels(savedResources, FilesDetails);
+        }
+
+        private async Task<(Dictionary<string, FileDetailsModel> FilesDetails, List<CourseResource> CourseResources)> 
+            UploadFilesAsync(UploadCourseResourcesModel data)
+        {
             var uploadedFilesDetails = new Dictionary<string, FileDetailsModel>();
+            var courseResources = new List<CourseResource>();
 
-            foreach (var resource in updatedResourcesModels)
+            foreach (var resource in data.Resources)
             {
                 try
                 {
@@ -72,7 +93,7 @@ namespace PeerStudy.Core.DomainServices
                     courseResources.Add(new CourseResource
                     {
                         CreatedAt = createdAt,
-                        CourseId = resource.CourseId,
+                        CourseId = data.CourseId,
                         DriveFileId = googleDriveFildeDetails.FileDriveId,
                         Title = resource.Name,
                         Type = Enums.ResourceType.File
@@ -82,45 +103,36 @@ namespace PeerStudy.Core.DomainServices
                 catch (Exception ex)
                 {
                     //TODO: log ex
-
                 }
             }
 
-            //TODO: give students read permissions
+            await SetReadPermissionsForEnrolledStudentsAsync(data.CourseId,
+               courseResources.Select(x => x.DriveFileId).ToList());
 
-            var createdResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(courseResources);
-            await unitOfWork.SaveChangesAsync();
-
-            var createdResourcesIds = createdResources.Select(x => x.Id).ToList();
-
-            var savedResources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => createdResourcesIds.Contains(x.Id),
-                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
-                .ToList();
-
-            return MapToCourseResourceDetailsModels(savedResources, uploadedFilesDetails);
+            return (uploadedFilesDetails, courseResources);
         }
 
-        private async Task<List<UploadCourseResourceModel>> GetUpdatedResourceModelsAsync(List<UploadCourseResourceModel> resources)
+        private async Task SetReadPermissionsForEnrolledStudentsAsync(Guid courseId, List<string> fileIds)
         {
-            var courseIds = resources.Select(x => x.CourseId).Distinct().ToList();
+            var studentsEmails = (await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.CourseId == courseId))
+                .Select(x => x.Student.Email)
+                .ToList();
 
-            var courseIdResourcesFolderIdPairs = (await unitOfWork.CoursesRepository.GetAllAsync(x => courseIds.Contains(x.Id), trackChanges: false))
-                .Select(x => new
-                {
-                    CourseId = x.Id,
-                    ResourcesFolderId = x.ResourcesDriveFolderId
-                })
-                .ToDictionary(x => x.CourseId, y => y.ResourcesFolderId);
+            await drivePermissionService.SetPermissionsAsync(fileIds, studentsEmails, "reader");
+        }
 
-            foreach (var resource in resources)
+        private async Task<UploadCourseResourcesModel> SetParentFolderIdAsync(UploadCourseResourcesModel data)
+        {
+            var parentFolderId = (await unitOfWork.CoursesRepository.GetAllAsync(x => x.Id == data.CourseId, trackChanges: false))
+                .Select(x => x.ResourcesDriveFolderId)
+                .FirstOrDefault();
+
+            foreach (var resource in data.Resources)
             {
-                if (courseIdResourcesFolderIdPairs.TryGetValue(resource.CourseId, out var parentFolderId))
-                {
-                    resource.ParentFolderId = parentFolderId;
-                }
+                resource.ParentFolderId = parentFolderId;
             }
 
-            return resources;
+            return data;
         }
 
         private List<CourseResourceDetailsModel> MapToCourseResourceDetailsModels(List<CourseResource> resources, IDictionary<string, FileDetailsModel> driveFileDetails)

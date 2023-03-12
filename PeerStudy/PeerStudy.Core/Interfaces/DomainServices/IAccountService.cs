@@ -1,5 +1,4 @@
-﻿using PeerStudy.Core.DomainEntities;
-using PeerStudy.Core.Models;
+﻿using PeerStudy.Core.Models;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Core.Interfaces.DomainServices
@@ -8,7 +7,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
     {
         Task<string> LoginAsync(LoginModel loginModel);
 
-        Task<User> RegisterAsync(RegisterModel registerModel);
+        Task RegisterAsync(RegisterModel registerModel);
 
         Task<bool> ChangePasswordAsync(ChangePasswordModel changePasswordModel);
     }

@@ -5,6 +5,6 @@ namespace PeerStudy.Core.Interfaces.Services
 {
     public interface IGoogleDrivePermissionService
     {
-        Task SetPermissionsAsync(string fileId, List<string> emails, string role);
+        Task SetPermissionsAsync(List<string> fileIds, List<string> emails, string role);
     }
 }

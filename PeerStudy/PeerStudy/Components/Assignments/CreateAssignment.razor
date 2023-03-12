@@ -11,15 +11,6 @@
                               Required>
                 </MatTextField>
             </div>
-            <div class="text-field-container">
-                <MatTextField Class="input-field"
-                              Style="width: 100%; height: 100px;"
-                              @bind-Value="AssignmentModel.Description"
-                              Label="Description"
-                              TextArea=true
-                              Required>
-                </MatTextField>
-            </div>
             <div class="form-row">
                 <div class="center-items">
                     <MatDatePicker Label="Due Date" @bind-Value="AssignmentModel.DueDate"
@@ -38,6 +29,15 @@
                                   TValue="int">
                     </MatTextField>
                 </div>
+            </div>
+            <div class="text-field-container">
+                <MatTextField Class="input-field"
+                              Style="width: 100%; height: 100px;"
+                              @bind-Value="AssignmentModel.Description"
+                              Label="Description"
+                              TextArea=true
+                              Required>
+                </MatTextField>
             </div>
 
         </MatDialogContent>

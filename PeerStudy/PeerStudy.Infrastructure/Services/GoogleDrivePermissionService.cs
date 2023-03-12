@@ -18,34 +18,32 @@ namespace PeerStudy.Infrastructure.Services
             driveService = GetDriveService();
         }
 
-        public async Task SetPermissionsAsync(string fileId, List<string> emails, string role)
+        public async Task SetPermissionsAsync(List<string> fileIds, List<string> emails, string role)
         {
             try
             {
                 var batch = new BatchRequest(driveService);
-                BatchRequest.OnResponse<Permission> callback = delegate (
-                    Permission permission,
-                    RequestError error,
-                    int index,
-                    HttpResponseMessage message)
+
+                foreach (var fileId in fileIds)
                 {
-                    if (error != null)
+                    foreach (string email in emails)
                     {
-                        // TODO: log the err
+                        Permission userPermission = new Permission
+                        {
+                            Type = "user",
+                            Role = role,
+                            EmailAddress = email
+                        };
+
+                        var request = driveService.Permissions.Create(userPermission, fileId);
+                        batch.Queue(request, (Permission permission, RequestError error, int index, HttpResponseMessage message) =>
+                        {
+                            if (error != null)
+                            {
+                                // TODO: log the err
+                            }
+                        });
                     }
-                };
-
-                foreach (string email in emails)
-                {
-                    Permission userPermission = new Permission
-                    {
-                        Type = "user",
-                        Role = role,
-                        EmailAddress = email
-                    };
-
-                    var request = driveService.Permissions.Create(userPermission, fileId);
-                    batch.Queue(request, callback);
                 }
 
                 await batch.ExecuteAsync();

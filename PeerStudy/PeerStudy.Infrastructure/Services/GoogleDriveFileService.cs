@@ -64,7 +64,7 @@ namespace PeerStudy.Infrastructure.Services
                 }
 
                 //Note: add app email as writer for validation purposes
-                await permissionService.SetPermissionsAsync(request.ResponseBody.Id, new List<string> { model.OwnerEmail, configuration.AppEmail }, writerRole);
+                await permissionService.SetPermissionsAsync(new List<string> { request.ResponseBody.Id }, new List<string> { model.OwnerEmail, configuration.AppEmail }, writerRole);
 
                 return new FileDetailsModel
                 {

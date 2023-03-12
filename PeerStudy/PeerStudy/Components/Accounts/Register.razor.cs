@@ -43,12 +43,9 @@ namespace PeerStudy.Components.Accounts
 
             try
             {
-                var result = await AccountService.RegisterAsync(registerModel);
+                await AccountService.RegisterAsync(registerModel);
 
-                if (result != null)
-                {
-                    NavigationManager.NavigateTo("/login");
-                }
+                NavigationManager.NavigateTo("/login");
             }
             catch (DuplicateEntityException)
             {

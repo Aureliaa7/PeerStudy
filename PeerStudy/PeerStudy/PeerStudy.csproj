@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Pages\Index.razor.css" />
+    <None Remove="Resources.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Pages\Index.razor.css" />
+    <Content Include="Resources.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
     <PackageReference Include="Blazorise.Bootstrap" Version="1.2.0" />
     <PackageReference Include="Blazorise.DataGrid" Version="1.2.0" />

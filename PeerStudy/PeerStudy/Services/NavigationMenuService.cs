@@ -26,7 +26,7 @@ namespace PeerStudy.Services
 
         public void AddNavigationMenuItemsForStudent(NavigationDataModel data)
         {
-            additionalMenuItems.AddRange(new List<MenuItem> {
+            AddMenuItems(new List<MenuItem> {
                 new MenuItem
                 {
                     Href = $"/{data.UserId}/my-courses/{data.CourseId}/resources",
@@ -44,7 +44,7 @@ namespace PeerStudy.Services
 
         public void AddNavigationMenuItemsForTeacher(NavigationDataModel data)
         {
-            additionalMenuItems.AddRange(new List<MenuItem> {
+            AddMenuItems(new List<MenuItem> {
                 new MenuItem
                 {
                     Href = $"/{data.UserId}/courses/{data.CourseId}/resources",

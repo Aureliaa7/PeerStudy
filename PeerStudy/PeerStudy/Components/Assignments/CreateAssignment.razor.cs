@@ -27,6 +27,5 @@ namespace PeerStudy.Components.Assignments
         {
             await OnConfirm.InvokeAsync();
         }
-
     }
 }

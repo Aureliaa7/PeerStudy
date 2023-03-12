@@ -13,7 +13,7 @@
 
 <AuthorizeView Roles="Teacher">
     <div>
-        @if (!isReadOnly)
+        @if (!isReadOnly && !isLoading)
         {
             <MatButton OnClick="ToggleShowCreateMenu">
                 <img src="/images/icons8-plus.svg" />

@@ -71,7 +71,7 @@ namespace PeerStudy.Infrastructure.Services
             return token;
         }
 
-        public async Task<User> RegisterAsync(RegisterModel registerModel)
+        public async Task RegisterAsync(RegisterModel registerModel)
         {
             bool userExists = await unitOfWork.UsersRepository.ExistsAsync(u => u.Email.Equals(registerModel.Email));
             if (userExists)
@@ -94,11 +94,6 @@ namespace PeerStudy.Infrastructure.Services
 
             var newUser = await unitOfWork.UsersRepository.AddAsync(userToBeInserted);
             await unitOfWork.SaveChangesAsync();
-
-            newUser.PasswordHash = null;
-            newUser.PasswordSalt = null;
-
-            return newUser;
         }
 
         private User GetUserToBeInserted(RegisterModel registerModel)

@@ -1,0 +1,29 @@
+﻿@page "/"
+
+<div class="home-page">
+ @*   <div class="app-image">
+        <img src="/images/PeerStudy.png" />
+    </div>*@
+
+    <div class="carousel">
+        <Carousel @bind-SelectedSlide="@selectedSlide" Crossfade="true">
+            <CarouselSlide Name="1">
+                <Image Source="/images/collab-learning1.jpg" Text="Collab image 1" Display="Display.Block" Width="Width.Is100" />
+            </CarouselSlide>
+            <CarouselSlide Name="2">
+                <Image Source="/images/collab-learning2.jpg" Text="Collab image 2" Display="Display.Block" Width="Width.Is100" />
+            </CarouselSlide>
+            <CarouselSlide Name="3">
+                <Image Source="/images/collab-learning3.jpg" Text="Collab image 3" Display="Display.Block" Width="Width.Is100" />
+            </CarouselSlide>
+            <CarouselSlide Name="4">
+                <Image Source="/images/collab-learning4.jpg" Text="Collab image 4" Display="Display.Block" Width="Width.Is100" />
+            </CarouselSlide>
+        </Carousel>
+    </div>
+</div>
+
+
+@code {
+    private string selectedSlide = "1";
+}
