@@ -15,5 +15,11 @@ namespace PeerStudy.Shared
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContentForNoData { get; set; }  //TODO: rename
+
+        [Parameter]
+        public RenderFragment ChildContentAlwaysDisplayed { get; set; }  //TODO: rename
     }
 }

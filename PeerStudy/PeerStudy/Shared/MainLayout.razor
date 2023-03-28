@@ -22,7 +22,7 @@
                     <Authorized>
                         @foreach (var menuItem in NavigationMenuService.GetMenuItems())
                         {
-                            <div class="nav-item px-3">
+                            <div class="nav-item">
                                 <NavLink class="nav-link" href="@menuItem.Href">
                                     @menuItem.Name
                                 </NavLink>

@@ -1,0 +1,14 @@
+﻿@using PeerStudy.Core.Models.Courses
+@using PeerStudy.Features.Courses.Components.CoursesListComponent
+
+@page "/courses/enroll"
+@attribute [Authorize(Roles="Student")]
+@inherits PeerStudyComponentBase
+
+
+<CoursesList Courses="courses"
+             IsLoading="isLoading"
+             CoursesNotFoundMessage="@noCoursesMessage"
+             CanEnrollInCourse=true
+             OnEnroll="EnrollHandler">
+</CoursesList>

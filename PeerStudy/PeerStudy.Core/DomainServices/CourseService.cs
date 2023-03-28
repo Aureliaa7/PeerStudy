@@ -22,6 +22,7 @@ namespace PeerStudy.Core.DomainServices
 
         private const string assignmentsFolderName = "Assignments";
         private const string resourcesFolderName = "Resources";
+        private const string studyGroupsFolderName = "StudyGroups";
 
         public CourseService(IUnitOfWork unitOfWork,
             IGoogleDriveFileService fileService,
@@ -57,6 +58,7 @@ namespace PeerStudy.Core.DomainServices
             course.DriveRootFolderId = await fileService.CreateFolderAsync(courseModel.Title);
             course.AssignmentsDriveFolderId = await fileService.CreateFolderAsync(assignmentsFolderName, course.DriveRootFolderId);
             course.ResourcesDriveFolderId = await fileService.CreateFolderAsync(resourcesFolderName, course.DriveRootFolderId);
+            course.StudyGroupsDriveFolderId = await fileService.CreateFolderAsync(studyGroupsFolderName, course.DriveRootFolderId);
 
             await permissionService.SetPermissionsAsync(new List<string> { course.ResourcesDriveFolderId }, 
                 new List<string> { teacher.Email, configurationService.AppEmail}, 
@@ -160,7 +162,8 @@ namespace PeerStudy.Core.DomainServices
                 Title = course.Title,
                 TeacherName = $"{course.Teacher?.FirstName} {course.Teacher?.LastName}",
                 Status = course.Status,
-                HasStudyGroups = course.HasStudyGroups
+                HasStudyGroups = course.HasStudyGroups,
+                NoEnrolledStudents = course.CourseEnrollments.Count
             };
         }
 
@@ -175,23 +178,46 @@ namespace PeerStudy.Core.DomainServices
                     x.Status == CourseStatus.Active && 
                     !excludedCoursesIds.Contains(x.Id) && 
                     x.CourseEnrollments.Count < x.NoStudents, includeProperties: nameof(Teacher)))
+                     .Select(
+                x => new CourseDetailsModel
+                {
+                    Id = x.Id,
+                    NoMaxStudents = x.NoStudents,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    Title = x.Title,
+                    TeacherName = $"{x.Teacher.FirstName} {x.Teacher.LastName}",
+                    Status = x.Status,
+                    TeacherId = x.TeacherId,
+                    HasStudyGroups = x.HasStudyGroups,
+                    NoEnrolledStudents = x.CourseEnrollments.Count
+                })
                 .ToList();
 
-            var coursesToEnroll = courses.Select(x => MapToCourseDetails(x)).ToList();
-
-            return coursesToEnroll;
+            return courses;
         }
 
         public async Task<List<CourseDetailsModel>> GetCoursesForStudentAsync(Guid studentId, CourseStatus status)
         {
             var courses = (await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.StudentId == studentId
-                    && x.Course.Status == status, includeProperties: nameof(Course), trackChanges: false))
-                .Select(x => x.Course)
+                    && x.Course.Status == status, trackChanges: false))
+                .Select(
+                x => new CourseDetailsModel
+                    {
+                        Id = x.CourseId,
+                        NoMaxStudents = x.Course.NoStudents,
+                        StartDate = x.Course.StartDate,
+                        EndDate = x.Course.EndDate,
+                        Title = x.Course.Title,
+                        TeacherName = $"{x.Course.Teacher.FirstName} {x.Course.Teacher.LastName}",
+                        Status = x.Course.Status,
+                        TeacherId = x.Course.TeacherId,
+                        HasStudyGroups = x.Course.HasStudyGroups,
+                        NoEnrolledStudents = x.Course.CourseEnrollments.Count
+                    })
                 .ToList();
 
-            var courseDetails = courses.Select(x => MapToCourseDetails(x)).ToList();
-
-            return courseDetails;
+            return courses;
         }
 
         public async Task<CourseDetailsModel> GetDetailsAsync(Guid courseId)

@@ -45,7 +45,7 @@ namespace PeerStudy.Infrastructure.Services
             return file.Id;
         }
 
-        public async Task<FileDetailsModel> UploadFileAsync(UploadDriveFileModel model)
+        public async Task<DriveFileDetailsModel> UploadFileAsync(UploadDriveFileModel model)
         {
             using (var ms = new MemoryStream(model.FileContent))
             {
@@ -66,7 +66,7 @@ namespace PeerStudy.Infrastructure.Services
                 //Note: add app email as writer for validation purposes
                 await permissionService.SetPermissionsAsync(new List<string> { request.ResponseBody.Id }, new List<string> { model.OwnerEmail, configuration.AppEmail }, writerRole);
 
-                return new FileDetailsModel
+                return new DriveFileDetailsModel
                 {
                     FileDriveId = request.ResponseBody.Id,
                     IconLink = request.ResponseBody.IconLink,
@@ -76,9 +76,9 @@ namespace PeerStudy.Infrastructure.Services
             }
         }
 
-        public async Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds)
+        public async Task<Dictionary<string, DriveFileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds)
         {
-            var fileDetailsPairs = new Dictionary<string, FileDetailsModel>();
+            var fileDetailsPairs = new Dictionary<string, DriveFileDetailsModel>();
 
             BatchRequest.OnResponse<DriveFile> callback = delegate (
                    DriveFile fileDetails,
@@ -110,9 +110,9 @@ namespace PeerStudy.Infrastructure.Services
             return fileDetailsPairs;
         }
 
-        private FileDetailsModel MapToFileDetailsModel(DriveFile file)
+        private DriveFileDetailsModel MapToFileDetailsModel(DriveFile file)
         {
-            return new FileDetailsModel
+            return new DriveFileDetailsModel
             {
                 FileDriveId = file.Id,
                 Name = file.Name,

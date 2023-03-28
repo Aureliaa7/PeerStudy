@@ -1,0 +1,24 @@
+﻿@using PeerStudy.Features.StudyGroups.Components.StudyGroupCardComponent
+<div class="study-groups-container center-elements">
+    @if (IsLoading)
+    {
+        <div>
+            <MatProgressCircle Indeterminate="@IsLoading" Size="MatProgressCircleSize.Large" />
+        </div>
+    }
+    else if (!IsLoading && !StudyGroups.Any())
+    {
+        <NotFound Message="There are no study groups yet..."></NotFound>
+    }
+    else
+    {
+        <div class="study-groups">
+            @foreach (var group in StudyGroups)
+            {
+                <StudyGroupCard StudyGroupModel="group"
+                        OnClicked="HandleClick">
+                </StudyGroupCard>
+            }
+        </div>
+    }
+</div>

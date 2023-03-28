@@ -9,8 +9,11 @@ else if (!IsLoading && !HasData)
     <NotFound Message="@NotFoundMessage"
           ShowCloseButton=true>
     </NotFound>
+    @ChildContentForNoData
+    @ChildContentAlwaysDisplayed
 }
 else
 {
     @ChildContent
+    @ChildContentAlwaysDisplayed
 }

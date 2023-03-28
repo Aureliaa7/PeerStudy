@@ -9,9 +9,9 @@ namespace PeerStudy.Core.Interfaces.Services
     {
         Task<string> CreateFolderAsync(string folderName, string parent = null);
 
-        Task<FileDetailsModel> UploadFileAsync(UploadDriveFileModel model);
+        Task<DriveFileDetailsModel> UploadFileAsync(UploadDriveFileModel model);
 
-        Task<Dictionary<string, FileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds);
+        Task<Dictionary<string, DriveFileDetailsModel>> GetFilesDetailsAsync(List<string> fileIds);
 
         Task DeleteAsync(string resourceId);
 

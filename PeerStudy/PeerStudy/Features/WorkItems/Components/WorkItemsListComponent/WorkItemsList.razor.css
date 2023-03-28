@@ -1,0 +1,12 @@
+﻿.title-field {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+@media (min-width: 768px) {
+    .title-field {
+        max-width: 800px;
+    }
+}

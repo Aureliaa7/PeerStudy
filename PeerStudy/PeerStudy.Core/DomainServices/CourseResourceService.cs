@@ -3,7 +3,6 @@ using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
-using PeerStudy.Core.Models.GoogleDriveModels;
 using PeerStudy.Core.Models.Resources;
 using System;
 using System.Collections.Generic;
@@ -12,19 +11,15 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
 {
-    public class CourseResourceService : ICourseResourceService
+    public class CourseResourceService : ResourceBaseService, ICourseResourceService
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IGoogleDriveFileService fileService;
         private readonly IGoogleDrivePermissionService drivePermissionService;
 
         public CourseResourceService(
             IUnitOfWork unitOfWork,
             IGoogleDriveFileService fileService,
-            IGoogleDrivePermissionService drivePermissionService)
+            IGoogleDrivePermissionService drivePermissionService) : base(fileService, unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
-            this.fileService = fileService;
             this.drivePermissionService = drivePermissionService;
         }
 
@@ -41,76 +36,63 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<List<CourseResourceDetailsModel>> GetAsync(Guid courseId)
+        public Task<List<ResourceDetailsModel>> GetByCourseIdAsync(Guid courseId)
         {
-            bool courseExist = await unitOfWork.CoursesRepository.ExistsAsync(x => x.Id == courseId);
-            if (!courseExist)
-            {
-                throw new EntityNotFoundException($"Cannot retrieve resources for course with id {courseId}. The course does not exist...");
-            }
-
-            var resources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => x.CourseId == courseId,
-                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
-                .ToList();
-
-            var fileIds = resources.Select(x => x.DriveFileId).ToList();
-
-            var fileDetails = await fileService.GetFilesDetailsAsync(fileIds);
-
-            return MapToCourseResourceDetailsModels(resources, fileDetails);
+            return GetAllAsync(courseId);
         }
 
-        public async Task<List<CourseResourceDetailsModel>> UploadResourcesAsync(UploadCourseResourcesModel resources)
+        public async Task<List<ResourceDetailsModel>> UploadResourcesAsync(UploadCourseResourcesModel data)
         {
-           var updatedData = await SetParentFolderIdAsync(resources);
+            var parentFolderId = await GetParentFolderIdAsync(data.CourseId);
+            var updatedData = SetParentFolderId(data.Resources, parentFolderId);
+            var filesDetails = await UploadFilesAsync(updatedData);
+            string ownerName = await GetOwnerNameAsync(data.OwnerId);
 
-            var (FilesDetails, CourseResources) = await UploadFilesAsync(updatedData);
-
-            var createdResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(CourseResources);
-            await unitOfWork.SaveChangesAsync();
-
-            var createdResourcesIds = createdResources.Select(x => x.Id).ToList();
-
-            var savedResources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => createdResourcesIds.Contains(x.Id),
-                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
-                .ToList();
-
-            return MapToCourseResourceDetailsModels(savedResources, FilesDetails);
-        }
-
-        private async Task<(Dictionary<string, FileDetailsModel> FilesDetails, List<CourseResource> CourseResources)> 
-            UploadFilesAsync(UploadCourseResourcesModel data)
-        {
-            var uploadedFilesDetails = new Dictionary<string, FileDetailsModel>();
             var courseResources = new List<CourseResource>();
+            var resourceDetailsModels = new List<ResourceDetailsModel>();
 
-            foreach (var resource in data.Resources)
+            foreach (var file in filesDetails)
             {
-                try
+                var createdAt = DateTime.UtcNow;
+
+                courseResources.Add(new CourseResource
                 {
-                    var googleDriveFildeDetails = await fileService.UploadFileAsync(resource);
-                    var createdAt = DateTime.UtcNow;
-                    courseResources.Add(new CourseResource
-                    {
-                        CreatedAt = createdAt,
-                        CourseId = data.CourseId,
-                        DriveFileId = googleDriveFildeDetails.FileDriveId,
-                        Title = resource.Name,
-                        Type = Enums.ResourceType.File
-                    });
-                    uploadedFilesDetails.Add(googleDriveFildeDetails.FileDriveId, googleDriveFildeDetails);
-                }
-                catch (Exception ex)
+                    CreatedAt = createdAt,
+                    CourseId = data.CourseId,
+                    DriveFileId = file.FileDriveId,
+                    FileName = file.Name,
+                    OwnerId = data.OwnerId,
+                    Type = Enums.ResourceType.File
+                });
+
+                resourceDetailsModels.Add(new ResourceDetailsModel
                 {
-                    //TODO: log ex
-                }
+                    CreatedAt = createdAt,
+                    FileDriveId = file.FileDriveId,
+                    FileName = file.Name,
+                    IconLink = file.IconLink,
+                    OwnerId = data.OwnerId,
+                    OwnerName = ownerName,
+                    WebViewLink = file.WebViewLink
+                });
             }
 
             await SetReadPermissionsForEnrolledStudentsAsync(data.CourseId,
                courseResources.Select(x => x.DriveFileId).ToList());
 
-            return (uploadedFilesDetails, courseResources);
+            var createdResources = await unitOfWork.CourseResourcesRepository.AddRangeAsync(courseResources);
+            await unitOfWork.SaveChangesAsync();
+
+            var driveFileIdDbResourceIdPairs = createdResources.Select(x => new
+            {
+                x.DriveFileId,
+                x.Id
+            })
+            .ToDictionary(x => x.DriveFileId, y => y.Id);
+
+            return SetResourcesIds(driveFileIdDbResourceIdPairs, resourceDetailsModels);
         }
+
 
         private async Task SetReadPermissionsForEnrolledStudentsAsync(Guid courseId, List<string> fileIds)
         {
@@ -121,42 +103,37 @@ namespace PeerStudy.Core.DomainServices
             await drivePermissionService.SetPermissionsAsync(fileIds, studentsEmails, "reader");
         }
 
-        private async Task<UploadCourseResourcesModel> SetParentFolderIdAsync(UploadCourseResourcesModel data)
+        protected override async Task<List<ResourceDetailsModel>> GetAsync(Guid id)
         {
-            var parentFolderId = (await unitOfWork.CoursesRepository.GetAllAsync(x => x.Id == data.CourseId, trackChanges: false))
-                .Select(x => x.ResourcesDriveFolderId)
-                .FirstOrDefault();
-
-            foreach (var resource in data.Resources)
+            bool courseExist = await unitOfWork.CoursesRepository.ExistsAsync(x => x.Id == id);
+            if (!courseExist)
             {
-                resource.ParentFolderId = parentFolderId;
+                throw new EntityNotFoundException($"Cannot retrieve resources for course with id {id}. The course does not exist...");
             }
 
-            return data;
+            var resources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => x.CourseId == id,
+                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
+                .Select(x => new ResourceDetailsModel
+                {
+                    CreatedAt = x.CreatedAt,
+                    FileDriveId  =x.DriveFileId,
+                    OwnerId = x.OwnerId,
+                    FileName = x.FileName,
+                    Id = x.Id,
+                    OwnerName = $"{x.Owner.FirstName} {x.Owner.LastName}"
+                })
+                .ToList();
+
+            return resources;
         }
 
-        private List<CourseResourceDetailsModel> MapToCourseResourceDetailsModels(List<CourseResource> resources, IDictionary<string, FileDetailsModel> driveFileDetails)
+        protected override async Task<string> GetParentFolderIdAsync(Guid id)
         {
-            var resourcesModels = new List<CourseResourceDetailsModel>();
-            foreach (var resource in resources)
-            {
-                if (driveFileDetails.TryGetValue(resource.DriveFileId, out var fileDriveDetails))
-                {
-                    resourcesModels.Add(new CourseResourceDetailsModel
-                    {
-                        CreatedAt = resource.CreatedAt,
-                        Id = resource.Id,
-                        Title = resource.Title,
-                        IconLink = fileDriveDetails.IconLink,
-                        TeacherName = $"{resource.Course?.Teacher?.FirstName} {resource.Course?.Teacher?.LastName}",
-                        WebViewLink = fileDriveDetails.WebViewLink,
-                        FileDriveId = fileDriveDetails.FileDriveId,
-                        TeacherId = resource.Course.TeacherId
-                    });
-                }
-            }
+            var folderId = (await unitOfWork.CoursesRepository.GetAllAsync(x => x.Id == id, trackChanges: false))
+              .Select(x => x.ResourcesDriveFolderId)
+              .FirstOrDefault();
 
-            return resourcesModels;
+            return folderId;
         }
     }
 }

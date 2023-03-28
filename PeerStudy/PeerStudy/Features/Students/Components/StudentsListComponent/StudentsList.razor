@@ -1,0 +1,34 @@
+﻿@using PeerStudy.Core.Models.Users
+
+@page "/courses/{courseTitle}/{courseId:guid}/students"
+@inherits PeerStudyComponentBase
+@attribute [Authorize(Roles = "Teacher")]
+
+<Header Title="@CourseTitle"></Header>
+
+<h3 class="page-title">Enrolled students</h3>
+
+@if (isLoading)
+{
+    <div class="center-elements">
+        <MatProgressCircle Indeterminate="@isLoading" Size="MatProgressCircleSize.Large" />
+    </div>
+}
+else if (!isLoading && (students == null || !students.Any()))
+{
+    <NotFound Message="@noEnrolledStudentsMessage"></NotFound>
+}
+else
+{
+    <div class="study-groups-link">
+        <a href=@($"/courses/{CourseTitle}/{CourseId}/study-groups")>Study Groups</a>
+    </div>
+    <div class="students-container">
+        @foreach (var student in students)
+        {
+            <div class="student-card">
+                @student.FirstName @student.LastName
+            </div>
+        }
+    </div>
+}

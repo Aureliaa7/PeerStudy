@@ -1,0 +1,13 @@
+﻿<MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
+    <MatDialogTitle>Create study groups</MatDialogTitle>
+    <MatDialogContent Style="background-color: #BCD4E6">
+        <div class="create-study-groups">
+            <MatSelectValue @bind-Value="@selectedValue" Items="@DropDownItems" ValueSelector=@(i=>i.ToString())></MatSelectValue>
+        </div>
+
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton Class="submit-button" Raised="true" OnClick="CreateGroups" Disabled=@(selectedValue == null)>Create</MatButton>
+        <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
+    </MatDialogActions>
+</MatDialog>

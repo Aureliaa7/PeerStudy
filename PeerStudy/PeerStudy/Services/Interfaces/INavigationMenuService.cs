@@ -1,4 +1,5 @@
-﻿using PeerStudy.Models;
+﻿using PeerStudy.Core.Enums;
+using PeerStudy.Models;
 using System;
 using System.Collections.Generic;
 
@@ -10,11 +11,11 @@ namespace PeerStudy.Services.Interfaces
 
         void AddMenuItems(List<MenuItem> items);
 
-        void AddNavigationMenuItemsForTeacher(NavigationDataModel data);
+        void AddCourseNavigationMenuItems(Guid userId, Guid courseId, string courseTitle, Role? userRole);
 
-        void AddNavigationMenuItemsForStudent(NavigationDataModel data);
+        void AddStudyGroupNavigationMenuItems(Guid studyGroupId, string studyGroupTitle);
 
-        void RemoveAll();
+        void Reset();
 
         event EventHandler<EventArgs> OnChanged;
         

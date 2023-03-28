@@ -1,0 +1,35 @@
+﻿@using PeerStudy.Core.Models.Assignments
+@using PeerStudy.Features.Assignments.Components.StudentAssignmentsComponent
+
+@page "/{courseTitle}/{courseId:guid}/{studentId:guid}/my-assignments"
+@attribute [Authorize(Roles = "Student")]
+@inherits PeerStudyComponentBase
+
+<Header Title="@CourseTitle"></Header>
+
+<Loading IsLoading="isLoading"
+         HasData="@((doneAssignments != null && doneAssignments.Any() || toDoAssignments != null && toDoAssignments.Any()))"
+         NotFoundMessage="@noAssignmentsMessage">
+    <div class="center-elements">
+        <div class="assignments">
+            @if (doneAssignments.Any())
+            {
+                <div class="done-assignments">
+                    <StudentAssignments Assignments="doneAssignments"
+                                    Title="@doneAssignmentsTitle"
+                                    OnClickedAssignment="HandleClickedAssignment">
+                    </StudentAssignments>
+                </div>
+            }
+            @if (toDoAssignments.Any())
+            {
+                <div>
+                    <StudentAssignments Assignments="toDoAssignments"
+                                    Title="@toDoAssignmentsTitle"
+                                    OnClickedAssignment="HandleClickedAssignment">
+                    </StudentAssignments>
+                </div>
+            }
+        </div>
+    </div>
+</Loading>

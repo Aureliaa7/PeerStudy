@@ -1,0 +1,52 @@
+﻿<div>
+    <EditForm Model="WorkItemModel">
+        <DataAnnotationsValidator />
+        <MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
+            <MatDialogTitle>Create task</MatDialogTitle>
+            <MatDialogContent Class="mat-dialog-styles">
+                <div class="work-item-card">
+
+                    <div class="card-body">
+                        <div>
+                            <MatTextField Class="input-field"
+                                          Style="@matFieldStyles"
+                                          @bind-Value="WorkItemModel.Title"
+                                          Label="Title"
+                                          MaxLength="50"
+                                          Required>
+                            </MatTextField>
+                        </div>
+
+                        <div>
+                            <MatTextField Class="input-field"
+                                          Style="@descriptionFieldStyles"
+                                          @bind-Value="WorkItemModel.Description"
+                                          Label="Description"
+                                          TextArea=true
+                                          Required>
+                            </MatTextField>
+                        </div>
+                        <div>
+                            <MatSelectValue 
+                            Style="@matFieldStyles" 
+                            Label="Assigned to" @bind-Value="@selectedStudentId" 
+                            Items="@Students" 
+                            ValueSelector="@(x=>x.Key)">
+                                <ItemTemplate Context="itemmenucontext"><span>@itemmenucontext?.Value</span></ItemTemplate>
+                            </MatSelectValue>
+                        </div>
+                        <div>
+                            <MatSelectItem Style="@matFieldStyles" Label="Status" @bind-Value="selectedWorkItemStatus" Items="@WorkItemStatuses">
+                            </MatSelectItem>
+                        </div>
+                    </div>
+                </div>
+
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
+                <MatButton Class="submit-button" Raised="true" OnClick="Save" Disabled=@(!context.IsModified() || !context.Validate())>Confirm</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+    </EditForm>
+</div>

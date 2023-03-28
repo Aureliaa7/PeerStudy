@@ -1,3 +1,5 @@
+using Blazored.Toast;
+using Fluxor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,13 +20,20 @@ builder.Services.RegisterBlazorComponentLibraries();
 
 builder.Services.AddMemoryCache();
 
+builder.Services.AddFluxor(opt => {
+    opt.ScanAssemblies(typeof(Program).Assembly);
+    opt.UseReduxDevTools();
+});
+
+builder.Services.AddBlazoredToast();
+
 var app = builder.Build();
 
 
-//var serviceProvider = builder.Services.BuildServiceProvider();
-//var service = serviceProvider.GetService<IDatabaseSeedingService>();
+var serviceProvider = builder.Services.BuildServiceProvider();
+var service = serviceProvider.GetService<IDatabaseSeedingService>();
 
-//service?.InsertTeachers();
+service?.InsertTeachers();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

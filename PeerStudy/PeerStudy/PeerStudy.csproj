@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Teachers\**" />
+    <Content Remove="Features\Teachers\**" />
+    <EmbeddedResource Remove="Features\Teachers\**" />
+    <None Remove="Features\Teachers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Pages\Index.razor.css" />
     <None Remove="Resources.txt" />
   </ItemGroup>
@@ -19,9 +26,13 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+    <PackageReference Include="Blazored.Toast" Version="4.1.0" />
     <PackageReference Include="Blazorise.Bootstrap" Version="1.2.0" />
     <PackageReference Include="Blazorise.DataGrid" Version="1.2.0" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.0" />
+    <PackageReference Include="Fluxor" Version="5.7.0" />
+    <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0" />
+    <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
     <PackageReference Include="MatBlazor" Version="2.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.13">
@@ -33,10 +44,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PeerStudy.Core\PeerStudy.Core.csproj" />
     <ProjectReference Include="..\PeerStudy.Infrastructure\PeerStudy.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\Teachers\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using PeerStudy.Models;
+﻿using PeerStudy.Core.Enums;
+using PeerStudy.Models;
 using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,55 +25,65 @@ namespace PeerStudy.Services
             }
         }
 
-        public void AddNavigationMenuItemsForStudent(NavigationDataModel data)
+        public void AddCourseNavigationMenuItems(Guid userId, Guid courseId, string courseTitle, Role? userRole)
         {
-            AddMenuItems(new List<MenuItem> {
-                new MenuItem
-                {
-                    Href = $"/{data.UserId}/my-courses/{data.CourseId}/resources",
-                    Name = "Resources"
-                },
-                  new MenuItem
-                {
-                    Href = $"{data.CourseTitle}/{data.CourseId}/{data.UserId}/my-assignments",
-                    Name = "Assignments"
-                } }
-            );
-
-            NotifyChanged();
+            if (userRole == Role.Teacher)
+            {
+                AddMenuItems(GetCourseMenuItemsForTeacher(userId, courseId, courseTitle));
+                NotifyChanged();
+            }
+            else if (userRole == Role.Student)
+            {
+                AddMenuItems(GetCourseMenuItemsForStudent(userId, courseId, courseTitle));
+                NotifyChanged();
+            }
         }
 
-        public void AddNavigationMenuItemsForTeacher(NavigationDataModel data)
+        private List<MenuItem> GetCourseMenuItemsForStudent(Guid userId, Guid courseId, string courseTitle)
         {
-            AddMenuItems(new List<MenuItem> {
+            return new List<MenuItem> {
                 new MenuItem
                 {
-                    Href = $"/{data.UserId}/courses/{data.CourseId}/resources",
-                    Name = "Resources"
+                    Href = $"/{userId}/my-courses/{courseId}/home",
+                    Name = "Home"
+                },
+                new MenuItem
+                {
+                    Href = $"{courseTitle}/{courseId}/{userId}/my-assignments",
+                    Name = "Assignments"
+                }
+            };
+        }
+
+        private List<MenuItem> GetCourseMenuItemsForTeacher(Guid userId, Guid courseId, string courseTitle)
+        {
+            return new List<MenuItem> {
+                new MenuItem
+                {
+                    Href = $"/{userId}/courses/{courseId}/home",
+                    Name = "Home"
                 },
                   new MenuItem
                 {
-                    Href = $"/{data.CourseTitle}/{data.CourseId}/assignments",
+                    Href = $"/{courseTitle}/{courseId}/assignments",
                     Name = "Assignments"
                 },
                 new MenuItem
                 {
-                    Href = $"/courses/{data.CourseTitle}/{data.CourseId}/students",
+                    Href = $"/courses/{courseTitle}/{courseId}/students",
                     Name = "Students"
                 },
                 new MenuItem
                 {
-                    Href = $"/{data.UserId}/courses/{data.CourseTitle}/{data.CourseId}/pending-requests",
+                    Href = $"/{userId}/courses/{courseTitle}/{courseId}/pending-requests",
                     Name = "Pending requests"
                 },
                 new MenuItem
                 {
-                    Href = $"/{data.UserId}/courses/{data.CourseTitle}/{data.CourseId}/rejected-requests",
+                    Href = $"/{userId}/courses/{courseTitle}/{courseId}/rejected-requests",
                     Name = "Rejected requests"
                 }
-            });
-
-            NotifyChanged();
+            };
         }
 
         public List<MenuItem> GetMenuItems()
@@ -85,9 +96,29 @@ namespace PeerStudy.Services
             OnChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void RemoveAll()
+        public void Reset()
         {
             additionalMenuItems.Clear();
+            NotifyChanged();
+        }
+
+        public void AddStudyGroupNavigationMenuItems(Guid studyGroupId, string studyGroupTitle)
+        {
+            AddMenuItems(new List<MenuItem>
+            {
+                new MenuItem
+                {
+                    Href = $"/{studyGroupId}/home",
+                    Name = "Home"
+                },
+                new MenuItem
+                {
+                    Href = $"{studyGroupTitle}/{studyGroupId}/work-items",
+                    Name = "Tasks"
+                }
+            });
+
+            NotifyChanged();
         }
     }
 }

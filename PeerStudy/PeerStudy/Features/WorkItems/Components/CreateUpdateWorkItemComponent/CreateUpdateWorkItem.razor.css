@@ -1,0 +1,21 @@
+﻿.work-item-card {
+    width: 95%;
+    margin: auto;
+    background-color: #BCD4E6;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-body {
+    width: 95%;
+    display: grid;
+    place-items: center;
+}
+
+div {
+    display: inline-block;
+    width: 98%;
+    margin-bottom: 5px;
+}

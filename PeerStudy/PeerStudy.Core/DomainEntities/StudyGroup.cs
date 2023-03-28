@@ -8,6 +8,8 @@ namespace PeerStudy.Core.DomainEntities
         public StudyGroup()
         {
             StudentStudyGroups = new HashSet<StudentStudyGroup>();
+            WorkItems = new HashSet<WorkItem>();
+            StudyGroupFiles = new HashSet<StudyGroupFile>();
         }
 
         public Guid Id { get; set; }
@@ -18,6 +20,12 @@ namespace PeerStudy.Core.DomainEntities
 
         public Course Course { get; set; }
 
+        public string DriveFolderId { get; set; }
+
         public ICollection<StudentStudyGroup> StudentStudyGroups { get; set; }
+
+        public ICollection<WorkItem> WorkItems { get; set; }
+
+        public ICollection<StudyGroupFile> StudyGroupFiles { get; set; }
     }
 }

@@ -1,0 +1,24 @@
+﻿<div class="test">
+
+        <MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
+            <MatDialogTitle>@WorkItem?.Title</MatDialogTitle>
+            <MatDialogContent Class="mat-dialog-styles">
+                <div class="work-item-card">
+
+                    <div class="card-body">
+                        <div>
+                            <div>Assigned to: @WorkItem?.AssignedToFullName</div>
+                            <div>State: @WorkItem?.Status</div>
+                        </div>
+                        <div>
+                            @WorkItem?.Description
+                        </div>
+                    </div>
+                </div>
+
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton Class="submit-button" OnClick="Close">Close</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+</div>

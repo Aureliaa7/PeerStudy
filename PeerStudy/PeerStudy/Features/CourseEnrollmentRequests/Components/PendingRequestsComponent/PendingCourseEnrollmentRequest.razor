@@ -1,0 +1,16 @@
+﻿@using PeerStudy.Core.Models.CourseEnrollments
+@using PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmentRequestComponent
+
+@page "/{teacherId:guid}/courses/{courseTitle}/{courseId:guid}/pending-requests"
+@inherits CourseEnrollmentRequestBase
+@attribute [Authorize(Roles = "Teacher")]
+
+<CourseEnrollmentRequestList Requests="@requests"
+                         DisplayActionButtons=true
+                         IsLoading="isLoading"
+                         NoRequestsMessage="@noPendingRequestsMessage"
+                         AllowMultipleSelection=true
+                         CourseTitle="@CourseTitle"
+                         OnApproveRequests="ApproveRequests"
+                         OnRejectRequests="RejectRequests">
+</CourseEnrollmentRequestList>

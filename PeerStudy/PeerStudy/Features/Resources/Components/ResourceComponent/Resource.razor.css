@@ -1,0 +1,45 @@
+﻿a:hover {
+    text-decoration: none;
+}
+
+.resource-container:hover {
+    background-color: #E0E0E0;
+}
+
+img {
+    width: 30px;
+    height: 30px;
+}
+
+.file-name {
+    display: inline-block;
+}
+
+.created-at {
+    grid-column: 2;
+}
+
+@media (max-width: 570px) {
+    .panel-header {
+        display: none;
+    }
+}
+
+.resource-container {
+    width: 50%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+a {
+    grid-column: 1;
+}
+
+.delete-button {
+    float: right;
+}
+
+.details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}

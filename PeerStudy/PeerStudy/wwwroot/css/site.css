@@ -73,8 +73,8 @@ a, .btn-link {
 
 
 body {
-    overflow: scroll;
-    overflow-x: hidden;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
     width: 100vw;
 }
 
@@ -102,8 +102,13 @@ body::-webkit-scrollbar {
 
 .input-field,
 .submit-button,
-.mat-date-picker {
-    border-radius: 50px;
+.mat-date-picker,
+.mdc-select .mdc-select__anchor {
+    border-radius: 20px;
+}
+
+.mdc-select__selected-text.modified.valid {
+    outline: none;
 }
 
 .file-upload {
@@ -118,9 +123,13 @@ body::-webkit-scrollbar {
     top: auto;
 }
 
+.mdc-dialog--open .mdc-dialog__container {
+    width: 100%;
+}
+
 .mdc-dialog .mdc-dialog__surface {
     background-color: #BCD4E6;
-    top: -60px;
+    width: 100%;
 }
 
 .mdc-button .mdc-button__ripple {
@@ -130,4 +139,11 @@ body::-webkit-scrollbar {
 
 .mat-dialog-styles {
     background-color: #BCD4E6;
+}
+
+
+.table-row-selectable td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
 }

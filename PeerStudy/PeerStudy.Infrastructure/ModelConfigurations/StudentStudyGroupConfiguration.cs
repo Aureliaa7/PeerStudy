@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PeerStudy.Core.DomainEntities;
-using System;
-using System.Collections.Generic;
 
 namespace PeerStudy.Infrastructure.ModelConfigurations
 {

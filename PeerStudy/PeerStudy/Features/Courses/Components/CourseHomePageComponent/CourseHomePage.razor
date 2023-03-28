@@ -1,0 +1,71 @@
+﻿@using PeerStudy.Core.Models.Resources
+@using PeerStudy.Features.Assignments.Components.CreateAssignmentComponent
+@using PeerStudy.Features.Resources.Components.ResourcesListComponent
+@using PeerStudy.Features.StudyGroups.Components.CreateStudyGroupsComponent
+
+@page "/{teacherId:guid}/courses/{courseId:guid}/home"
+@page "/{studentId:guid}/my-courses/{courseId:guid}/home"
+
+@attribute [Authorize]
+@inherits PeerStudyComponentBase
+
+<Header Title="@courseDetails?.Title"></Header>
+
+<AuthorizeView Roles="Teacher">
+    <div>
+        @if (!isReadOnly && !isLoading)
+        {
+            <MatButton OnClick="ToggleShowCreateMenu">
+                <img src="/images/icons8-plus.svg" />
+            </MatButton>
+
+            @if (showCreateMenu)
+            {
+                <div class="create-menu">
+                    <div class="create-menu-btn">
+                        <MatButton Style="@menuButtonsStyles" OnClick="ShowUploadFileDialog">File</MatButton>
+                    </div>
+                    <div class="create-menu-btn">
+                        <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateAssignmentDialog">Assignment</MatButton>
+                    </div>
+                    <div class="create-menu-btn">
+                        @if (courseDetails != null && !courseDetails.HasStudyGroups)
+                        {
+                            <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateGroupsDialog">Study groups</MatButton>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <UploadFiles IsVisible="showUploadFileDialog"
+                 OnCancel="CloseUploadFileDialog"
+                 OnUpload="UploadFiles">
+    </UploadFiles>
+
+    <CreateStudyGroups IsVisible="showCreateStudyGroupsDialog"
+                       DropDownItems="studyGroupsNoMembers"
+                       OnCancel="CancelCreateStudyGroups"
+                       OnConfirm="CreateGroups">
+    </CreateStudyGroups>
+
+    <CreateAssignment AssignmentModel="assignmentModel"
+                      IsVisible="showAddAssigmentDialog"
+                      OnCancel=CancelCreateAssignment
+                      OnConfirm="SaveAssignment">
+    </CreateAssignment>
+
+    <Alert Color="@alertColor" @bind-Visible="showAlertMessage">
+        <AlertDescription>@alertMessage</AlertDescription>
+        <CloseButton />
+    </Alert>
+</AuthorizeView>
+
+
+<ResourcesList Resources="resources"
+                    IsLoading="isLoading"
+                    IsReadOnly="isReadOnly"
+                    CurrentUserId="currentUserId"
+                    OnDeleteResource="DeleteResource">
+</ResourcesList>

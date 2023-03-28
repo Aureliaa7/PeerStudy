@@ -59,6 +59,8 @@ namespace PeerStudy
             services.AddScoped<IStudyGroupService, StudyGroupService>();
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<IAssignmentFileService, AssignmentFileService>();
+            services.AddScoped<IStudyGroupResourceService, StudyGroupResourceService>();
+            services.AddScoped<IWorkItemService, WorkItemService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)
@@ -70,7 +72,7 @@ namespace PeerStudy
 
             services.AddScoped<IAuthService, AuthService>();
 
-            services.AddScoped<INavigationMenuService, NavigationMenuService>();    
+            services.AddScoped<INavigationMenuService, NavigationMenuService>();
         }
 
         private static void RegisterServicesFromInfrastructure(this IServiceCollection services)

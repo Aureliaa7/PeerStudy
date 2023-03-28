@@ -1,0 +1,26 @@
+﻿@using PeerStudy.Core.Models.Assignments
+@using PeerStudy.Features.Assignments.Components.CourseAssignmentComponent
+
+@page "/{courseTitle}/{courseId:guid}/assignments"
+@attribute [Authorize(Roles = "Teacher")]
+@inherits PeerStudyComponentBase
+
+<Header title="@CourseTitle"></Header>
+
+<Loading IsLoading="isLoading"
+         HasData="@(assignments != null && assignments.Any())"
+         NotFoundMessage="@noAssignmentsMessage">
+    <div class="assignments">
+        @foreach (var assignment in assignments)
+        {
+            <div class="assignment">
+                <CourseAssignment Assignment="assignment"
+                              IsReadOnly="isReadOnly"
+                              OnSaveGrade="SaveGradeHandler"
+                              OnDeleteAssignment="DeleteAssignmentHandler"
+                              OnViewWork="ViewSubmittedWork">
+                </CourseAssignment>
+            </div>
+        }
+    </div>
+</Loading>

@@ -1,0 +1,22 @@
+﻿<MatCard Style="@styles">
+    <div class="center-elements">
+        <MatHeadline6>
+            @StudyGroupModel.Title
+        </MatHeadline6>
+    </div>
+    <MatCardContent>
+        <div class="course-title">
+            <h6><b>Course: @StudyGroupModel.CourseTitle</b></h6>
+        </div>
+        <MatBody2 @onclick="ClickHandler">
+            <div class="container">
+                @foreach (var student in StudyGroupModel.Students)
+                {
+                    <div>
+                        @student.FirstName @student.LastName
+                    </div>
+                }
+            </div>
+        </MatBody2>
+    </MatCardContent>
+</MatCard>

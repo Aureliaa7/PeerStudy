@@ -1,0 +1,51 @@
+﻿@using PeerStudy.Core.Models.Courses
+@using PeerStudy.Features.Courses.Components.CoursesListComponent
+@using PeerStudy.Features.Courses.Components.CreateUpdateCourseComponent
+
+@page "/active-courses"
+@attribute [Authorize]
+@inherits CoursesBase
+
+
+<AuthorizeView Roles="Teacher">
+    @if (!CoursesState.Value.IsLoading)
+    {
+        <div>
+            <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
+                <img src="/images/icons8-plus.svg" />
+            </MatButton>
+        </div>
+    }
+    <CreateUpdateCourseDialog IsVisible="displayCourseDialog"
+                              IsEditCourseEnabled="false"
+                              CourseModel="CourseModel"
+                              OnSave="SaveCourse"
+                              OnCancel="CloseCourseDialog">
+    </CreateUpdateCourseDialog>
+
+    @if (isEditCourseModeEnabled)
+    {
+        <CreateUpdateCourseDialog IsVisible="displayCourseDialog"
+                              IsEditCourseEnabled="true"
+                              CourseModel="CourseModel"
+                              OnSave="EditCourse"
+                              OnCancel="CancelEditCourse">
+        </CreateUpdateCourseDialog>
+    }
+
+    <CoursesList Courses="CoursesState.Value.ActiveCourses"
+                 IsLoading="CoursesState.Value.IsLoading"
+                 CoursesNotFoundMessage="@noCoursesMessage"
+                 OnEditCourse="EditCourseHandler"
+                 OnArchiveCourse="ArchiveCourseHandler"
+                 OnCourseClicked="CourseClickedHandler">
+    </CoursesList>
+</AuthorizeView>
+
+<AuthorizeView Roles="Student">
+    <CoursesList Courses="CoursesState.Value.ActiveCourses"
+                 IsLoading="CoursesState.Value.IsLoading"
+                 CoursesNotFoundMessage="@noCoursesMessage"
+                 OnCourseClicked="CourseClickedHandler">
+    </CoursesList>
+</AuthorizeView>

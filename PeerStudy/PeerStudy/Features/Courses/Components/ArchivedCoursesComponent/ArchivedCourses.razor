@@ -1,0 +1,12 @@
+﻿@using PeerStudy.Core.Models.Courses
+@using PeerStudy.Features.Courses.Components.CoursesListComponent
+
+@page "/archived-courses"
+@attribute [Authorize]
+@inherits CoursesBase
+
+<CoursesList Courses="CoursesState.Value.ArchivedCourses"
+             IsLoading="CoursesState.Value.IsLoading"
+             CoursesNotFoundMessage="@noCoursesMessage"
+             OnCourseClicked="CourseClickedHandler">
+</CoursesList>

@@ -27,6 +27,8 @@ namespace PeerStudy.Core.DomainEntities
 
         public string AssignmentsDriveFolderId { get; set; }
 
+        public string StudyGroupsDriveFolderId { get; set; }
+
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }

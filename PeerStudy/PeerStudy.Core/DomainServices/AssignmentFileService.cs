@@ -99,7 +99,7 @@ namespace PeerStudy.Core.DomainServices
             string teacherEmail)
         {
             List<StudentAssignmentFile> studentAssignmentFiles = new List<StudentAssignmentFile>();
-            var uploadedFilesDetails = new Dictionary<string, FileDetailsModel>();
+            var uploadedFilesDetails = new Dictionary<string, DriveFileDetailsModel>();
 
             foreach (var file in files)
             {
@@ -120,8 +120,6 @@ namespace PeerStudy.Core.DomainServices
                         FileName = file.Name,
                         StudentAssignmentId = studentAssignment.Id
                     });
-
-                    //TODO: give teacher read permission; 
                 }
                 catch (Exception ex)
                 {
@@ -141,7 +139,7 @@ namespace PeerStudy.Core.DomainServices
             return MapToAssignmentFileDetailsModels(savedFiles, uploadedFilesDetails);
         }
 
-        private List<StudentAssignmentFileModel> MapToAssignmentFileDetailsModels(List<StudentAssignmentFile> resources, IDictionary<string, FileDetailsModel> driveFileDetails)
+        private List<StudentAssignmentFileModel> MapToAssignmentFileDetailsModels(List<StudentAssignmentFile> resources, IDictionary<string, DriveFileDetailsModel> driveFileDetails)
         {
             var resourcesModels = new List<StudentAssignmentFileModel>();
             foreach (var resource in resources)

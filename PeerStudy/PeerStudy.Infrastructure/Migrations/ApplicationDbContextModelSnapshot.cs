@@ -86,6 +86,10 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("StudyGroupsDriveFolderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uniqueidentifier");
 
@@ -144,9 +148,12 @@ namespace PeerStudy.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -154,6 +161,8 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("CourseResources");
                 });
@@ -191,6 +200,9 @@ namespace PeerStudy.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DriveFileId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -198,6 +210,9 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("StudentAssignmentId")
                         .HasColumnType("uniqueidentifier");
@@ -260,6 +275,10 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("DriveFolderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -269,6 +288,38 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("StudyGroups");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DriveFileId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StudyGroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("StudyGroupId");
+
+                    b.ToTable("StudyGroupFiles");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.User", b =>
@@ -315,6 +366,41 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.ToTable("Users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.WorkItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AssignedToId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("StudyGroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToId");
+
+                    b.HasIndex("StudyGroupId");
+
+                    b.ToTable("WorkItems");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Student", b =>
@@ -380,7 +466,15 @@ namespace PeerStudy.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PeerStudy.Core.DomainEntities.Teacher", "Owner")
+                        .WithMany("CourseResources")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Course");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignment", b =>
@@ -462,6 +556,43 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Navigation("Course");
                 });
 
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupFile", b =>
+                {
+                    b.HasOne("PeerStudy.Core.DomainEntities.Student", "Owner")
+                        .WithMany("StudyGroupFiles")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PeerStudy.Core.DomainEntities.StudyGroup", "StudyGroup")
+                        .WithMany("StudyGroupFiles")
+                        .HasForeignKey("StudyGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("StudyGroup");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.WorkItem", b =>
+                {
+                    b.HasOne("PeerStudy.Core.DomainEntities.Student", "AssignedTo")
+                        .WithMany("WorkItems")
+                        .HasForeignKey("AssignedToId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("PeerStudy.Core.DomainEntities.StudyGroup", "StudyGroup")
+                        .WithMany("WorkItems")
+                        .HasForeignKey("StudyGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssignedTo");
+
+                    b.Navigation("StudyGroup");
+                });
+
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Assignment", b =>
                 {
                     b.Navigation("StudentAssignments");
@@ -475,6 +606,10 @@ namespace PeerStudy.Infrastructure.Migrations
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroup", b =>
                 {
                     b.Navigation("StudentStudyGroups");
+
+                    b.Navigation("StudyGroupFiles");
+
+                    b.Navigation("WorkItems");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Student", b =>
@@ -484,10 +619,16 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Navigation("CourseEnrollments");
 
                     b.Navigation("StudentStudyGroups");
+
+                    b.Navigation("StudyGroupFiles");
+
+                    b.Navigation("WorkItems");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Teacher", b =>
                 {
+                    b.Navigation("CourseResources");
+
                     b.Navigation("TeacherCourses");
                 });
 #pragma warning restore 612, 618

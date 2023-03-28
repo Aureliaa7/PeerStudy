@@ -7,8 +7,11 @@ namespace PeerStudy.Core.DomainEntities
         public Teacher()
         {
             TeacherCourses = new List<Course>();
+            CourseResources = new List<CourseResource>();
         }
 
         public ICollection<Course> TeacherCourses { get; set; }
+
+        public ICollection<CourseResource> CourseResources { get; set; }
     }
 }

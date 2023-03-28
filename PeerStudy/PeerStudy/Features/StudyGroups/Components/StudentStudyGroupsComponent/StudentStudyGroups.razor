@@ -1,0 +1,12 @@
+﻿@using PeerStudy.Core.Models.StudyGroups
+@using PeerStudy.Features.StudyGroups.Components.StudyGroupsListComponent
+
+@page "/my-study-groups"
+@inherits StudyGroupsBase
+@attribute [Authorize(Roles = "Student")]
+
+<h3 class="page-title">Study Groups</h3>
+<StudyGroupsList StudyGroups="studyGroups"
+                 IsLoading="isLoading"
+                 OnClicked="HandleClickedStudyGroup">
+</StudyGroupsList>

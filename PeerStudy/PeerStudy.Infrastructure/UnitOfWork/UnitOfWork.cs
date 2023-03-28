@@ -20,6 +20,8 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<Assignment> assignmentRepository;
         private IRepository<StudentAssignment> studentAssignmentRepository;
         private IRepository<StudentAssignmentFile> studentAssignmentFilesRepository;
+        private IRepository<StudyGroupFile> studyGroupFilesRepository;
+        private IRepository<WorkItem> workItemsRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -142,6 +144,30 @@ namespace PeerStudy.Infrastructure.UnitOfWork
                     studentAssignmentFilesRepository = new Repository<StudentAssignmentFile>(dbContext);
                 }
                 return studentAssignmentFilesRepository;
+            }
+        }
+
+        public IRepository<StudyGroupFile> StudyGroupFilesRepository
+        {
+            get
+            {
+                if (studyGroupFilesRepository == null)
+                {
+                    studyGroupFilesRepository = new Repository<StudyGroupFile>(dbContext);
+                }
+                return studyGroupFilesRepository;
+            }
+        }
+
+        public IRepository<WorkItem> WorkItemsRepository
+        {
+            get
+            {
+                if (workItemsRepository == null)
+                {
+                    workItemsRepository = new Repository<WorkItem>(dbContext);
+                }
+                return workItemsRepository;
             }
         }
 

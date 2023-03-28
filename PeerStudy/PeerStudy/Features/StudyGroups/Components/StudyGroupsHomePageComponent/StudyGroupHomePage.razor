@@ -1,0 +1,32 @@
+﻿@using PeerStudy.Core.Models.Resources
+@using PeerStudy.Features.Resources.Components.ResourcesListComponent
+
+@page "/{studyGroupId:guid}/home"
+@inherits PeerStudyComponentBase
+@attribute [Authorize]
+
+<Header Title="@studyGroup?.Title"></Header>
+
+<AuthorizeView Roles="Student">
+    <div>
+        @if (studyGroup != null && !studyGroup.IsActive && !isLoading)
+        {
+            <div class="create-menu-btn">
+                <MatButton Raised=true OnClick="@(() => showUploadFileDialog = true)">Upload File</MatButton>
+            </div>
+        }
+    </div>
+
+    <UploadFiles IsVisible="showUploadFileDialog"
+                 OnCancel="@(() => showUploadFileDialog = false)"
+                 OnUpload="UploadFiles">
+    </UploadFiles>
+</AuthorizeView>
+
+
+<ResourcesList Resources="resources"
+               IsLoading="isLoading"
+               IsReadOnly="isReadOnly"
+               CurrentUserId="currentUserId"
+               OnDeleteResource="DeleteResource">
+</ResourcesList>

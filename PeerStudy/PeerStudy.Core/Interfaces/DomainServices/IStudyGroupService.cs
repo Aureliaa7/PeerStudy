@@ -1,4 +1,5 @@
 ﻿using PeerStudy.Core.Models.StudyGroups;
+using PeerStudy.Core.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,5 +13,9 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<List<StudyGroupDetailsModel>> GetByCourseIdAsync(Guid courseId);
 
         Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId);
+
+        Task<StudyGroupDetailsModel> GetAsync(Guid id);
+
+        Task<List<UserModel>> GetStudentsByGroupIdAsync(Guid id);
     }
 }
