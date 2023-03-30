@@ -1,15 +1,19 @@
-﻿<MatCard Style="@styles">
+﻿@using PeerStudy.Features.StudyGroups.Components.StudyGroupWorkItemsOverviewComponent
+
+<MatCard Style="@styles">
     <div class="center-elements">
         <MatHeadline6>
             @StudyGroupModel.Title
         </MatHeadline6>
     </div>
     <MatCardContent>
-        <div class="course-title">
+        <div>
             <h6><b>Course: @StudyGroupModel.CourseTitle</b></h6>
+            <hr />
         </div>
         <MatBody2 @onclick="ClickHandler">
-            <div class="container">
+            <b>Members</b>
+            <div class="students">
                 @foreach (var student in StudyGroupModel.Students)
                 {
                     <div>
@@ -17,6 +21,14 @@
                     </div>
                 }
             </div>
+
+            @if (StudyGroupModel.WorkItemsStatus != null && StudyGroupModel.WorkItemsStatus.Any())
+            {
+                <b>Work items</b>
+                <div class="center-elements">
+                    <StudyGroupWorkItemsOverview Data="chartData"></StudyGroupWorkItemsOverview>
+                </div>
+            }
         </MatBody2>
     </MatCardContent>
 </MatCard>

@@ -1,6 +1,9 @@
-﻿@using PeerStudy.Core.Models.WorkItems
+﻿@using Microsoft.AspNetCore.Authorization;
+@using PeerStudy.Core.Enums;
+@using PeerStudy.Core.Models.WorkItems
 @using PeerStudy.Features.WorkItems.Components.CreateUpdateWorkItemComponent
 @using PeerStudy.Features.WorkItems.Components.WorkItemDetailsComponent
+@using PeerStudy.Features;
 
 @page "/{studyGroupName}/{studyGroupId:guid}/work-items"
 @attribute [Authorize]
@@ -10,35 +13,66 @@
     <Header Title="@StudyGroupName"></Header>
 
     <Loading IsLoading="isLoading"
-             HasData="@(workItems != null && workItems.Any())"
+             HasData="@(allWorkItems != null && allWorkItems.Any())"
              NotFoundMessage="@noWorkItemsMessage">
 
         <ChildContentForNoData>
             @if (!isReadOnly)
-                {
-                    <MatButton Icon="@MatIconNames.Add" OnClick="@(() => showAddWorkItemDialog = true)"></MatButton>
-                }
-            
+            {
+                <MatButton Icon="@MatIconNames.Add" OnClick="@(() => showAddWorkItemDialog = true)"></MatButton>
+            }
+
         </ChildContentForNoData>
 
         <ChildContent>
+            <div class="filter">
+                <div class="dropdown-container">
+                    <MatSelectValue Style="@dropdownStyles"
+                                    Label="Assigned to"
+                                    Value="@selectedStudentIdFilter"
+                                    Items="studentDropDownItems"
+                                    ValueSelector="@(x=>x.Key)"
+                                    ValueChanged="@(new EventCallback<string>(this, HandleSelectedStudentChanged))">
+                        <ItemTemplate Context="itemmenucontext"><span>@itemmenucontext?.Value</span></ItemTemplate>
+                    </MatSelectValue>
+                </div>
+                <div class="dropdown-container">
+                    <MatSelectItem Style="@dropdownStyles"
+                                   Label="Status"
+                                   Value="@selectedWorkItemStatusFilter"
+                                   ValueChanged="@(async (WorkItemStatus? value) => await HandleSelectedWorkItemStatusChanged(value))"
+                                   Items="workItemStatusesForFiltering">
+                    </MatSelectItem>
+                </div>
+                <span class="reset-filter" @onclick="ResetFilters" title="Reset Filters">X</span>
+            </div>
+
             <div>
+                <AuthorizeView Roles="Student">
+                    @if (!isReadOnly)
+                    {
+                        <MatButton Icon="@MatIconNames.Add" OnClick="@(() => showAddWorkItemDialog = true)"></MatButton>
+                    }
+                </AuthorizeView>
+
                 <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Visibility" OnClick="ShowWorkItemDetails"></MatButton>
-                @if (!isReadOnly)
-                {
-                    <MatButton Icon="@MatIconNames.Add" OnClick="@(() => showAddWorkItemDialog = true)"></MatButton>
-                    <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Edit" OnClick="EditWorkItem"></MatButton>
-                    <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Delete" OnClick="DeleteWorkItem"></MatButton>
-                }
+
+                <AuthorizeView Roles="Student">
+                    @if (!isReadOnly)
+                    {
+                        <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Edit" OnClick="EditWorkItem"></MatButton>
+                        <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Delete" OnClick="DeleteWorkItem"></MatButton>
+                    }
+                </AuthorizeView>
             </div>
 
 
             <DataGrid TItem="WorkItemDetailsModel"
-                      Data="@workItems"
+                      Data="filteredWorkItems"
                       @bind-SelectedRow="@selectedRow"
-                      Responsive
-                      ShowPager
-                      ShowPageSizes
+                            Responsive
+                            ShowPager
+                            ShowPageSizes
                       PagerPosition="DataGridPagerPosition.Bottom"
                       PagerOptions="new(){ ButtonSize=Size.Small }">
                 <DataGridColumns>
@@ -69,30 +103,30 @@
                 <PageSelectorTemplate>
                     <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPage" Size="Size.Small">
                         @for (int i = context.FirstVisiblePage; i <= context.LastVisiblePage; ++i)
-                            {
-                                var pageNumber = i;
-                                <SelectItem Value="@pageNumber">@pageNumber</SelectItem>
-                            }
-                        </Select>
-                    </PageSelectorTemplate>
-                    <PageSizesTemplate>
-                        <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPageSize" Size="Size.Small">
-                            @foreach (var pageSize in context.PageSizes)
-                            {
-                                <SelectItem Value="@pageSize">@pageSize</SelectItem>
-                            }
-                        </Select>
-                    </PageSizesTemplate>
-                </DataGrid>
+                        {
+                            var pageNumber = i;
+                            <SelectItem Value="@pageNumber">@pageNumber</SelectItem>
+                        }
+                    </Select>
+                </PageSelectorTemplate>
+                <PageSizesTemplate>
+                    <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPageSize" Size="Size.Small">
+                        @foreach (var pageSize in context.PageSizes)
+                        {
+                            <SelectItem Value="@pageSize">@pageSize</SelectItem>
+                        }
+                    </Select>
+                </PageSizesTemplate>
+            </DataGrid>
 
-                <WorkItemDetails WorkItem="@selectedRow"
+            <WorkItemDetails WorkItem="@selectedRow"
                              IsVisible="showSelectedTaskDetails"
-                OnClose="CloseWorkItemDetailsPopup">
-                </WorkItemDetails>
-            </ChildContent>
+                             OnClose="CloseWorkItemDetailsPopup">
+            </WorkItemDetails>
+        </ChildContent>
 
-            <ChildContentAlwaysDisplayed>
-                        <CreateUpdateWorkItem WorkItemModel="workItemModel"
+        <ChildContentAlwaysDisplayed>
+            <CreateUpdateWorkItem WorkItemModel="workItemModel"
                                   IsVisible="showAddWorkItemDialog"
                                   Students="@studentDropDownItems"
                                   WorkItemStatuses="workItemStatuses"
@@ -100,13 +134,13 @@
                                   OnSave="AddWorkItem">
             </CreateUpdateWorkItem>
 
-              <CreateUpdateWorkItem WorkItemModel="workItemModel"
+            <CreateUpdateWorkItem WorkItemModel="workItemModel"
                                   IsVisible="showEditWorkItemDialog"
                                   Students="@studentDropDownItems"
                                   WorkItemStatuses="workItemStatuses"
                                   OnCancel="CancelEditWorkItem"
                                   OnSave="SaveUpdatedWorkItem">
             </CreateUpdateWorkItem>
-            </ChildContentAlwaysDisplayed>
-        </Loading>
-    </div>
+        </ChildContentAlwaysDisplayed>
+    </Loading>
+</div>

@@ -97,6 +97,7 @@ namespace PeerStudy.Core.DomainServices
             workItem.Status = updateWorkItemModel.Status;
 
             await unitOfWork.WorkItemsRepository.UpdateAsync(workItem);
+            await unitOfWork.SaveChangesAsync();
 
             return new WorkItemDetailsModel
             {

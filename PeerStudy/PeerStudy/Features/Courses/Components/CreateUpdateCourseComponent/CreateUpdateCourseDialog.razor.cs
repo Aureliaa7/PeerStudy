@@ -10,7 +10,7 @@ namespace PeerStudy.Features.Courses.Components.CreateUpdateCourseComponent
         public EventCallback OnSave { get; set; }
 
         [Parameter]
-        public EventCallback<bool> OnCancel { get; set; }
+        public EventCallback OnCancel { get; set; }
 
         [Parameter]
         public bool IsVisible { get; set; }

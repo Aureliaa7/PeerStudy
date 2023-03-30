@@ -1,11 +1,12 @@
 ﻿using Blazored.Toast.Services;
-using Blazorise;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.Resources;
+using PeerStudy.Features.Courses.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +23,13 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private IStudyGroupService StudyGroupService { get; set; }
 
         [Inject]
-        private ICourseService CourseService { get; set; }
+        private IAssignmentService AssignmentService { get; set; }
 
         [Inject]
-        private IAssignmentService AssignmentService { get; set; }
+        private IStateSelection<CoursesState, CourseDetailsModel> SelectedCourse { get; set; }
+
+        [Inject]
+        private IState<CoursesState> CoursesState { get; set; }
 
 
         [Parameter]
@@ -44,12 +48,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private bool showCreateMenu;
         private bool showUploadFileDialog;
         private bool showCreateStudyGroupsDialog;
-        private bool showAlertMessage;
         private bool isReadOnly;
         private bool showAddAssigmentDialog;
         private int[] studyGroupsNoMembers = new int[3] { 3, 4, 5 };  //TODO: should be moved to constants file
-        private Color alertColor;
-        private string alertMessage;
 
         private const string menuButtonsStyles = "color: white;";
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
@@ -64,15 +65,23 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             await SetCurrentUserDataAsync();
 
             resources = await CourseResourceService.GetByCourseIdAsync(CourseId);
-            await SetCurrentCourseDetailsAsync();
+            SetCurrentCourseDetails();
             UpdateNavigationMenu();
             isReadOnly = courseDetails.Status == CourseStatus.Archived;
         }
 
-        private async Task SetCurrentCourseDetailsAsync()
+        private void SetCurrentCourseDetails()
         {
-            //TODO: get data from store
-            courseDetails = await CourseService.GetDetailsAsync(CourseId);
+            courseDetails = CoursesState.Value.ActiveCourses.FirstOrDefault(x => x.Id == CourseId) ??
+                CoursesState.Value.ArchivedCourses.FirstOrDefault(x => x.Id == CourseId);
+
+            SelectedCourse.Select(x => x.ActiveCourses.FirstOrDefault(y => y.Id == CourseId) ??
+           x.ArchivedCourses.FirstOrDefault(y => y.Id == CourseId));
+
+            SelectedCourse.SelectedValueChanged += (object? sender, CourseDetailsModel course) =>
+            {
+                courseDetails = course;
+            };
         }
 
         private void UpdateNavigationMenu()
@@ -103,7 +112,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         private async Task UploadFiles(List<UploadFileModel> filesModels)
         {
-            ShowToast(ToastLevel.Info, "Uploading file(s)...", false);
+            ToastService.ShowToast(ToastLevel.Info, "Uploading file(s)...", false);
             CloseUploadFileDialog();
 
             await Task.Run(async () =>
@@ -112,7 +121,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
                 var createdResources = await CourseResourceService.UploadResourcesAsync(uploadFileModels);
                 resources.AddRange(createdResources);
             });
-            ShowToast(ToastLevel.Success, "Files were successfully uploaded.");
+            ToastService.ShowToast(ToastLevel.Success, "Files were successfully uploaded.");
 
             //go back on the main thread
             StateHasChanged();
@@ -148,19 +157,18 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         private async Task DeleteResource(Guid resourceId)
         {
-            ShowToast(ToastLevel.Info, "Deleting resource...", false);
+            ToastService.ShowToast(ToastLevel.Info, "Deleting resource...", false);
 
             try
             {
                 await CourseResourceService.DeleteAsync(resourceId);
-                showAlertMessage = false;
                 resources = resources.Where(x => x.Id != resourceId).ToList();
-                ShowToast(ToastLevel.Success, "The resource was successfully deleted.");
+                ToastService.ShowToast(ToastLevel.Success, "The resource was successfully deleted.");
                 StateHasChanged();
             }
             catch (Exception ex)
             {
-                ShowToast(ToastLevel.Error, deleteResourceErrorMessage);
+                ToastService.ShowToast(ToastLevel.Error, deleteResourceErrorMessage);
             }
         }
 
@@ -172,16 +180,16 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private async Task CreateGroups(string noStudentsPerGroup)
         {
             showCreateStudyGroupsDialog = false;
-            ShowToast(ToastLevel.Info, "Creating study groups...", false);
+            ToastService.ShowToast(ToastLevel.Info, "Creating study groups...", false);
 
             try
             {
                 await StudyGroupService.CreateStudyGroupsAsync(currentUserId, CourseId, Convert.ToInt16(noStudentsPerGroup));
-                ShowToast(ToastLevel.Success, "Study groups were successfully created.");
+                ToastService.ShowToast(ToastLevel.Success, "Study groups were successfully created.");
             }
             catch (Exception ex)
             {
-                ShowToast(ToastLevel.Error, ex.Message);
+                ToastService.ShowToast(ToastLevel.Error, ex.Message);
             }
         }
 
@@ -194,7 +202,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private async Task SaveAssignment()
         {
             showAddAssigmentDialog = false;
-            ShowToast(ToastLevel.Info, "Adding assignment...", false);
+            ToastService.ShowToast(ToastLevel.Info, "Adding assignment...", false);
             assignmentModel.CourseId = CourseId;
             assignmentModel.TeacherId = currentUserId;
             assignmentModel.DueDate = assignmentModel.DueDate.AddDays(1); // fix for MatDatePicker
@@ -205,16 +213,16 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
                 {
                     await AssignmentService.CreateAsync(assignmentModel);
                 });
-                ShowToast(ToastLevel.Success, "Assignment was successfully added.");
+                ToastService.ShowToast(ToastLevel.Success, "Assignment was successfully added.");
             }
             catch (Exception ex)
             {
-                ShowToast(ToastLevel.Error, "An error occurred. Please try again later.");
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred. Please try again later.");
             }
 
             StateHasChanged();
 
-            assignmentModel = new CreateAssignmentModel();  // after saving the assignment, reset the form
+            assignmentModel = new CreateAssignmentModel();
         }
 
         private void CancelCreateAssignment()

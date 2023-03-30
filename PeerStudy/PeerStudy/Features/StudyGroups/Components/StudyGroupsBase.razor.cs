@@ -9,6 +9,7 @@ namespace PeerStudy.Features.StudyGroups.Components
         [Inject]
         private NavigationManager NavigationManager { get; set; }
 
+
         protected List<StudyGroupDetailsModel> studyGroups = new List<StudyGroupDetailsModel>();
 
         protected void HandleClickedStudyGroup(StudyGroupDetailsModel studyGroup)

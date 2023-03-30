@@ -1,4 +1,5 @@
-﻿using PeerStudy.Core.Enums;
+﻿using Blazored.Toast.Services;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.Courses;
 using PeerStudy.Features.Courses.Store;
 using System;
@@ -48,7 +49,7 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
           
             if (isValidData)
             {
-                ToastService.ShowInfo(courseCreationMessage);
+                ToastService.ShowToast(ToastLevel.Info, courseCreationMessage, false);
                 displayCourseDialog = false;
 
                 // fix for MatDatePicker

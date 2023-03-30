@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
@@ -46,7 +47,7 @@ namespace PeerStudy.Features.Assignments.Components.StudentCourseAssignmentsComp
             }
             catch (Exception ex)
             {
-                ToastService.ShowError("The assignments could not be fetched...");
+                ToastService.ShowToast(ToastLevel.Error, "The assignments could not be fetched...");
             }
         }
 

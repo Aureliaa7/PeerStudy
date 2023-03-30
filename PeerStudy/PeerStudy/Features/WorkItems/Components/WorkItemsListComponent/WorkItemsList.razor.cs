@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.WorkItems;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
 {
-    public partial class WorkItemsList : PeerStudyComponentBase, IDisposable
+    public partial class WorkItemsList : PeerStudyComponentBase
     {
         [Inject]
         private IWorkItemService WorkItemService { get; set; }
@@ -27,18 +28,26 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
 
 
         private List<DropDownItem> studentDropDownItems = new List<DropDownItem>();
+        private List<WorkItemStatus?> workItemStatusesForFiltering;
         private List<WorkItemStatus> workItemStatuses;
         private CreateUpdateWorkItemModel workItemModel = new CreateUpdateWorkItemModel();
-        private List<WorkItemDetailsModel> workItems = new List<WorkItemDetailsModel>();
+        private List<WorkItemDetailsModel> allWorkItems = new List<WorkItemDetailsModel>();
+        private List<WorkItemDetailsModel> filteredWorkItems = new List<WorkItemDetailsModel>();
 
-        // the delete button is visible if isReadOnly is false and the user has student role
         private WorkItemDetailsModel selectedRow;
         private bool showSelectedTaskDetails;
         private bool showAddWorkItemDialog;
         private bool showEditWorkItemDialog;
-        private bool isReadOnly = false;
+        private bool isReadOnly;
+
+        private string selectedStudentId;
+        private WorkItemStatus selectedWorkItemStatus;
+
+        private string? selectedStudentIdFilter;
+        private WorkItemStatus? selectedWorkItemStatusFilter;
 
         private const string noWorkItemsMessage = "There are no work items yet..";
+        private const string dropdownStyles = "width: 90%;";
 
         protected override async Task OnInitializedAsync()
         {
@@ -47,9 +56,18 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
 
         protected override async Task InitializeAsync()
         {
-            await SetCurrentUserDataAsync();
-            await SetWorkItemDropItemsAsync();
-            workItems = await WorkItemService.GetByStudyGroupAsync(StudyGroupId);
+            try
+            {
+                await SetCurrentUserDataAsync();
+                await SetWorkItemDropItemsAsync();
+                allWorkItems = await WorkItemService.GetByStudyGroupAsync(StudyGroupId);
+                filteredWorkItems = allWorkItems;
+                isReadOnly = !await StudyGroupService.IsActiveAsync(StudyGroupId);
+            } 
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
+            }
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -63,6 +81,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private async Task SetWorkItemDropItemsAsync()
         {
             workItemStatuses = Enum.GetValues(typeof(WorkItemStatus)).Cast<WorkItemStatus>().ToList();
+            workItemStatusesForFiltering = workItemStatuses.Select(x => (WorkItemStatus?)x).ToList();
             var students = await StudyGroupService.GetStudentsByGroupIdAsync(StudyGroupId);
 
             foreach (var student in students)
@@ -82,23 +101,21 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
 
         private void ShowWorkItemDetails()
         {
-            // display a popup with the details of the selected work item
             showSelectedTaskDetails = true;
         }
 
-        // the btn should only be visible for students and editMode
         private async Task DeleteWorkItem()
         {
             try
             {
-                var workItemToBeRemoved = workItems.First(x => x.Id == selectedRow.Id);
+                var workItemToBeRemoved = allWorkItems.First(x => x.Id == selectedRow.Id);
                 await WorkItemService.DeleteAsync(selectedRow.Id);
-                workItems = workItems.Except(new List<WorkItemDetailsModel> { workItemToBeRemoved }).ToList();
+                allWorkItems = allWorkItems.Except(new List<WorkItemDetailsModel> { workItemToBeRemoved }).ToList();
                 selectedRow = null;
             }
             catch (Exception ex)
             {
-                //TODO: show err message
+                ToastService.ShowToast(ToastLevel.Error, "The work item could not be deleted...");
             }
         }
 
@@ -111,13 +128,11 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 var savedWorkItem = await WorkItemService.AddAsync(workItemModel);
                 savedWorkItem.StudyGroupName = StudyGroupName;
                 savedWorkItem.AssignedToFullName = studentDropDownItems.FirstOrDefault(x => x.Key == savedWorkItem.AssignedTo.ToString())?.Value;
-                workItems.Add(savedWorkItem);
+                allWorkItems.Add(savedWorkItem);
             }
             catch (Exception ex)
             {
-                //TODO: show an err message
-
-                // maybe add a template for peerbasecomponent
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while creating the work item...");
             }
             finally
             {
@@ -161,7 +176,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             showEditWorkItemDialog = false;
             try
             {
-                var workItemToBeUpdated = workItems.First(x => x.Id == selectedRow.Id);
+                var workItemToBeUpdated = allWorkItems.First(x => x.Id == selectedRow.Id);
                 var updatedWorkItem = await WorkItemService.UpdateAsync(workItemModel, selectedRow.Id);
 
                 workItemToBeUpdated.Title = workItemModel.Title;
@@ -174,7 +189,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             }
             catch (Exception e)
             {
-                //TODO: show an err message
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the work item..."); 
             }
             finally
             {
@@ -182,8 +197,66 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             }
         }
 
-        public void Dispose()
+        private Task HandleSelectedWorkItemStatusChanged(WorkItemStatus? status)
         {
+            selectedWorkItemStatusFilter = status;
+            FilterWorkItems();
+
+            return Task.CompletedTask;
+        }
+
+        private Task HandleSelectedStudentChanged(string studentId)
+        {
+            selectedStudentIdFilter = studentId;
+            FilterWorkItems();
+
+            return Task.CompletedTask;
+        }
+
+        private void FilterWorkItems()
+        {
+            var filter = GetFilter();
+            if (filter != null)
+            {
+                filteredWorkItems = allWorkItems.Where(filter)
+                    .ToList();
+            }
+            else
+            {
+                filteredWorkItems = allWorkItems;
+            }
+        }
+
+        private Func<WorkItemDetailsModel, bool> GetFilter()
+        {
+            Func<WorkItemDetailsModel, bool> filter = null;
+
+            if (!string.IsNullOrWhiteSpace(selectedStudentIdFilter) && selectedWorkItemStatusFilter != null)
+            {
+                filter = (x) => x.AssignedTo == new Guid(selectedStudentIdFilter) && x.Status == selectedWorkItemStatusFilter;
+            }
+            else if (!string.IsNullOrWhiteSpace(selectedStudentIdFilter) && selectedWorkItemStatusFilter == null)
+            {
+                filter = (x) => x.AssignedTo == new Guid(selectedStudentIdFilter);
+            }
+            else if (string.IsNullOrWhiteSpace(selectedStudentIdFilter) && selectedWorkItemStatusFilter != null)
+            {
+                filter = (x) => x.Status == selectedWorkItemStatusFilter;
+            }
+
+            return filter;
+        }
+
+        private void ResetFilters()
+        {
+            selectedWorkItemStatusFilter = null;
+            selectedStudentIdFilter = null;
+            filteredWorkItems = allWorkItems;
+        }
+
+        protected override void Dispose(bool disposed)
+        {
+            base.Dispose(disposed);
             NavigationMenuService.Reset();
         }
     }

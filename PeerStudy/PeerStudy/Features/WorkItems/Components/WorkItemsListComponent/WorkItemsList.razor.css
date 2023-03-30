@@ -10,3 +10,13 @@
         max-width: 800px;
     }
 }
+
+.dropdown-container {
+    display: inline-block;
+    margin: 10px;
+    width: 40%;
+}
+
+.reset-filter {
+    cursor: pointer;
+}

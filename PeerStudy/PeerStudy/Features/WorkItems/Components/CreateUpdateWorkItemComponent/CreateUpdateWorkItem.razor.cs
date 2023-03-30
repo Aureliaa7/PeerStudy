@@ -4,7 +4,6 @@ using PeerStudy.Core.Models.WorkItems;
 using PeerStudy.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Features.WorkItems.Components.CreateUpdateWorkItemComponent
@@ -27,7 +26,7 @@ namespace PeerStudy.Features.WorkItems.Components.CreateUpdateWorkItemComponent
         public List<DropDownItem> Students { get; set; } 
 
         [Parameter]
-        public List<WorkItemStatus> WorkItemStatuses { get; set; } = Enum.GetValues(typeof(WorkItemStatus)).Cast<WorkItemStatus>().ToList();
+        public List<WorkItemStatus> WorkItemStatuses { get; set; }
 
         private string selectedStudentId;
         private WorkItemStatus selectedWorkItemStatus;

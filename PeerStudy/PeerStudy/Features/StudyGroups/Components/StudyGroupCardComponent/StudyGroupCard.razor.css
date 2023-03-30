@@ -1,3 +1,7 @@
 ﻿.container, .course-title {
     padding: 10px;
 }
+
+.students {
+    padding-left: 10%;
+}

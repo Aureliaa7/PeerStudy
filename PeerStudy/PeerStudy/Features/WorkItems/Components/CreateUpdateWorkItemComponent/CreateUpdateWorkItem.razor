@@ -27,16 +27,18 @@
                             </MatTextField>
                         </div>
                         <div>
-                            <MatSelectValue 
-                            Style="@matFieldStyles" 
-                            Label="Assigned to" @bind-Value="@selectedStudentId" 
-                            Items="@Students" 
-                            ValueSelector="@(x=>x.Key)">
+                            <MatSelectValue Style="@matFieldStyles"
+                                            Label="Assigned to" @bind-Value="@selectedStudentId"
+                                            Items="@Students"
+                                            ValueSelector="@(x=>x.Key)">
                                 <ItemTemplate Context="itemmenucontext"><span>@itemmenucontext?.Value</span></ItemTemplate>
                             </MatSelectValue>
                         </div>
                         <div>
-                            <MatSelectItem Style="@matFieldStyles" Label="Status" @bind-Value="selectedWorkItemStatus" Items="@WorkItemStatuses">
+                            <MatSelectItem Style="@matFieldStyles"
+                                           Label="Status"
+                                           @bind-Value="selectedWorkItemStatus"
+                                           Items="@WorkItemStatuses">
                             </MatSelectItem>
                         </div>
                     </div>

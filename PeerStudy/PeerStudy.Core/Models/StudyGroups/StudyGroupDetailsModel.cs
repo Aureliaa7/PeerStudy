@@ -1,4 +1,5 @@
-﻿using PeerStudy.Core.Models.Users;
+﻿using PeerStudy.Core.Enums;
+using PeerStudy.Core.Models.Users;
 using System;
 using System.Collections.Generic;
 
@@ -15,5 +16,7 @@ namespace PeerStudy.Core.Models.StudyGroups
         public string CourseTitle { get; set; }
 
         public bool IsActive { get; set; }
+
+        public Dictionary<WorkItemStatus, int> WorkItemsStatus { get; set; }
     }
 }

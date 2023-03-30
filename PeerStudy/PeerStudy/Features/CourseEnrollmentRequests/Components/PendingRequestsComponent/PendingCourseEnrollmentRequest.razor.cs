@@ -1,4 +1,5 @@
-﻿using PeerStudy.Core.Enums;
+﻿using Blazored.Toast.Services;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.CourseEnrollments;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,11 +39,11 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.PendingRequests
             if (result)
             {
                 requests = requests.Except(requestsToBeUpdated).ToList();
-                ToastService.ShowSuccess("The requests were successfully updated");
+                ToastService.ShowToast(ToastLevel.Success,"The requests were successfully updated");
             }
             else
             {
-                ToastService.ShowError("An unexpected error occurred...");
+                ToastService.ShowToast(ToastLevel.Error, "An unexpected error occurred...");
             }
         }
     }

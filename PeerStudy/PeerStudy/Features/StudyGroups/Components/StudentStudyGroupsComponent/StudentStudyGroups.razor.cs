@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using System;
@@ -30,7 +31,7 @@ namespace PeerStudy.Features.StudyGroups.Components.StudentStudyGroupsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowError("Could not fetch the study groups...");
+                ToastService.ShowToast(ToastLevel.Error, "Could not fetch the study groups...");
             }
         }
     }

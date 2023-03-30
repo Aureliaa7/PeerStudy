@@ -6,11 +6,11 @@
 @attribute [Authorize(Roles = "Teacher")]
 
 <CourseEnrollmentRequestList Requests="@requests"
-                         DisplayActionButtons=true
-                         IsLoading="isLoading"
-                         NoRequestsMessage="@noPendingRequestsMessage"
-                         AllowMultipleSelection=true
-                         CourseTitle="@CourseTitle"
-                         OnApproveRequests="ApproveRequests"
-                         OnRejectRequests="RejectRequests">
+                             DisplayActionButtons=true
+                             IsLoading="isLoading"
+                             NoRequestsMessage="@noPendingRequestsMessage"
+                             AllowMultipleSelection=true
+                             CourseTitle="@CourseTitle"
+                             OnApproveRequests="ApproveRequests"
+                             OnRejectRequests="RejectRequests">
 </CourseEnrollmentRequestList>

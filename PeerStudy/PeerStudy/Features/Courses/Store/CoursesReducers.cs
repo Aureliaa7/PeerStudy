@@ -27,7 +27,7 @@ namespace PeerStudy.Features.Courses.Store
         }
 
         [ReducerMethod]
-        public CoursesState ReduceFetchCoursesActionAction(CoursesState state, FetchCoursesErrorAction action)
+        public CoursesState ReduceFetchCoursesErrorAction(CoursesState state, FetchCoursesErrorAction action)
         {
             return state with
             {

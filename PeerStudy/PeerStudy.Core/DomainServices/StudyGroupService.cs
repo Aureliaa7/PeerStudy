@@ -105,17 +105,14 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task<List<StudyGroupDetailsModel>> GetByCourseIdAsync(Guid courseId)
         {
-            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId);
-            if (course == null)
-            {
+            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId) ?? 
                 throw new EntityNotFoundException($"Course with id {courseId} was not found!");
-            }
 
-            var studyGroups = (await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.CourseId == courseId,
-                includeProperties: $"{nameof(StudyGroup.StudentStudyGroups)}.{nameof(StudentStudyGroup.Student)}", trackChanges: false))
-                .Select(x => new StudyGroupDetailsModel
+            var studyGroupsDetails = (await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.CourseId == courseId,
+                trackChanges: false))
+                .Select(x => new
                 {
-                    Id = x.Id,
+                    x.Id,
                     Title = x.Name,
                     CourseTitle = course.Title,
                     Students = x.StudentStudyGroups.Select(x => new EnrolledStudentModel
@@ -123,19 +120,37 @@ namespace PeerStudy.Core.DomainServices
                         FirstName = x.Student.FirstName,
                         LastName = x.Student.LastName
                     }).ToList(),
-                    IsActive = course.Status == CourseStatus.Active
+                    IsActive = course.Status == CourseStatus.Active,
+                    WorkItemsStatus = x.WorkItems.GroupBy(x => x.Status)
+                    .Select(x => new
+                    {
+                        Status = x.Key,
+                        Count = x.Count()
+                    })
                 })
                 .ToList();
+
+            var studyGroups = studyGroupsDetails
+               .Select(x => new StudyGroupDetailsModel
+               {
+                   Id = x.Id,
+                   Students = x.Students,
+                   CourseTitle = x.CourseTitle,
+                   IsActive = x.IsActive,
+                   Title = x.Title,
+                   WorkItemsStatus = x.WorkItemsStatus.ToDictionary(x => x.Status, x => x.Count)
+
+               })
+               .ToList();
 
             return studyGroups;
         }
 
         public async Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId)
         {
-            var studyGroups = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(
-                x => x.StudentId == studentId, includeProperties: $"{nameof(StudentStudyGroup.Student)}," +
-                $"{nameof(StudentStudyGroup.StudyGroup)}.{nameof(StudentStudyGroup.StudyGroup.StudentStudyGroups)}"))
-                .Select(x => new StudyGroupDetailsModel
+            var studyGroupsDetails = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(
+                x => x.StudentId == studentId))
+                .Select(x => new 
                 {
                     Id = x.StudyGroupId,
                     CourseTitle = x.StudyGroup.Course.Title,
@@ -145,7 +160,26 @@ namespace PeerStudy.Core.DomainServices
                         LastName = x.Student.LastName
                     }).ToList(),
                     Title = x.StudyGroup.Name,
-                    IsActive = x.StudyGroup.Course.Status == CourseStatus.Active
+                    IsActive = x.StudyGroup.Course.Status == CourseStatus.Active,
+                    WorkItemsStatus = x.StudyGroup.WorkItems.GroupBy(x => x.Status)
+                    .Select(x => new
+                    {
+                        Status = x.Key,
+                        Count = x.Count()
+                    })
+                })
+                .ToList();
+
+            var studyGroups = studyGroupsDetails
+                .Select(x => new StudyGroupDetailsModel
+                {
+                    Id = x.Id,
+                    Students = x.Students,
+                    CourseTitle = x.CourseTitle,
+                    IsActive = x.IsActive,
+                    Title = x.Title,
+                    WorkItemsStatus = x.WorkItemsStatus.ToDictionary(x => x.Status, x => x.Count)
+
                 })
                 .ToList();
 
@@ -160,10 +194,10 @@ namespace PeerStudy.Core.DomainServices
             return studyGroup
                 .StudentStudyGroups
                 .Select(x => new UserModel
-                    {
-                        FullName = $"{x.Student.FirstName} {x.Student.LastName}",
-                        Id = x.Student.Id
-                    })
+                {
+                    FullName = $"{x.Student.FirstName} {x.Student.LastName}",
+                    Id = x.Student.Id
+                })
                 .ToList();
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.CourseEnrollments;
 using System;
@@ -40,7 +41,7 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components
             }
             catch (Exception ex)
             {
-                ToastService.ShowError("An error occurred while fetching the requests...");
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while fetching the requests...");
             }
         }
     }

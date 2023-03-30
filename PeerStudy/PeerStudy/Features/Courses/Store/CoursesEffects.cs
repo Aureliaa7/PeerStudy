@@ -6,17 +6,18 @@ using System;
 using PeerStudy.Core.Models.Courses;
 using System.Collections.Generic;
 using Blazored.Toast.Services;
+using PeerStudy.Services.Interfaces;
 
 namespace PeerStudy.Features.Courses.Store
 {
     public class CoursesEffects
     {
         private readonly ICourseService courseService;
-        private readonly IToastService toastService;
+        private readonly IPeerStudyToastService toastService;
 
         public CoursesEffects(
             ICourseService courseService,
-            IToastService toastService)
+            IPeerStudyToastService toastService)
         {
             this.courseService = courseService;
             this.toastService = toastService;
@@ -29,11 +30,11 @@ namespace PeerStudy.Features.Courses.Store
             {
                 var savedCourse = await courseService.AddAsync(action.Course);
                 dispatcher.Dispatch(new AddActiveCourseAction(savedCourse));
-                toastService.ShowSuccess("The course was saved");
+                toastService.ShowToast(ToastLevel.Success,"The course was saved");
             }
             catch (Exception ex)
             {
-                toastService.ShowError("The course could not be saved...");
+                toastService.ShowToast(ToastLevel.Error, "The course could not be saved...");
             }
         }
 
@@ -47,7 +48,7 @@ namespace PeerStudy.Features.Courses.Store
             }
             catch (Exception ex)
             {
-                toastService.ShowError("The course could not be updated..");
+                toastService.ShowToast(ToastLevel.Error, "The course could not be updated..");
             }
         }
 
@@ -62,7 +63,7 @@ namespace PeerStudy.Features.Courses.Store
             }
             catch (Exception ex)
             {
-                toastService.ShowError("The course could not be archived...");
+                toastService.ShowToast(ToastLevel.Error,"The course could not be archived...");
             }
         }
 
@@ -124,7 +125,7 @@ namespace PeerStudy.Features.Courses.Store
 
         private void HandleLoadCoursesError(IDispatcher dispatcher)
         {
-            toastService.ShowError("The courses could not be fetched...");
+            toastService.ShowToast(ToastLevel.Error, "The courses could not be fetched...");
             dispatcher.Dispatch(new FetchCoursesErrorAction());
         }
     }

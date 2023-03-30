@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Users;
 using System;
@@ -36,7 +37,7 @@ namespace PeerStudy.Features.Students.Components.StudentsListComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowError("The students list could not be loaded...");
+                ToastService.ShowToast(ToastLevel.Error, "The students list could not be loaded...");
             }
         }
     }

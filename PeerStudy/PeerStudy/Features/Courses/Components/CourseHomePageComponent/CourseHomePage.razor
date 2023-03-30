@@ -55,17 +55,12 @@
                       OnCancel=CancelCreateAssignment
                       OnConfirm="SaveAssignment">
     </CreateAssignment>
-
-    <Alert Color="@alertColor" @bind-Visible="showAlertMessage">
-        <AlertDescription>@alertMessage</AlertDescription>
-        <CloseButton />
-    </Alert>
 </AuthorizeView>
 
 
 <ResourcesList Resources="resources"
-                    IsLoading="isLoading"
-                    IsReadOnly="isReadOnly"
-                    CurrentUserId="currentUserId"
-                    OnDeleteResource="DeleteResource">
+               IsLoading="isLoading"
+               IsReadOnly="isReadOnly"
+               CurrentUserId="currentUserId"
+               OnDeleteResource="DeleteResource">
 </ResourcesList>

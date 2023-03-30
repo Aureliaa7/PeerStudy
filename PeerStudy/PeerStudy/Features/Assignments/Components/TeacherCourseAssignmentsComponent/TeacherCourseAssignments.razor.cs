@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Fluxor;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
+using PeerStudy.Core.Models.Courses;
+using PeerStudy.Features.Courses.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +21,12 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
         [Inject]
         private NavigationManager NavigationManager { get; set; }
 
+        [Inject] 
+        private IStateSelection<CoursesState, CourseDetailsModel> SelectedCourse { get; set; }
+
         [Inject]
-        private ICourseService CourseService { get; set; }
+        private IState<CoursesState> CoursesState { get; set; }
+
 
         [Parameter]
         public Guid CourseId { get; set; }
@@ -38,20 +46,36 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
 
         protected override async Task InitializeAsync()
         {
-            //TODO: get course status from store
             try
             {
-                isReadOnly = (await CourseService.GetCourseStatusAsync(CourseId)) == CourseStatus.Archived;
+                CheckIfIsReadOnlyMode();
+
                 await SetCurrentUserDataAsync();
                 assignments = await AssignmentService.GetByCourseIdAsync(CourseId);
             }
             catch (Exception ex)
             {
-                ToastService.ShowError("An error occurred while fetching the assignments...");
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
             }
         }
 
-        private async void SaveGradeHandler(SaveGradeModel data)
+        private void CheckIfIsReadOnlyMode()
+        {
+            var course = CoursesState.Value.ActiveCourses.FirstOrDefault(x => x.Id == CourseId) ??
+                   CoursesState.Value.ArchivedCourses.FirstOrDefault(x => x.Id == CourseId);
+
+            isReadOnly = course.Status == CourseStatus.Archived;
+
+            SelectedCourse.Select(x => x.ActiveCourses.FirstOrDefault(y => y.Id == CourseId) ??
+            x.ArchivedCourses.FirstOrDefault(y => y.Id == CourseId));
+
+            SelectedCourse.SelectedValueChanged += (object? sender, CourseDetailsModel course) =>
+            {
+                isReadOnly = course.Status == CourseStatus.Archived;
+            };
+        }
+
+        private async Task SaveGradeHandler(SaveGradeModel data)
         {
             try
             {
@@ -59,7 +83,7 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
             }
             catch (Exception)
             {
-                ToastService.ShowError("The grade could not be saved...");
+                ToastService.ShowToast(ToastLevel.Error, "The grade could not be saved...");
             }
         }
 
@@ -72,7 +96,7 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
             }
             catch (Exception)
             {
-                ToastService.ShowError("The assignment could not be deleted...");
+                ToastService.ShowToast(ToastLevel.Error, "The assignment could not be deleted...");
             }
         }
 

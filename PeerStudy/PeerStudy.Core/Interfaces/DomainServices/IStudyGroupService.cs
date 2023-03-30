@@ -17,5 +17,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<StudyGroupDetailsModel> GetAsync(Guid id);
 
         Task<List<UserModel>> GetStudentsByGroupIdAsync(Guid id);
+
+        Task<bool> IsActiveAsync(Guid id);
     }
 }

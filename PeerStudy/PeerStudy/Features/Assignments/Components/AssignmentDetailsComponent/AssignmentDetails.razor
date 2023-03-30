@@ -93,8 +93,8 @@
                         {
                             <div class="assignment-file">
                                 <PeerStudyFile IconLink="@file.IconLink"
-                                        Title="@file.Name"
-                                        WebViewLink="@file.WebViewLink">
+                                       Title="@file.Name"
+                                       WebViewLink="@file.WebViewLink">
                                 </PeerStudyFile>
                             </div>
                         }
@@ -108,8 +108,3 @@
         </AuthorizeView>
     </div>
 </Loading>
-
-<Alert Color="@alertColor" @bind-Visible="showAlertMessage">
-    <AlertDescription>@alertMessage</AlertDescription>
-    <CloseButton />
-</Alert>

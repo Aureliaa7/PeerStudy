@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
 {
-    public partial class StudyGroupHomePage : PeerStudyComponentBase, IDisposable
+    public partial class StudyGroupHomePage : PeerStudyComponentBase
     {
         [Inject]
         private IStudyGroupResourceService StudyGroupResourceService { get; set; }
@@ -31,6 +31,7 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
         private bool showUploadFileDialog;
         private StudyGroupDetailsModel studyGroup;
 
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -38,6 +39,7 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
 
         protected override async Task InitializeAsync()
         {
+            NavigationMenuService.Reset();
             await SetStudyGroupDetailsAsync();
             NavigationMenuService.AddStudyGroupNavigationMenuItems(StudyGroupId, studyGroup.Title);
             await SetCurrentUserDataAsync();
@@ -47,12 +49,13 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
         private async Task SetStudyGroupDetailsAsync()
         {
             studyGroup = await StudyGroupService.GetAsync(StudyGroupId);
+            isReadOnly = !studyGroup.IsActive;
         }
 
         private async Task UploadFiles(List<UploadFileModel> files)
         {
             showUploadFileDialog = false;
-            ShowToast(ToastLevel.Info, "Uploading files...", false);
+            ToastService.ShowToast(ToastLevel.Info, "Uploading files...", false);
 
             await Task.Run(async () =>
             {
@@ -61,7 +64,7 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
                 resources.AddRange(createdResources);
             });
 
-            ShowToast(ToastLevel.Success, "Files were successfully uploaded.");
+            ToastService.ShowToast(ToastLevel.Success, "Files were successfully uploaded.");
             StateHasChanged();
         }
 
@@ -89,22 +92,23 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
 
         private async Task DeleteResource(Guid id)
         {
-            ShowToast(ToastLevel.Info, "Deleting resource...", false);
+            ToastService.ShowToast(ToastLevel.Info, "Deleting resource...", false);
 
             try
             {
                 await StudyGroupResourceService.DeleteAsync(id);
                 resources = resources.Where(x => x.Id != id).ToList();
-                StateHasChanged();
             }
             catch (Exception ex)
             {
-                ShowToast(ToastLevel.Error, "An error occurred while deleting the resource...");
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while deleting the resource...");
             }
         }
 
-        public void Dispose()
+        // fix for https://github.com/mrpmorris/Fluxor/blob/master/Docs/disposable-callback-not-disposed.md
+        protected override void Dispose(bool disposed)
         {
+            base.Dispose(disposed);
             NavigationMenuService.Reset();
         }
     }

@@ -1,9 +1,10 @@
-﻿using Blazorise;
+﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Resources;
+using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,9 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         [Inject]
         private ICourseService CourseService { get; set; }
 
+        [Inject]
+        private IPeerStudyToastService ToastService { get; set; }
+
 
         [Parameter]
         public Guid StudentId { get; set; }
@@ -39,13 +43,10 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         private AssignmentFilesModel assignmentDetails;
         private bool isLoading;
         private bool showUploadFileDialog; 
-        private bool showAlertMessage;
         private bool showDeleteFileButton;
         private bool showUploadFilesButton;
         private bool isUploadingFilesInProgress;
         private bool isReadOnly;
-        private string alertMessage;
-        private Color alertColor;
         private List<UploadFileModel> allFiles = new List<UploadFileModel>();
         private List<UploadFileModel> newlyAddedFiles = new List<UploadFileModel>();
 
@@ -76,14 +77,6 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
             allFiles.AddRange(files);
         }
 
-        private void DisplayAlert(Color alertColor, string message)
-        {
-            this.alertColor = alertColor;
-            alertMessage = message;
-
-            showAlertMessage = true;
-        }
-
         private void DisplayUploadFilesDialog()
         {
             showUploadFileDialog = true;
@@ -110,7 +103,7 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
             }
             catch(Exception ex)
             {
-                DisplayAlert(Color.Danger, "An error occurred while unsubmitting your work...");
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while unsubmitting your work...");
             }
 
             StateHasChanged();
@@ -121,7 +114,7 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
             showUploadFilesButton = true;
             allFiles = allFiles.Where(x => x.Name != fileName).ToList();
             newlyAddedFiles = newlyAddedFiles.Where(x => x.Name != fileName).ToList();
-            DisplayAlert(Color.Info, "Deleting file...");
+            ToastService.ShowToast(ToastLevel.Info, "Deleting file...", false);
 
             if (assignmentDetails.StudentAssignmentFiles != null && 
                 assignmentDetails.StudentAssignmentFiles.Any(x => x.Name == fileName))
@@ -130,14 +123,14 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
                 {
                     var toBeDeleted = assignmentDetails.StudentAssignmentFiles.FirstOrDefault(x => x.Name == fileName);
                     await AssignmentFileService.DeleteAsync(toBeDeleted.FileDriveId, toBeDeleted.Id);
-                    assignmentDetails.StudentAssignmentFiles.Remove(toBeDeleted);      
+                    assignmentDetails.StudentAssignmentFiles.Remove(toBeDeleted);
+                    ToastService.ClearAll(ToastLevel.Info);
                 }
                 catch (Exception ex)
                 {
-                    DisplayAlert(Color.Danger, "The file could not be deleted...");
+                    ToastService.ShowToast(ToastLevel.Error, "The file could not be deleted...");
                 }
             }
-            showAlertMessage = false;
         }
 
         private async Task Submit()
@@ -145,7 +138,7 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
             isUploadingFilesInProgress = true;
             showDeleteFileButton = false;
             showUploadFilesButton = false;
-            DisplayAlert(Color.Info, "Uploading file(s)...");
+            ToastService.ShowToast(ToastLevel.Info, "Uploading file(s)...", false);
 
             DateTime completedAt = DateTime.UtcNow;
             try
@@ -163,11 +156,11 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
                     allFiles.Clear();
                 });
 
-                DisplayAlert(Color.Success, "Files were successfully uploaded.");
+                ToastService.ShowToast(ToastLevel.Success, "Files were successfully uploaded.");
             }
             catch (Exception ex)
             {
-                DisplayAlert(Color.Danger, "There was an error while uploading the files...");
+                ToastService.ShowToast(ToastLevel.Error, "There was an error while uploading the files...");
             }
             finally
             {
@@ -176,12 +169,6 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
             }
 
             StateHasChanged();
-
-            await Task.Run(async () =>
-            {
-                await Task.Delay(3500);
-                showAlertMessage = false;
-            });
         }
 
         private bool ShowUnsubmitButton()

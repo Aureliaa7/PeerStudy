@@ -1,4 +1,5 @@
 ﻿@using PeerStudy.Features.StudyGroups.Components.StudyGroupCardComponent
+
 <div class="study-groups-container center-elements">
     @if (IsLoading)
     {
@@ -15,9 +16,11 @@
         <div class="study-groups">
             @foreach (var group in StudyGroups)
             {
-                <StudyGroupCard StudyGroupModel="group"
-                        OnClicked="HandleClick">
-                </StudyGroupCard>
+                <div>
+                    <StudyGroupCard StudyGroupModel="group"
+                            OnClicked="HandleClick">
+                    </StudyGroupCard>
+                </div>
             }
         </div>
     }

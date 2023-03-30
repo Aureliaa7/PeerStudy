@@ -1,6 +1,4 @@
-﻿using Blazored.Toast.Configuration;
-using Blazored.Toast.Services;
-using Fluxor.Blazor.Web.Components;
+﻿using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Services.Interfaces;
@@ -18,7 +16,7 @@ namespace PeerStudy.Features
         protected INavigationMenuService NavigationMenuService { get; set; }
 
         [Inject]
-        protected IToastService ToastService { get; set; }
+        protected IPeerStudyToastService ToastService { get; set; }
 
         protected Guid currentUserId;
         protected Role? currentUserRole;
@@ -45,31 +43,6 @@ namespace PeerStudy.Features
         protected void ResetNavigationBar()
         {
             NavigationMenuService.Reset();
-        }
-
-        //TODO: move this to a dedicated service to use it whenever needed
-        protected void ShowToast(ToastLevel type, string message, bool autoClose = true)
-        {
-            ToastService.ClearAll();
-            Action<ToastSettings>? action = null;
-
-            if (!autoClose)
-            {
-                action = (settings) => settings.DisableTimeout = true;
-            }
-
-            if (type == ToastLevel.Error)
-            {
-                ToastService.ShowError(message, action);
-            }
-            else if (type == ToastLevel.Info)
-            {
-                ToastService.ShowInfo(message, action);
-            }
-            else if (type == ToastLevel.Success)
-            {
-                ToastService.ShowSuccess(message, action);
-            }
         }
 
         private Role? GetCurrentUserRole(string userRole)
