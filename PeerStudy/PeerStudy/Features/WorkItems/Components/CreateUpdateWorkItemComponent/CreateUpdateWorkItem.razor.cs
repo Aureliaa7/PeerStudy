@@ -28,26 +28,20 @@ namespace PeerStudy.Features.WorkItems.Components.CreateUpdateWorkItemComponent
         [Parameter]
         public List<WorkItemStatus> WorkItemStatuses { get; set; }
 
-        private string selectedStudentId;
-        private WorkItemStatus selectedWorkItemStatus;
+        [Parameter]
+        public DropDownItem? SelectedStudent { get; set; }
+
         private const string matFieldStyles = "width: 98%;";
         private const string descriptionFieldStyles = "width: 98%; height: 100px;";
 
         private async Task Save()
         {
-            WorkItemModel.Status = selectedWorkItemStatus;
-            if (!string.IsNullOrWhiteSpace(selectedStudentId))
-            {
-                WorkItemModel.AssignedTo = new Guid(selectedStudentId);
-            }
-
+            WorkItemModel.AssignedTo = SelectedStudent?.Key == null ? null : new Guid(SelectedStudent.Key);
             await OnSave.InvokeAsync();
         }
 
         private async Task Cancel()
         {
-            selectedStudentId = null;
-            selectedWorkItemStatus = WorkItemStatus.New;
             await OnCancel.InvokeAsync();
         }
     }

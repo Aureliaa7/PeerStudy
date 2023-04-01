@@ -40,11 +40,9 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private bool showEditWorkItemDialog;
         private bool isReadOnly;
 
-        private string selectedStudentId;
-        private WorkItemStatus selectedWorkItemStatus;
-
         private string? selectedStudentIdFilter;
         private WorkItemStatus? selectedWorkItemStatusFilter;
+        private DropDownItem? selectedStudent; // used for edit 
 
         private const string noWorkItemsMessage = "There are no work items yet..";
         private const string dropdownStyles = "width: 90%;";
@@ -161,6 +159,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private void EditWorkItem()
         {
             showEditWorkItemDialog = true;
+            selectedStudent = studentDropDownItems.FirstOrDefault(x => new Guid(x.Key) == selectedRow.AssignedTo);
             workItemModel = new CreateUpdateWorkItemModel
             {
                 AssignedTo = selectedRow.AssignedTo,
