@@ -146,10 +146,10 @@ namespace PeerStudy.Core.DomainServices
             return studyGroups;
         }
 
-        public async Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId)
+        public async Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId, CourseStatus courseStatus)
         {
             var studyGroupsDetails = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(
-                x => x.StudentId == studentId))
+                x => x.StudentId == studentId && x.StudyGroup.Course.Status == courseStatus))
                 .Select(x => new 
                 {
                     Id = x.StudyGroupId,

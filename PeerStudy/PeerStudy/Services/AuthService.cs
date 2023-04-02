@@ -19,22 +19,20 @@ namespace PeerStudy.Services
         private readonly IAccountService accountService;
         private readonly AuthenticationStateProvider authStateProvider;
         private readonly ICacheService cacheService;
+        private readonly INavigationMenuService navigationMenuService;
 
         public AuthService(
             ILocalStorageService localStorageService,
             IAccountService accountService,
             AuthenticationStateProvider authStateProvider,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            INavigationMenuService navigationMenuService)
         {
             this.localStorageService = localStorageService;
             this.accountService = accountService;
             this.authStateProvider = authStateProvider;
             this.cacheService = cacheService;
-        }
-
-        public async Task<string> GetCurrentUserFullNameAsync()
-        {
-            return await GetClaimByNameAsync(Constants.UserFullName);
+            this.navigationMenuService = navigationMenuService;
         }
 
         public async Task<string> GetCurrentUserIdAsync()
@@ -62,6 +60,8 @@ namespace PeerStudy.Services
                 await localStorageService.SetItemAsStringAsync(ClientConstants.Token, token);
                 ((PeerStudyAuthStateProvider)authStateProvider).NotifyUserAuthentication(token);
 
+                navigationMenuService.CurrentUsername = JwtHelper.GetClaimValueByName(token, ClaimTypes.Name);
+              
                 return JwtHelper.GetClaimValueByName(token, Constants.UserId);
             }
 
@@ -72,6 +72,7 @@ namespace PeerStudy.Services
         {
             await ClearCacheAsync();
 
+            navigationMenuService.CurrentUsername = null;
             await localStorageService.RemoveItemAsync(ClientConstants.Token);
             ((PeerStudyAuthStateProvider)authStateProvider).NotifyUserLogout();
         }

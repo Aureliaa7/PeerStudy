@@ -20,6 +20,9 @@
                         <a href="/login">Login</a>
                     </NotAuthorized>
                     <Authorized>
+                        <span class="current-user">
+                            @NavigationMenuService.CurrentUsername
+                        </span>
                         @foreach (var menuItem in NavigationMenuService.GetMenuItems())
                         {
                             <div class="nav-item">

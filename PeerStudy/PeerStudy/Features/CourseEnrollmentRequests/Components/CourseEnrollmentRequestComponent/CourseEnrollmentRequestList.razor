@@ -8,7 +8,7 @@
     @if (DisplayActionButtons)
     {
         <div>
-            <MatButton Disabled="AreButtonsDisabled()" Style="display: inline-block;" OnClick="ApproveRequests" Raised=true>Approve</MatButton>
+            <MatButton Disabled="AreButtonsDisabled() || IsApproveButtonDisabled()" Style="display: inline-block;" OnClick="ApproveRequests" Raised=true>Approve</MatButton>
             <MatButton Disabled="AreButtonsDisabled()" Style="display: inline-block;" OnClick="RejectRequests">Reject</MatButton>
         </div>
     }

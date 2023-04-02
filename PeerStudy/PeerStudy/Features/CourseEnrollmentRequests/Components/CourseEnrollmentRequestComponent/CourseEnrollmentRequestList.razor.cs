@@ -1,6 +1,7 @@
 ﻿using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models.CourseEnrollments;
+using PeerStudy.Core.Models.Courses;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +24,9 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmen
 
         [Parameter]
         public string CourseTitle { get; set; }
+
+        [Parameter]
+        public CourseNoStudentsDetailsModel EnrolledStudentsStatus { get; set; }
 
         [Parameter]
         public bool AllowMultipleSelection
@@ -73,6 +77,11 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmen
         private bool AreButtonsDisabled()
         {
             return selectedRequests == null || !selectedRequests.Any();
+        }
+
+        private bool IsApproveButtonDisabled()
+        {
+            return selectedRequests?.Count() > EnrolledStudentsStatus?.NoMaxStudents - EnrolledStudentsStatus?.NoEnrolledStudents;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using PeerStudy.Core.Models.StudyGroups;
+﻿using PeerStudy.Core.Enums;
+using PeerStudy.Core.Models.StudyGroups;
 using PeerStudy.Core.Models.Users;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
 
         Task<List<StudyGroupDetailsModel>> GetByCourseIdAsync(Guid courseId);
 
-        Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId);
+        Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId, CourseStatus courseStatus);
 
         Task<StudyGroupDetailsModel> GetAsync(Guid id);
 

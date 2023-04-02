@@ -11,6 +11,8 @@ namespace PeerStudy.Services
     {
         private List<MenuItem> additionalMenuItems = new List<MenuItem>();
 
+        public string CurrentUsername { get; set; }
+
         public event EventHandler<EventArgs> OnChanged;
 
         public void AddMenuItems(List<MenuItem> items)

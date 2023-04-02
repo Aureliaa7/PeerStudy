@@ -4,6 +4,7 @@ using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.CourseEnrollments;
+using PeerStudy.Core.Models.Courses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,17 +97,36 @@ namespace PeerStudy.Core.DomainServices
             }
 
             var requests = (await unitOfWork.CourseEnrollmentRequestsRepository.GetAllAsync(x => x.CourseId == courseId &&
-            x.Status == status, includeProperties: $"{nameof(Student)},{nameof(Course)}", trackChanges: false)).Select(x => new CourseEnrollmentRequestDetailsModel 
+            x.Status == status, trackChanges: false)).Select(x => new CourseEnrollmentRequestDetailsModel 
             {
                 Id = x.Id,
                 CourseId = courseId,
                 StudentId = x.StudentId,
                 CourseTitle = x.Course.Title,
-                StudentName = $"{x.Student.FirstName} {x.Student.LastName}"
+                StudentName = $"{x.Student.FirstName} {x.Student.LastName}",
+                CreatedAt = x.CreatedAt
             })
             .ToList();
 
             return requests;
+        }
+        public async Task<CourseNoStudentsDetailsModel> GetCourseEnrollmentStatusAsync(Guid courseId)
+        {
+            var courseExists = await unitOfWork.CoursesRepository.ExistsAsync(x => x.Id == courseId);
+            if (!courseExists)
+            {
+                throw new EntityNotFoundException($"Course with id: {courseId} was not found!");
+            }
+
+            var enrolledStudentsStatus = (await unitOfWork.CoursesRepository.GetAllAsync(x => x.Id == courseId))
+                .Select(x => new CourseNoStudentsDetailsModel
+                {
+                    NoEnrolledStudents = x.CourseEnrollments.Count(),
+                    NoMaxStudents = x.NoStudents
+                })
+                .FirstOrDefault();
+
+            return enrolledStudentsStatus;
         }
     }
 }

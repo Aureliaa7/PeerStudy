@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.StudyGroups;
 using System.Collections.Generic;
 
@@ -8,6 +9,9 @@ namespace PeerStudy.Features.StudyGroups.Components
     {
         [Inject]
         private NavigationManager NavigationManager { get; set; }
+
+        [Inject]
+        protected IStudyGroupService StudyGroupService { get; set; }
 
 
         protected List<StudyGroupDetailsModel> studyGroups = new List<StudyGroupDetailsModel>();

@@ -91,3 +91,8 @@ main {
     background-color: #E0E0E0;
     color: #808080;
 }
+
+.current-user {
+    position: absolute;
+    left: 20px;
+}

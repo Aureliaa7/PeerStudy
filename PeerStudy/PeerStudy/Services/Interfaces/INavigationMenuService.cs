@@ -17,6 +17,8 @@ namespace PeerStudy.Services.Interfaces
 
         void Reset();
 
+        public string CurrentUsername { get; set; }
+
         event EventHandler<EventArgs> OnChanged;
         
         void NotifyChanged();
