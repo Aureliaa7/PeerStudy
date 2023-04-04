@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace PeerStudy.Shared
+namespace PeerStudy.Shared.UploadFilesComponent
 {
     public partial class UploadFiles
     {

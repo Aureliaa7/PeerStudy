@@ -17,10 +17,12 @@
              NotFoundMessage="@noWorkItemsMessage">
 
         <ChildContentForNoData>
-            @if (!isReadOnly)
-            {
-                <MatButton Icon="@MatIconNames.Add" OnClick="@(() => showAddWorkItemDialog = true)"></MatButton>
-            }
+            <AuthorizeView Roles="Student">
+                @if (!isReadOnly)
+                {
+                    <MatButton Icon="@MatIconNames.Add" OnClick="@(() => showAddWorkItemDialog = true)"></MatButton>
+                }
+            </AuthorizeView>
 
         </ChildContentForNoData>
 

@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models.Resources;
-using System;
 using System.Threading.Tasks;
+using System;
 
-namespace PeerStudy.Features.Resources.Components.ResourceComponent
+namespace PeerStudy.Features.Resources.Components
 {
-    public partial class Resource
+    public class ResourceBase : ComponentBase
     {
-        [Parameter]
-        public bool Expanded { get; set; }
-
         [Parameter]
         public ResourceDetailsModel ResourceDetails { get; set; }
 
@@ -22,7 +19,7 @@ namespace PeerStudy.Features.Resources.Components.ResourceComponent
         [Parameter]
         public EventCallback<Guid> OnDeleteResource { get; set; }
 
-        private async Task HandleDeleteResource()
+        protected async Task HandleDeleteResource()
         {
             await OnDeleteResource.InvokeAsync(ResourceDetails.Id);
         }

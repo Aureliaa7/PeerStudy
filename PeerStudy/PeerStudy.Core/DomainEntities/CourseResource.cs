@@ -1,6 +1,7 @@
 ﻿using PeerStudy.Core.Enums;
 using System;
 
+//TODO: remove courseId, we can get it from courseUnit
 namespace PeerStudy.Core.DomainEntities
 {
     public class CourseResource : Resource
@@ -14,5 +15,9 @@ namespace PeerStudy.Core.DomainEntities
         public Course Course { get; set; }
 
         public Teacher Owner { get; set; }
+
+        public Guid CourseUnitId { get; set; }
+
+        public CourseUnit CourseUnit { get; set; }
     }
 }

@@ -30,6 +30,8 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<WorkItem> WorkItemsRepository { get; }
 
+        IRepository<CourseUnit> CourseUnitsRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
 {
-    public abstract class ResourceBaseService
+    public abstract class ResourceBaseService<T> where T: ResourceDetailsModel, new()
     {
         protected readonly IGoogleDriveFileService fileService;
         protected readonly IUnitOfWork unitOfWork;
@@ -21,7 +21,7 @@ namespace PeerStudy.Core.DomainServices
             this.unitOfWork = unitOfWork;
         }
 
-        protected async Task<List<ResourceDetailsModel>> GetAllAsync(Guid id)
+        protected async Task<List<T>> GetAllAsync(Guid id)
         {
             var resources = await GetAsync(id);
 
@@ -31,7 +31,7 @@ namespace PeerStudy.Core.DomainServices
             return AddDriveDetailsToResourceModels(resources, fileDetails);
         }
 
-        protected abstract Task<List<ResourceDetailsModel>> GetAsync(Guid id);
+        protected abstract Task<List<T>> GetAsync(Guid id);
 
         protected abstract Task<string> GetParentFolderIdAsync(Guid id);
 
@@ -76,7 +76,7 @@ namespace PeerStudy.Core.DomainServices
             return $"{owner.FirstName} {owner.LastName}";
         }
 
-        private static List<ResourceDetailsModel> AddDriveDetailsToResourceModels(List<ResourceDetailsModel> resources, IDictionary<string, DriveFileDetailsModel> driveFileDetails)
+        private static List<T> AddDriveDetailsToResourceModels(List<T> resources, IDictionary<string, DriveFileDetailsModel> driveFileDetails)
         {
             foreach (var resource in resources)
             {
@@ -90,7 +90,7 @@ namespace PeerStudy.Core.DomainServices
             return resources;
         }
 
-        protected static List<ResourceDetailsModel> SetResourcesIds(Dictionary<string, Guid> fileIdResourceIdPairs, List<ResourceDetailsModel> resources)
+        protected static List<T> SetResourcesIds(Dictionary<string, Guid> fileIdResourceIdPairs, List<T> resources)
         {
             foreach (var resource in resources)
             {

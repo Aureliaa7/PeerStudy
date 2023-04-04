@@ -1,0 +1,15 @@
+﻿.resource-container:hover {
+    background-color: #E0E0E0;
+}
+
+@media (max-width: 570px) {
+    .panel-header {
+        display: none;
+    }
+}
+
+.resource-container {
+    width: 50%;
+    display: inline-block;
+    vertical-align: middle;
+}

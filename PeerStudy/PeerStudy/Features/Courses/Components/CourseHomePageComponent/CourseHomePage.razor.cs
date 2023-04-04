@@ -5,6 +5,7 @@ using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Courses;
+using PeerStudy.Core.Models.CourseUnits;
 using PeerStudy.Core.Models.Resources;
 using PeerStudy.Features.Courses.Store;
 using System;
@@ -31,6 +32,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         [Inject]
         private IState<CoursesState> CoursesState { get; set; }
 
+        [Inject]
+        private ICourseUnitService CourseUnitService { get; set;}
+
 
         [Parameter]
         public Guid TeacherId { get; set; }
@@ -43,7 +47,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
 
         private CreateAssignmentModel assignmentModel = new CreateAssignmentModel();
-        private List<ResourceDetailsModel> resources = new List<ResourceDetailsModel>();
+        private List<CourseUnitDetailsModel> courseUnits = new List<CourseUnitDetailsModel>();
         private CourseDetailsModel courseDetails;
         private bool showCreateMenu;
         private bool showUploadFileDialog;
@@ -51,6 +55,11 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private bool isReadOnly;
         private bool showAddAssigmentDialog;
         private int[] studyGroupsNoMembers = new int[3] { 3, 4, 5 };  //TODO: should be moved to constants file
+
+        private bool showCourseUnitDialog;
+        private CourseUnitModel courseUnitModel = new CourseUnitModel();
+        private Guid? selectedCourseUnitId;
+        private bool isEditCourseUnitEnabled;
 
         private const string menuButtonsStyles = "color: white;";
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
@@ -64,7 +73,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         {
             await SetCurrentUserDataAsync();
 
-            resources = await CourseResourceService.GetByCourseIdAsync(CourseId);
+            courseUnits = await CourseUnitService.GetByCourseIdAsync(CourseId);
             SetCurrentCourseDetails();
             UpdateNavigationMenu();
             isReadOnly = courseDetails.Status == CourseStatus.Archived;
@@ -98,9 +107,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             showCreateMenu = !showCreateMenu;
         }
 
-        private void ShowUploadFileDialog()
+        private void ShowUploadFileDialog(Guid courseUnitId)
         {
-            showCreateMenu = false;
+            selectedCourseUnitId = courseUnitId;
             showUploadFileDialog = true;
         }
 
@@ -114,20 +123,24 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         {
             ToastService.ShowToast(ToastLevel.Info, "Uploading file(s)...", false);
             CloseUploadFileDialog();
+            var createdResources = new List<CourseResourceDetailsModel>();
 
             await Task.Run(async () =>
             {
-                var uploadFileModels = GetCreateResourceModels(filesModels);
-                var createdResources = await CourseResourceService.UploadResourcesAsync(uploadFileModels);
-                resources.AddRange(createdResources);
+                var uploadFileModels = GetCreateResourceModels(filesModels, selectedCourseUnitId.Value);
+                createdResources = await CourseResourceService.UploadResourcesAsync(uploadFileModels);
             });
-            ToastService.ShowToast(ToastLevel.Success, "Files were successfully uploaded.");
 
             //go back on the main thread
             StateHasChanged();
+            var courseUnit = courseUnits.FirstOrDefault(x => x.Id == selectedCourseUnitId.Value);
+            selectedCourseUnitId = null;
+            courseUnit?.Resources.AddRange(createdResources);
+
+            ToastService.ShowToast(ToastLevel.Success, "Files were successfully uploaded.");
         }
 
-        private UploadCourseResourcesModel GetCreateResourceModels(List<UploadFileModel> files)
+        private UploadCourseResourcesModel GetCreateResourceModels(List<UploadFileModel> files, Guid courseUnitId)
         {
             var uploadFileModels = new List<UploadDriveFileModel>();
 
@@ -146,7 +159,8 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             {
                 CourseId = CourseId,
                 OwnerId = currentUserId,
-                Resources = uploadFileModels
+                Resources = uploadFileModels,
+                CourseUnitId = courseUnitId
             };
         }
 
@@ -155,20 +169,78 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             showUploadFileDialog = false;
         }
 
-        private async Task DeleteResource(Guid resourceId)
+        private async Task DeleteResource(DeleteCourseUnitResourceModel courseUnitIdResourceId)
         {
             ToastService.ShowToast(ToastLevel.Info, "Deleting resource...", false);
 
             try
             {
-                await CourseResourceService.DeleteAsync(resourceId);
-                resources = resources.Where(x => x.Id != resourceId).ToList();
+                await CourseResourceService.DeleteAsync(courseUnitIdResourceId.ResourceId);
+                var courseUnit = courseUnits.FirstOrDefault(x => x.Id == courseUnitIdResourceId.CourseUnitId);
+                var resourceToBeDeleted = courseUnit.Resources.FirstOrDefault(x => x.Id == courseUnitIdResourceId.ResourceId);    
+                courseUnit.Resources.Remove(resourceToBeDeleted);
+                
                 ToastService.ShowToast(ToastLevel.Success, "The resource was successfully deleted.");
                 StateHasChanged();
             }
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, deleteResourceErrorMessage);
+            }
+        }
+
+        private async Task DeleteCourseUnit(Guid id)
+        {
+            try
+            {
+                ToastService.ShowToast(ToastLevel.Info, "Deleting course unit...", false);
+                var courseUnitToBeDeleted = courseUnits.FirstOrDefault(x => x.Id == id);
+
+                await CourseUnitService.DeleteAsync(id);
+                courseUnits.Remove(courseUnitToBeDeleted);
+                ToastService.ClearAll(ToastLevel.Info);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, ex.Message, clearAll: true);
+            }
+        }
+
+        private void ShowEditCourseUnitDialog(Guid id)
+        {
+            isEditCourseUnitEnabled = true;
+            var courseUnitToBeUpdated = courseUnits.FirstOrDefault(x => x.Id == id);
+            if (courseUnitToBeUpdated != null)
+            {
+                courseUnitModel = new UpdateCourseUnitModel
+                {
+                    Id = id,
+                    Title = courseUnitToBeUpdated.Title
+                };
+            }
+
+            showCourseUnitDialog = true;
+        }
+
+        private async Task UpdateCourseUnit()
+        {
+            showCourseUnitDialog = false;
+
+            try
+            {
+                Guid courseUnitId = ((UpdateCourseUnitModel)courseUnitModel).Id;
+                await CourseUnitService.RenameAsync(courseUnitId, courseUnitModel.Title);
+                var courseUnitToBeUpdated = courseUnits.FirstOrDefault(x => x.Id == courseUnitId);
+                courseUnitToBeUpdated.Title = courseUnitModel.Title;
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
+            }
+            finally
+            {
+                courseUnitModel = new CourseUnitModel();
+                isEditCourseUnitEnabled = false;
             }
         }
 
@@ -229,6 +301,37 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         {
             showAddAssigmentDialog = false;
             assignmentModel = new CreateAssignmentModel();
+        }
+
+        private void ShowCourseUnitDialog()
+        {
+            showCreateMenu = false;
+            showCourseUnitDialog = true;
+        }
+
+        private void CancelCreateUpdateCourseUnit()
+        {
+            showCourseUnitDialog = false;
+            courseUnitModel = new CourseUnitModel();
+        }
+
+        private async Task SaveCourseUnit()
+        {
+            try
+            {
+                showCourseUnitDialog = false;
+                courseUnitModel.CourseId = CourseId;
+                var createdUnit = await CourseUnitService.CreateAsync(courseUnitModel);
+                courseUnits.Add(createdUnit);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, ex.Message);
+            }
+            finally
+            {
+                courseUnitModel = new CourseUnitModel();
+            }
         }
     }
 }

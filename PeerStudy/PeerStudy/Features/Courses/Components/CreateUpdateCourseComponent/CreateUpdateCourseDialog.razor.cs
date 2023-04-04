@@ -23,6 +23,7 @@ namespace PeerStudy.Features.Courses.Components.CreateUpdateCourseComponent
 
 
         private string datePickerStyleRules = "width: 80%;";
+        private string dialogStyleRules = "top: -95px;";
 
         private async Task SaveCourse()
         {

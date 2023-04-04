@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using PeerStudy.Services.Interfaces;
 using System;
 
-namespace PeerStudy.Shared
+namespace PeerStudy.Shared.MainLayoutComponent
 {
     public partial class MainLayout
     {

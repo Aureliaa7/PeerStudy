@@ -1,9 +1,11 @@
-﻿using MatBlazor;
+﻿using Blazored.Toast.Services;
+using MatBlazor;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models;
+using PeerStudy.Services.Interfaces;
 using System;
 using System.IO;
 using System.Linq;
@@ -18,6 +20,9 @@ namespace PeerStudy.Features.Accounts.Components.RegisterComponent
 
         [Inject]
         private IAccountService AccountService { get; set; }
+
+        [Inject]
+        private IPeerStudyToastService ToastService { get; set; }
 
 
         private RegisterModel registerModel = new();
@@ -60,8 +65,7 @@ namespace PeerStudy.Features.Accounts.Components.RegisterComponent
 
         private void HandleException(string message)
         {
-            errorMessage = message;
-            showErrorMessage = true;
+            ToastService.ShowToast(ToastLevel.Error, message);
             registerModel = new();
             isBtnDisabled = false;
             StateHasChanged();

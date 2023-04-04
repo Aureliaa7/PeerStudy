@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace PeerStudy.Shared
+namespace PeerStudy.Shared.LoadingComponent
 {
     public partial class Loading
     {

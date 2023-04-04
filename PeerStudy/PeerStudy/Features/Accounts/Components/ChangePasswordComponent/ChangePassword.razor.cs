@@ -1,4 +1,4 @@
-﻿using Blazorise;
+﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models;
@@ -16,12 +16,12 @@ namespace PeerStudy.Features.Accounts.Components.ChangePasswordComponent
         [Inject]
         private IAuthService AuthService { get; set; }
 
+        [Inject]
+        private IPeerStudyToastService ToastService { get; set; }
+
 
         private ChangePasswordModel changePasswordModel = new();
         private string styleRules = "width: 80%";
-        private Color alertColor; 
-        private string alertText;
-        private bool isAlertVisible;
         private Guid userId;
         private bool isBtnDisabled;
 
@@ -37,17 +37,14 @@ namespace PeerStudy.Features.Accounts.Components.ChangePasswordComponent
 
             changePasswordModel.UserId = userId;
             var result = await AccountService.ChangePasswordAsync(changePasswordModel);
-            isAlertVisible = true;
             changePasswordModel = new();
             if (result)
             {
-                alertColor = Color.Success;
-                alertText = "Password successfully changed.";
+                ToastService.ShowToast(ToastLevel.Success, "Password successfully changed.");
             }
             else
             {
-                alertColor = Color.Danger;
-                alertText = "The password could not be changed...";
+                ToastService.ShowToast(ToastLevel.Error, "The password could not be changed...");
             }
 
             isBtnDisabled = false;

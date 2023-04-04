@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 
-namespace PeerStudy.Shared
+namespace PeerStudy.Shared.PeerStudyFileComponent
 {
     public partial class PeerStudyFile
     {

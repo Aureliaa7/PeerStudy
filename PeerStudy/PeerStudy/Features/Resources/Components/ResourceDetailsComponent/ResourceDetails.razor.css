@@ -1,9 +1,13 @@
-﻿a:hover {
-    text-decoration: none;
+﻿.resource {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    margin: 10px;
+    padding: 5px;
+    padding-right: 0;
 }
 
-.resource-container:hover {
-    background-color: #E0E0E0;
+a:hover {
+    text-decoration: none;
 }
 
 img {
@@ -19,24 +23,13 @@ img {
     grid-column: 2;
 }
 
-@media (max-width: 570px) {
-    .panel-header {
-        display: none;
-    }
-}
-
-.resource-container {
-    width: 50%;
-    display: inline-block;
-    vertical-align: middle;
-}
-
 a {
     grid-column: 1;
 }
 
 .delete-button {
     float: right;
+    display: inline-block;
 }
 
 .details-container {

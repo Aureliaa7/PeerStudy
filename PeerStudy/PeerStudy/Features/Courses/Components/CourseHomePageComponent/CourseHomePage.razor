@@ -1,5 +1,7 @@
 ﻿@using PeerStudy.Core.Models.Resources
 @using PeerStudy.Features.Assignments.Components.CreateAssignmentComponent
+@using PeerStudy.Features.CourseUnits.CourseUnitsListComponent
+@using PeerStudy.Features.CourseUnits.CreateUpdateCourseUnitComponent
 @using PeerStudy.Features.Resources.Components.ResourcesListComponent
 @using PeerStudy.Features.StudyGroups.Components.CreateStudyGroupsComponent
 
@@ -23,7 +25,7 @@
             {
                 <div class="create-menu">
                     <div class="create-menu-btn">
-                        <MatButton Style="@menuButtonsStyles" OnClick="ShowUploadFileDialog">File</MatButton>
+                        <MatButton Style="@menuButtonsStyles" OnClick="ShowCourseUnitDialog">Course unit</MatButton>
                     </div>
                     <div class="create-menu-btn">
                         <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateAssignmentDialog">Assignment</MatButton>
@@ -38,6 +40,21 @@
             }
         }
     </div>
+
+    <CreateUpdateCourseUnit IsVisible="showCourseUnitDialog"
+                            CourseUnitModel="courseUnitModel"
+                            OnCancel="CancelCreateUpdateCourseUnit"
+                            OnSave="SaveCourseUnit">
+    </CreateUpdateCourseUnit>
+
+    @if (isEditCourseUnitEnabled)
+    {
+        <CreateUpdateCourseUnit IsVisible="showCourseUnitDialog"
+                            CourseUnitModel="courseUnitModel"
+                            OnCancel="CancelCreateUpdateCourseUnit"
+                            OnSave="UpdateCourseUnit">
+        </CreateUpdateCourseUnit>
+    }
 
     <UploadFiles IsVisible="showUploadFileDialog"
                  OnCancel="CloseUploadFileDialog"
@@ -57,10 +74,12 @@
     </CreateAssignment>
 </AuthorizeView>
 
-
-<ResourcesList Resources="resources"
-               IsLoading="isLoading"
-               IsReadOnly="isReadOnly"
-               CurrentUserId="currentUserId"
-               OnDeleteResource="DeleteResource">
-</ResourcesList>
+<CourseUnitsList CourseUnits="courseUnits"
+                 IsLoading="isLoading"
+                 CurrentUserId="currentUserId"
+                 IsReadOnly="isReadOnly"
+                 OnDelete="DeleteCourseUnit"
+                 OnRename="ShowEditCourseUnitDialog"
+                 OnUploadFiles="ShowUploadFileDialog"
+                 OnDeleteResource="DeleteResource">
+</CourseUnitsList>

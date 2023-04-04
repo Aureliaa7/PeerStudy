@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
 {
-    public class StudyGroupResourceService : ResourceBaseService, IStudyGroupResourceService
+    public class StudyGroupResourceService : ResourceBaseService<ResourceDetailsModel>, IStudyGroupResourceService
     {
         private readonly IGoogleDrivePermissionService drivePermissionService;
 

@@ -1,5 +1,5 @@
 ﻿@using PeerStudy.Core.Models.Resources
-@using PeerStudy.Features.Resources.Components.ResourceComponent
+@using PeerStudy.Features.Resources.Components.ResourceAccordionComponent
 
 <Loading IsLoading="IsLoading"
          HasData="@(Resources != null && Resources.Any())"
@@ -8,12 +8,12 @@
         @foreach (var resource in Resources)
         {
             <div class="resource">
-                <Resource Expanded=false
+                <ResourceAccordion Expanded=false
                       ResourceDetails="resource"
                       IsReadOnly="IsReadOnly"
                       CurrentUserId="CurrentUserId"
                       OnDeleteResource="HandleDeleteResource">
-                </Resource>
+                </ResourceAccordion>
             </div>
         }
     </div>

@@ -141,6 +141,9 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CourseUnitId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -162,9 +165,31 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
+                    b.HasIndex("CourseUnitId");
+
                     b.HasIndex("OwnerId");
 
                     b.ToTable("CourseResources");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.CourseUnit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("CourseUnits");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignment", b =>
@@ -466,6 +491,12 @@ namespace PeerStudy.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PeerStudy.Core.DomainEntities.CourseUnit", "CourseUnit")
+                        .WithMany("Resources")
+                        .HasForeignKey("CourseUnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PeerStudy.Core.DomainEntities.Teacher", "Owner")
                         .WithMany("CourseResources")
                         .HasForeignKey("OwnerId")
@@ -474,7 +505,20 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.Navigation("Course");
 
+                    b.Navigation("CourseUnit");
+
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.CourseUnit", b =>
+                {
+                    b.HasOne("PeerStudy.Core.DomainEntities.Course", "Course")
+                        .WithMany("CourseUnits")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignment", b =>
@@ -601,6 +645,13 @@ namespace PeerStudy.Infrastructure.Migrations
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Course", b =>
                 {
                     b.Navigation("CourseEnrollments");
+
+                    b.Navigation("CourseUnits");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.CourseUnit", b =>
+                {
+                    b.Navigation("Resources");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroup", b =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models;
 using PeerStudy.Services.Interfaces;
 using System.Threading.Tasks;
@@ -13,9 +14,11 @@ namespace PeerStudy.Features.Accounts.Components.LoginComponent
         [Inject]
         private NavigationManager NavigationManager { get; set; }
 
+        [Inject]
+        private IPeerStudyToastService ToastService { get; set; }
+
 
         private LoginModel loginModel = new();
-        private bool showLoginErrorMessage;
         private bool isSubmitButtonDisabled;
         private string styleRules = "width: 80%";
 
@@ -27,7 +30,7 @@ namespace PeerStudy.Features.Accounts.Components.LoginComponent
 
             if (string.IsNullOrEmpty(userId))
             {
-                this.showLoginErrorMessage = true;
+                ToastService.ShowToast(ToastLevel.Error, "Failed login!");
             }
             else
             {

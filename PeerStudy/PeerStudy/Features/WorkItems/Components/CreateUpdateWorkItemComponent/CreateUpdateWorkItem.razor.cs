@@ -17,7 +17,7 @@ namespace PeerStudy.Features.WorkItems.Components.CreateUpdateWorkItemComponent
         public EventCallback<bool> OnCancel { get; set; }
 
         [Parameter]
-        public bool IsVisible { get; set; } = true;
+        public bool IsVisible { get; set; }
 
         [Parameter]
         public CreateUpdateWorkItemModel WorkItemModel { get; set; }

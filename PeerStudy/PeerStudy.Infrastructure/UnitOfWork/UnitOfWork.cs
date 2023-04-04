@@ -22,6 +22,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<StudentAssignmentFile> studentAssignmentFilesRepository;
         private IRepository<StudyGroupFile> studyGroupFilesRepository;
         private IRepository<WorkItem> workItemsRepository;
+        private IRepository<CourseUnit> courseUnitsRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -168,6 +169,18 @@ namespace PeerStudy.Infrastructure.UnitOfWork
                     workItemsRepository = new Repository<WorkItem>(dbContext);
                 }
                 return workItemsRepository;
+            }
+        }
+
+        public IRepository<CourseUnit> CourseUnitsRepository
+        {
+            get
+            {
+                if (courseUnitsRepository == null)
+                {
+                    courseUnitsRepository = new Repository<CourseUnit>(dbContext);
+                }
+                return courseUnitsRepository;
             }
         }
 

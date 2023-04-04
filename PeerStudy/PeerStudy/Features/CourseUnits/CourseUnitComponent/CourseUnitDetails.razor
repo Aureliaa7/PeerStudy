@@ -1,0 +1,47 @@
+﻿@using PeerStudy.Features.Resources.Components.CourseResourceComponent
+
+<div class="course-unit">
+    <div class="course-unit-header">
+        <div class="title"><b>@CourseUnit?.Title</b></div>
+
+        <AuthorizeView Roles="Teacher">
+            @if (IsMenuIconVisible)
+            {
+                <div class="menu">
+                    <MatButton Style="@menuButtonStyles" Icon="@MatIconNames.Menu" OnClick="ToggleMenuOptions"></MatButton>
+                </div>
+
+                @if (showMenuOptions)
+                {
+                    <div class="menu-options">
+                        <div class="create-menu-btn">
+                            <MatButton Style="@menuButtonsStyles" OnClick="UploadFiles">Upload file</MatButton>
+                        </div>
+                        <div class="create-menu-btn">
+                            <MatButton Style="@menuButtonsStyles" OnClick="Delete">Delete</MatButton>
+                        </div>
+                        <div class="create-menu-btn">
+                            <MatButton Style="@menuButtonsStyles" OnClick="Rename">Rename</MatButton>
+                        </div>
+                    </div>
+                }
+            }
+        </AuthorizeView>
+    </div>
+
+    <div class="course-unit-elements">
+        @if (CourseUnit != null && CourseUnit.Resources != null && CourseUnit.Resources.Any())
+        {
+            @foreach (var resource in CourseUnit?.Resources)
+            {
+                <div class="resource">
+                    <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
+                            OnDeleteResource="DeleteResource"
+                            CurrentUserId="CurrentUserId"
+                            ResourceDetails="resource">
+                    </CourseResource>
+                </div>
+            }
+        }
+    </div>
+</div>  

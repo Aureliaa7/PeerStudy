@@ -9,6 +9,7 @@ namespace PeerStudy.Core.DomainEntities
         public Course()
         {
             CourseEnrollments = new HashSet<StudentCourse>();
+            CourseUnits = new HashSet<CourseUnit>();
         }
 
         public Guid Id { get; set; }
@@ -38,5 +39,6 @@ namespace PeerStudy.Core.DomainEntities
         public Teacher Teacher { get; set; }
 
         public ICollection<StudentCourse> CourseEnrollments { get; set; }
+        public ICollection<CourseUnit> CourseUnits { get; set; }
     }
 }

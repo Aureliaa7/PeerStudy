@@ -1,0 +1,29 @@
+﻿@using PeerStudy.Features.Resources.Components.ResourceDetailsComponent
+@inherits ResourceBase
+
+<div class="resource-container center-items">
+    <MatAccordion>
+        <MatExpansionPanel @bind-Expanded="Expanded">
+            <MatExpansionPanelSummary Style="padding: 10px;">
+                <MatExpansionPanelHeader>
+                    <div class="panel-header">
+                        @ResourceDetails.OwnerName uploaded:
+                    </div>
+                </MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                    @ResourceDetails.FileName
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                @if (ResourceDetails != null)
+                {
+                    <ResourceDetails CurrentUserId="CurrentUserId"
+                                 IsReadOnly="IsReadOnly"
+                                 ResourceDetails="ResourceDetails"
+                                 OnDeleteResource="HandleDeleteResource">
+                    </ResourceDetails>
+                }
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+    </MatAccordion>
+</div>

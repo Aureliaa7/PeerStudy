@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
 {
-    public class CourseResourceService : ResourceBaseService, ICourseResourceService
+    public class CourseResourceService : ResourceBaseService<CourseResourceDetailsModel>, ICourseResourceService
     {
         private readonly IGoogleDrivePermissionService drivePermissionService;
 
@@ -36,12 +36,12 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.SaveChangesAsync();
         }
 
-        public Task<List<ResourceDetailsModel>> GetByCourseIdAsync(Guid courseId)
+        public Task<List<CourseResourceDetailsModel>> GetByCourseIdAsync(Guid courseId)
         {
             return GetAllAsync(courseId);
         }
 
-        public async Task<List<ResourceDetailsModel>> UploadResourcesAsync(UploadCourseResourcesModel data)
+        public async Task<List<CourseResourceDetailsModel>> UploadResourcesAsync(UploadCourseResourcesModel data)
         {
             var parentFolderId = await GetParentFolderIdAsync(data.CourseId);
             var updatedData = SetParentFolderId(data.Resources, parentFolderId);
@@ -49,7 +49,7 @@ namespace PeerStudy.Core.DomainServices
             string ownerName = await GetOwnerNameAsync(data.OwnerId);
 
             var courseResources = new List<CourseResource>();
-            var resourceDetailsModels = new List<ResourceDetailsModel>();
+            var resourceDetailsModels = new List<CourseResourceDetailsModel>();
 
             foreach (var file in filesDetails)
             {
@@ -62,10 +62,11 @@ namespace PeerStudy.Core.DomainServices
                     DriveFileId = file.FileDriveId,
                     FileName = file.Name,
                     OwnerId = data.OwnerId,
-                    Type = Enums.ResourceType.File
+                    Type = Enums.ResourceType.File,
+                    CourseUnitId = data.CourseUnitId
                 });
 
-                resourceDetailsModels.Add(new ResourceDetailsModel
+                resourceDetailsModels.Add(new CourseResourceDetailsModel
                 {
                     CreatedAt = createdAt,
                     FileDriveId = file.FileDriveId,
@@ -103,7 +104,7 @@ namespace PeerStudy.Core.DomainServices
             await drivePermissionService.SetPermissionsAsync(fileIds, studentsEmails, "reader");
         }
 
-        protected override async Task<List<ResourceDetailsModel>> GetAsync(Guid id)
+        protected override async Task<List<CourseResourceDetailsModel>> GetAsync(Guid id)
         {
             bool courseExist = await unitOfWork.CoursesRepository.ExistsAsync(x => x.Id == id);
             if (!courseExist)
@@ -112,15 +113,16 @@ namespace PeerStudy.Core.DomainServices
             }
 
             var resources = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => x.CourseId == id,
-                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}", trackChanges: false))
-                .Select(x => new ResourceDetailsModel
+                trackChanges: false))
+                .Select(x => new CourseResourceDetailsModel
                 {
                     CreatedAt = x.CreatedAt,
                     FileDriveId  =x.DriveFileId,
                     OwnerId = x.OwnerId,
                     FileName = x.FileName,
                     Id = x.Id,
-                    OwnerName = $"{x.Owner.FirstName} {x.Owner.LastName}"
+                    OwnerName = $"{x.Owner.FirstName} {x.Owner.LastName}",
+                    CouseUnitId = x.CourseUnitId
                 })
                 .ToList();
 
@@ -134,6 +136,21 @@ namespace PeerStudy.Core.DomainServices
               .FirstOrDefault();
 
             return folderId;
+        }
+
+        public async Task DeleteRangeAsync(List<Guid> resourcesIds)
+        {
+            var driveFilesIds = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => resourcesIds.Contains(x.Id)))
+                .Select(x => x.DriveFileId)
+                .ToList();
+
+            await fileService.DeleteRangeAsync(driveFilesIds);
+
+            foreach (var id in resourcesIds)
+            {
+                await unitOfWork.CourseResourcesRepository.RemoveAsync(id);
+            }
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

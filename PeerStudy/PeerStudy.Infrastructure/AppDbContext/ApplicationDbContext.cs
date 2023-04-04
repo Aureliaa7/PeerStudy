@@ -30,6 +30,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<StudyGroupFile> StudyGroupFiles { get; set; }
 
+        public DbSet<CourseUnit> CourseUnits { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -47,6 +49,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new WorkItemConfiguration().Configure(modelBuilder.Entity<WorkItem>());
             new CourseResourceConfiguration().Configure(modelBuilder.Entity<CourseResource>());
             new StudyGroupFileConfiguration().Configure(modelBuilder.Entity<StudyGroupFile>());
+            new CourseUnitConfiguration().Configure(modelBuilder.Entity<CourseUnit>());
         }
     }
 }

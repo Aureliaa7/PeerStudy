@@ -1,0 +1,21 @@
+﻿@inherits ResourceBase
+
+<div class="resource">
+    <div class="details-container">
+        <a href="@ResourceDetails.WebViewLink" target="_blank">
+            <img src="@ResourceDetails.IconLink" />
+            <p class="file-name">@ResourceDetails.FileName</p>
+        </a>
+        <div class="created-at">@ResourceDetails.CreatedAt</div>
+    </div>
+
+    @if (!IsReadOnly && CurrentUserId == ResourceDetails.OwnerId)
+    {
+        <div class="delete-button">
+            <MatButton Style="@deleteButtonStyle"
+                   Icon="@MatIconNames.Delete"
+                   OnClick="HandleDeleteResource">
+            </MatButton>
+        </div>
+    }
+</div>

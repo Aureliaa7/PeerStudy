@@ -3,7 +3,7 @@
 
 <EditForm Model="CourseModel">
     <DataAnnotationsValidator />
-    <MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
+    <MatDialog Style="@dialogStyleRules" @bind-IsOpen="@IsVisible" CanBeClosed="false">
         <MatDialogTitle>Create course</MatDialogTitle>
         <MatDialogContent Class="mat-dialog-styles">
             <div class="create-course-card">
