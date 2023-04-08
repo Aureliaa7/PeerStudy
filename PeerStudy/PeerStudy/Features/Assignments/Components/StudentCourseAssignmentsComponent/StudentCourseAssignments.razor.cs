@@ -51,9 +51,9 @@ namespace PeerStudy.Features.Assignments.Components.StudentCourseAssignmentsComp
             }
         }
 
-        private void HandleClickedAssignment(Guid assignmentId)
+        private void HandleClickedAssignment(AssignmentDetailsModel assignment)
         {
-            NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{StudentId}/{assignmentId}/assignment-details");
+            NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{assignment.StudentGroupId}/{assignment.Id}/assignment-details");
         }
     }
 }

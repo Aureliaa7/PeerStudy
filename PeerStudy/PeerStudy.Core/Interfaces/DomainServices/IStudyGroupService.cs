@@ -13,12 +13,14 @@ namespace PeerStudy.Core.Interfaces.DomainServices
 
         Task<List<StudyGroupDetailsModel>> GetByCourseIdAsync(Guid courseId);
 
-        Task<List<StudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId, CourseStatus courseStatus);
+        Task<List<StudentStudyGroupDetailsModel>> GetByStudentIdAsync(Guid studentId, CourseStatus courseStatus);
 
         Task<StudyGroupDetailsModel> GetAsync(Guid id);
 
         Task<List<UserModel>> GetStudentsByGroupIdAsync(Guid id);
 
         Task<bool> IsActiveAsync(Guid id);
+
+        Task<Dictionary<Guid, string>> GetStudyGroupIdNamePairsAsync(Guid courseId);
     }
 }

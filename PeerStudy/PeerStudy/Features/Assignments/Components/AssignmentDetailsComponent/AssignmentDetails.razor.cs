@@ -26,9 +26,12 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         [Inject]
         private IPeerStudyToastService ToastService { get; set; }
 
+        [Inject]
+        private IAuthService AuthService { get; set; }
+
 
         [Parameter]
-        public Guid StudentId { get; set; }
+        public Guid StudyGroupId { get; set; }
 
         [Parameter]
         public Guid AssignmentId { get; set; }
@@ -49,6 +52,7 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         private bool isReadOnly;
         private List<UploadFileModel> allFiles = new List<UploadFileModel>();
         private List<UploadFileModel> newlyAddedFiles = new List<UploadFileModel>();
+        private Guid currentUserId;
 
         private const string noFilesMessage = "There are no files yet...";
         private const string buttonStyles = "margin: 10px;";
@@ -56,7 +60,8 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         protected override async Task OnInitializedAsync()
         {
             isLoading = true;
-            assignmentDetails = await AssignmentFileService.GetUploadedFilesByStudentAsync(AssignmentId, StudentId);
+            currentUserId = new Guid(await AuthService.GetCurrentUserIdAsync());
+            assignmentDetails = await AssignmentFileService.GetUploadedFilesByStudyGroupAsync(AssignmentId, StudyGroupId);
             isReadOnly = (await CourseService.GetCourseStatusAsync(CourseId)) == CourseStatus.Archived;
             if (assignmentDetails.CompletedAt == null)
             {
@@ -86,11 +91,11 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         {
             try
             {
-                await AssignmentService.ResetSubmitDateAsync(assignmentDetails.StudentAssignmentId);
+                await AssignmentService.ResetSubmitDateAsync(AssignmentId);
 
                 allFiles.Clear();
                 assignmentDetails.CompletedAt = null;
-                foreach (var file in assignmentDetails.StudentAssignmentFiles)
+                foreach (var file in assignmentDetails.StudyGroupAssignmentFiles)
                 {
                     allFiles.Add(new UploadFileModel
                     {
@@ -116,14 +121,14 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
             newlyAddedFiles = newlyAddedFiles.Where(x => x.Name != fileName).ToList();
             ToastService.ShowToast(ToastLevel.Info, "Deleting file...", false);
 
-            if (assignmentDetails.StudentAssignmentFiles != null && 
-                assignmentDetails.StudentAssignmentFiles.Any(x => x.Name == fileName))
+            if (assignmentDetails.StudyGroupAssignmentFiles != null && 
+                assignmentDetails.StudyGroupAssignmentFiles.Any(x => x.Name == fileName))
             {
                 try
                 {
-                    var toBeDeleted = assignmentDetails.StudentAssignmentFiles.FirstOrDefault(x => x.Name == fileName);
+                    var toBeDeleted = assignmentDetails.StudyGroupAssignmentFiles.FirstOrDefault(x => x.Name == fileName);
                     await AssignmentFileService.DeleteAsync(toBeDeleted.FileDriveId, toBeDeleted.Id);
-                    assignmentDetails.StudentAssignmentFiles.Remove(toBeDeleted);
+                    assignmentDetails.StudyGroupAssignmentFiles.Remove(toBeDeleted);
                     ToastService.ClearAll(ToastLevel.Info);
                 }
                 catch (Exception ex)
@@ -148,10 +153,11 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
                     var createdResources = await AssignmentFileService.UploadWorkAsync(new UploadAssignmentFilesModel
                     {
                         AssignmentId = AssignmentId,
-                        StudentId = StudentId,
-                        Files = newlyAddedFiles
+                        StudyGroupId = StudyGroupId,
+                        Files = newlyAddedFiles,
+                        OwnerId = currentUserId
                     }, completedAt);
-                    assignmentDetails.StudentAssignmentFiles.AddRange(createdResources);
+                    assignmentDetails.StudyGroupAssignmentFiles.AddRange(createdResources);
                     assignmentDetails.CompletedAt = completedAt;
                     allFiles.Clear();
                 });
@@ -174,8 +180,8 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         private bool ShowUnsubmitButton()
         {
             return assignmentDetails.CompletedAt != null &&
-                assignmentDetails.StudentAssignmentFiles != null &&
-                assignmentDetails.StudentAssignmentFiles.Any() &&
+                assignmentDetails.StudyGroupAssignmentFiles != null &&
+                assignmentDetails.StudyGroupAssignmentFiles.Any() &&
                 !allFiles.Any();
         }
     }

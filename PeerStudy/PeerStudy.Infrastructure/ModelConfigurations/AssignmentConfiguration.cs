@@ -10,6 +10,9 @@ namespace PeerStudy.Infrastructure.ModelConfigurations
         {
             builder.Property(x => x.Description).IsRequired(false);
             builder.Property(x => x.Deadline).IsRequired(false);
+
+            builder.HasOne(x => x.StudyGroup).WithMany(x => x.Assignments)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -23,27 +23,39 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task CreateAsync(CreateAssignmentModel model)
         {
-            var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == model.CourseId && 
-            x.TeacherId == model.TeacherId, includeProperties: nameof(Course.CourseEnrollments));
-            if (course == null)
+            var courseUnitExists = await unitOfWork.CourseUnitsRepository.ExistsAsync(x => x.Id == model.CourseUnitId && 
+            x.Course.TeacherId == model.TeacherId);
+            if (!courseUnitExists)
             {
-                throw new EntityNotFoundException($"Course with id {model.CourseId} and teacher id {model.TeacherId} was not found!");
+                throw new EntityNotFoundException($"Course unit with id {model.CourseUnitId} and teacher id {model.TeacherId} was not found!");
             }
 
             var addedAssignment = await unitOfWork.AssignmentsRepository.AddAsync(new Assignment
             {
                 CreatedAt = DateTime.UtcNow,
-                CourseId = model.CourseId,
+                CourseUnitId = model.CourseUnitId,
                 Deadline = model.DueDate,
                 Description = model.Description,
-                Title = model.Title
+                Title = model.Title,
+                StudyGroupId = model.StudyGroupId,
+                Points = model.Points
             });
-            
-            var studentAssignments = course.CourseEnrollments.Select(x => new StudentAssignment
+
+            var studentIds = (await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.Id == model.StudyGroupId))
+                .SelectMany(x => x.StudentStudyGroups
+                    .Select(y => y.StudentId))
+                .ToList();
+
+            var studentAssignments = new List<StudentAssignment>();
+            foreach (var studentId in studentIds)
             {
-                Assignment = addedAssignment,
-                StudentId = x.StudentId
-            }).ToList();
+                studentAssignments.Add(new StudentAssignment
+                {
+                    Assignment = addedAssignment,
+                    StudentId = studentId,
+                    StudyGroupId = model.StudyGroupId
+                });
+            }
            
             await unitOfWork.StudentAssignmentsRepository.AddRangeAsync(studentAssignments);
             await unitOfWork.SaveChangesAsync();
@@ -64,10 +76,10 @@ namespace PeerStudy.Core.DomainServices
             var assignments = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(filter, trackChanges: false))
             .Select(x => new AssignmentDetailsModel
             {
-                StudentAssignmentId = x.Id,
+                StudentGroupId = x.Assignment.StudyGroupId,
                 Deadline = x.Assignment.Deadline,
                 Description = x.Assignment.Description,
-                AssignmentId = x.Assignment.Id,
+                Id = x.Assignment.Id,
                 Title = x.Assignment.Title,
                 Points = x.Points
             })
@@ -80,27 +92,30 @@ namespace PeerStudy.Core.DomainServices
         {
             if (status == AssignmentStatus.Done)
             {
-                return x => x.Assignment.CourseId == courseId && x.StudentId == studentId && x.CompletedAt != null;
-            } 
+                return x => x.Assignment.CourseUnit.CourseId == courseId && x.StudentId == studentId && x.Assignment.CompletedAt != null;
+            }
             else if (status == AssignmentStatus.ToDo)
             {
-                return x => x.Assignment.CourseId == courseId && x.StudentId == studentId && x.CompletedAt == null;
+                return x => x.Assignment.CourseUnit.CourseId == courseId && x.StudentId == studentId && x.Assignment.CompletedAt == null;
             }
             else
             {
-                return x => x.Assignment.CourseId == courseId && x.StudentId == studentId;
+                return x => x.Assignment.CourseUnit.CourseId == courseId && x.StudentId == studentId;
             }
         }
 
-        public async Task<List<ExtendedAssignmentDetailsModel>> GetByCourseIdAsync(Guid courseId)
+        public async Task<List<ExtendedAssignmentDetailsModel>> GetByCourseUnitIdAsync(Guid courseUnitId)
         {
-            var assignments = (await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.CourseId == courseId,
+            var assignments = (await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.CourseUnitId == courseUnitId,
                 trackChanges: false))
                 .Select(x => new ExtendedAssignmentDetailsModel
                 {
                     Deadline = x.Deadline,
-                    AssignmentId = x.Id,
+                    Id = x.Id,
                     Title = x.Title,
+                    StudentGroupId = x.StudyGroupId,
+                    Points = x.Points,
+                    CompletedAt = x.CompletedAt,
                     Students = x.StudentAssignments.Select(y => new GradeAssignmentModel
                     {
                         StudentId = y.StudentId,
@@ -140,16 +155,16 @@ namespace PeerStudy.Core.DomainServices
             }
         }
 
-        public async Task ResetSubmitDateAsync(Guid studentAssignmentId)
+        public async Task ResetSubmitDateAsync(Guid assignmentId)
         {
-            var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.Id == studentAssignmentId);
-            if (studentAssignment == null)
+            var assignment = await unitOfWork.AssignmentsRepository.GetFirstOrDefaultAsync(x => x.Id == assignmentId);
+            if (assignment == null)
             {
-                throw new EntityNotFoundException($"StudentAssignment with id {studentAssignmentId} was not found!");
+                throw new EntityNotFoundException($"Assignment with id {assignmentId} was not found!");
             }
 
-            studentAssignment.CompletedAt = null;
-            await unitOfWork.StudentAssignmentsRepository.UpdateAsync(studentAssignment);
+            assignment.CompletedAt = null;
+            await unitOfWork.AssignmentsRepository.UpdateAsync(assignment);
             await unitOfWork.SaveChangesAsync();
         }
     }

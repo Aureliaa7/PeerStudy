@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PeerStudy.Features.CourseUnits.CourseUnitsListComponent
+namespace PeerStudy.Features.CourseUnits.Components.CourseUnitsListComponent
 {
     public partial class CourseUnitsList
     {
@@ -31,6 +31,12 @@ namespace PeerStudy.Features.CourseUnits.CourseUnitsListComponent
         public EventCallback<Guid> OnUploadFiles { get; set; }
 
         [Parameter]
+        public EventCallback<Guid> OnAddAssignment { get; set; }
+
+        [Parameter]
+        public EventCallback<Guid> OnViewAssignments { get; set; }
+
+        [Parameter]
         public EventCallback<DeleteCourseUnitResourceModel> OnDeleteResource { get; set; }
 
         private async Task Delete(Guid courseUnitId)
@@ -51,6 +57,16 @@ namespace PeerStudy.Features.CourseUnits.CourseUnitsListComponent
         private async Task DeleteResource(DeleteCourseUnitResourceModel courseUnitIdResourceId)
         {
             await OnDeleteResource.InvokeAsync(courseUnitIdResourceId);
+        }
+
+        private async Task AddAssignment(Guid id)
+        {
+            await OnAddAssignment.InvokeAsync(id);
+        }
+
+        private async Task ViewAssignments(Guid id)
+        {
+            await OnViewAssignments.InvokeAsync(id);
         }
     }
 }

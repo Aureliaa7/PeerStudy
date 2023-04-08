@@ -9,16 +9,23 @@
                         @Assignment.Title
                     </div>
                 </MatExpansionPanelHeader>
-                <MatExpansionPanelSubHeader>
-                    @Assignment.Deadline
-                </MatExpansionPanelSubHeader>
             </MatExpansionPanelSummary>
             <MatExpansionPanelDetails>
 
                 @if (!IsReadOnly)
                 {
-                    <div class="delete-assignment">
-                        <MatButton Icon="@MatIconNames.Delete" OnClick="DeleteAssignment"></MatButton>
+                    <div class="details">
+                        <div class="align-to-left">
+                            <div class="deadline">
+                                @Assignment.Deadline
+                            </div>
+                            <div class="points">
+                                @Assignment.Points points
+                            </div>
+                        </div>
+                        <div class="delete-assignment">
+                            <MatButton Icon="@MatIconNames.Delete" OnClick="DeleteAssignment"></MatButton>
+                        </div>
                     </div>
                 }
                 <DataGrid TItem="GradeAssignmentModel"
@@ -54,7 +61,6 @@
                             </Button>
                         }
                         <Button Color="Color.Primary"
-                                Disabled="(selectedRow is null)"
                                 Clicked="ViewSubmittedWork">
                             View work
                         </Button>

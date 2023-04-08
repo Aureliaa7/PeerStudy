@@ -24,7 +24,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<StudentAssignment> StudentAssignments { get; set; }
 
-        public DbSet<StudentAssignmentFile> StudentAssignmentFiles { get; set; }
+        public DbSet<StudyGroupAssignmentFile> StudyGroupAssignmentFiles { get; set; }
 
         public DbSet<WorkItem> WorkItems { get; set; }
 

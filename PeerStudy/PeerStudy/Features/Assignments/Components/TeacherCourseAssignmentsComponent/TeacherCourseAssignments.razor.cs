@@ -29,6 +29,9 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
 
 
         [Parameter]
+        public Guid CourseUnitId { get; set; }
+
+        [Parameter]
         public Guid CourseId { get; set; }
 
         [Parameter]
@@ -51,7 +54,7 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
                 CheckIfIsReadOnlyMode();
 
                 await SetCurrentUserDataAsync();
-                assignments = await AssignmentService.GetByCourseIdAsync(CourseId);
+                assignments = await AssignmentService.GetByCourseUnitIdAsync(CourseUnitId);
             }
             catch (Exception ex)
             {
@@ -92,7 +95,7 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
             try
             {
                 await AssignmentService.DeleteAsync(assignmentId);
-                assignments = assignments.Where(x => x.AssignmentId != assignmentId).ToList();
+                assignments = assignments.Where(x => x.Id != assignmentId).ToList();
             }
             catch (Exception)
             {
@@ -100,9 +103,9 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
             }
         }
 
-        private void ViewSubmittedWork((Guid assignmentId, Guid studentId) data)
+        private void ViewSubmittedWork((Guid assignmentId, Guid studyGroupId) data)
         {
-            NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{data.studentId}/{data.assignmentId}/assignment-details");
+            NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{data.studyGroupId}/{data.assignmentId}/assignment-details");
         }
     }
 }

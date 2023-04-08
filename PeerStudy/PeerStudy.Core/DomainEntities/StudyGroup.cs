@@ -10,6 +10,7 @@ namespace PeerStudy.Core.DomainEntities
             StudentStudyGroups = new HashSet<StudentStudyGroup>();
             WorkItems = new HashSet<WorkItem>();
             StudyGroupFiles = new HashSet<StudyGroupFile>();
+            Assignments = new HashSet<Assignment>();
         }
 
         public Guid Id { get; set; }
@@ -27,5 +28,7 @@ namespace PeerStudy.Core.DomainEntities
         public ICollection<WorkItem> WorkItems { get; set; }
 
         public ICollection<StudyGroupFile> StudyGroupFiles { get; set; }
+
+        public ICollection<Assignment> Assignments { get; set; }
     }
 }

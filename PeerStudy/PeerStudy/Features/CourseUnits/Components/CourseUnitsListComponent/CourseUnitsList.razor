@@ -1,4 +1,4 @@
-﻿@using PeerStudy.Features.CourseUnits.CourseUnitComponent
+﻿@using PeerStudy.Features.CourseUnits.Components.CourseUnitComponent
 
 <div>
     @foreach (var unit in CourseUnits)
@@ -9,7 +9,9 @@
                        OnDelete="Delete"
                        OnRename="Rename"
                        OnUploadFiles="UploadFiles"
-                       OnDeleteResource="DeleteResource">
+                       OnDeleteResource="DeleteResource"
+                       OnAddAssignment="AddAssignment"
+                       OnViewAssignments="ViewAssignments">
         </CourseUnitDetails>
     }
 </div>

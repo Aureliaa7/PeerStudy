@@ -8,11 +8,11 @@
                               Style="width: 100%;"
                               @bind-Value="AssignmentModel.Title"
                               Label="Title"
-                              Required>
+                                    Required>
                 </MatTextField>
             </div>
             <div class="form-row">
-                <div class="center-items">
+                <div>
                     <MatDatePicker Label="Due Date" @bind-Value="AssignmentModel.DueDate"
                                    Minimum="@DateTime.Now"
                                    Required
@@ -20,7 +20,7 @@
                                    TValue="DateTime">
                     </MatDatePicker>
                 </div>
-                <div class="center-items">
+                <div>
                     <MatTextField Class="input-field"
                                   @bind-Value="AssignmentModel.Points"
                                   Label="Points"
@@ -30,6 +30,16 @@
                     </MatTextField>
                 </div>
             </div>
+
+            <div class="study-groups-items">
+                <MatSelectItem Style="margin-left: 7px; width: 94%"
+                                Label="Study Group"
+                               @bind-Value="@selectedStudyGroup"
+                               Items="@StudyGroups">
+                    <ItemTemplate Context="itemmenucontext"><span>@itemmenucontext?.Value</span></ItemTemplate>
+                </MatSelectItem>
+            </div>
+
             <div class="text-field-container">
                 <MatTextField Class="input-field"
                               Style="width: 100%; height: 100px;"
@@ -42,7 +52,8 @@
 
         </MatDialogContent>
         <MatDialogActions>
-            <MatButton Class="submit-button" Raised="true" OnClick="SaveAssignment" Disabled=@(!context.IsModified() || !context.Validate())>Confirm</MatButton>
+            <MatButton Class="submit-button" Raised="true" OnClick="SaveAssignment" Disabled=@(!context.IsModified() || !context.Validate() ||
+            selectedStudyGroup == null)>Confirm</MatButton>
             <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
         </MatDialogActions>
     </MatDialog>

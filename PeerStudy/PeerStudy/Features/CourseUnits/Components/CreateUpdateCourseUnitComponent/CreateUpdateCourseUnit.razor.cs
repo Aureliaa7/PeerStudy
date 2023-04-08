@@ -2,7 +2,7 @@
 using PeerStudy.Core.Models.CourseUnits;
 using System.Threading.Tasks;
 
-namespace PeerStudy.Features.CourseUnits.CreateUpdateCourseUnitComponent
+namespace PeerStudy.Features.CourseUnits.Components.CreateUpdateCourseUnitComponent
 {
     public partial class CreateUpdateCourseUnit
     {

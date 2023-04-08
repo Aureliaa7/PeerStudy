@@ -34,7 +34,7 @@ namespace PeerStudy.Features.Assignments.Components.CourseAssignmentComponent
         {
             await OnSaveGrade.InvokeAsync(new SaveGradeModel
             {
-                AssignmentId = Assignment.AssignmentId,
+                AssignmentId = Assignment.Id,
                 StudentId = data.Item.StudentId,
                 Points = data.Item.Points
             });
@@ -54,12 +54,12 @@ namespace PeerStudy.Features.Assignments.Components.CourseAssignmentComponent
         private async Task DeleteAssignmentHandler()
         {
             showConfirmationPopup = false;
-            await OnDeleteAssignment.InvokeAsync(Assignment.AssignmentId);
+            await OnDeleteAssignment.InvokeAsync(Assignment.Id);
         }
 
         private async Task ViewSubmittedWork()
         {
-            await OnViewWork.InvokeAsync((Assignment.AssignmentId, selectedRow.StudentId));
+            await OnViewWork.InvokeAsync((Assignment.Id, Assignment.StudentGroupId));
         }
     }
 }

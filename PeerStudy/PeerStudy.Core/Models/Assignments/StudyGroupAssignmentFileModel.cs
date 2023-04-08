@@ -3,8 +3,10 @@ using System;
 
 namespace PeerStudy.Core.Models.Assignments
 {
-    public class StudentAssignmentFileModel : DriveFileDetailsModel
+    public class StudyGroupAssignmentFileModel : DriveFileDetailsModel
     {
         public Guid Id { get; set; }
+
+        public Guid AssignmentId { get; set; }
     }
 }

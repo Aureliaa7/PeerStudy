@@ -1,0 +1,13 @@
+﻿.all-work-items-status, .child-content {
+    display: inline-block;
+    width: 48%;
+    text-align: center;
+}
+
+.work-items-status {
+    padding: 5px;
+}
+
+.students, .course-title {
+    padding-left: 10px;
+}

@@ -15,14 +15,14 @@ namespace PeerStudy.Features.Assignments.Components.StudentAssignmentsComponent
         public string Title { get; set; }
 
         [Parameter]
-        public EventCallback<Guid> OnClickedAssignment { get; set; }
+        public EventCallback<AssignmentDetailsModel> OnClickedAssignment { get; set; }
 
 
         private bool expandedPanel;
 
-        private async Task HandleClickedAssignment(Guid assignmentId)
+        private async Task HandleClickedAssignment(AssignmentDetailsModel assignment)
         {
-            await OnClickedAssignment.InvokeAsync(assignmentId);
+            await OnClickedAssignment.InvokeAsync(assignment);
         }
     }
 }

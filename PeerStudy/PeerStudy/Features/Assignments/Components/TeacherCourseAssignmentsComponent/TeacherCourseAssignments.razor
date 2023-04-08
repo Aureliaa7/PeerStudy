@@ -1,7 +1,7 @@
 ﻿@using PeerStudy.Core.Models.Assignments
 @using PeerStudy.Features.Assignments.Components.CourseAssignmentComponent
 
-@page "/{courseTitle}/{courseId:guid}/assignments"
+@page "/{courseTitle}/{courseId:guid}/{courseUnitId:guid}/assignments"
 @attribute [Authorize(Roles = "Teacher")]
 @inherits PeerStudyComponentBase
 

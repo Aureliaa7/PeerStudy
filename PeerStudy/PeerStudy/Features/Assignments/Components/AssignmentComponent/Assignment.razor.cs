@@ -11,11 +11,11 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentComponent
         public AssignmentDetailsModel Data { get; set; }
 
         [Parameter]
-        public EventCallback<Guid> OnClick { get; set; }
+        public EventCallback<AssignmentDetailsModel> OnClick { get; set; }
 
         private async Task HandleClickedAssignment()
         {
-            await OnClick.InvokeAsync(Data.AssignmentId);
+            await OnClick.InvokeAsync(Data);
         }
     }
 }

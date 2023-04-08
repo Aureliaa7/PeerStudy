@@ -20,9 +20,17 @@ namespace PeerStudy.Core.DomainEntities
 
         public DateTime? Deadline { get; set; }
 
-        public Guid CourseId { get; set; }
+        public DateTime? CompletedAt { get; set; }
 
-        public Course Course { get; set; }
+        public int Points { get; set; }
+
+        public Guid CourseUnitId { get; set; }
+
+        public CourseUnit CourseUnit { get; set; }
+
+        public Guid StudyGroupId { get; set; }
+
+        public StudyGroup StudyGroup { get; set; }
 
         public ICollection<StudentAssignment> StudentAssignments { get; set; }
     }

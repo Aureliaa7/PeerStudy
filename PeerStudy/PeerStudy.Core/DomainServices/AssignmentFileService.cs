@@ -9,6 +9,7 @@ using PeerStudy.Core.Models.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
@@ -29,76 +30,89 @@ namespace PeerStudy.Core.DomainServices
             this.drivePermissionService = drivePermissionService;
         }
 
-        public async Task<AssignmentFilesModel> GetUploadedFilesByStudentAsync(Guid assignmentId, Guid studentId)
+        public async Task<AssignmentFilesModel> GetUploadedFilesByStudyGroupAsync(Guid assignmentId, Guid studyGroupId)
         {
-            var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x =>
-            x.AssignmentId == assignmentId && x.StudentId == studentId, includeProperties: nameof(Assignment));
+            var assignment = await unitOfWork.AssignmentsRepository.GetFirstOrDefaultAsync(x =>
+            x.Id == assignmentId && x.StudyGroupId == studyGroupId) ?? throw new EntityNotFoundException($"StudentAssignment with assignmentId {assignmentId} and studyGroupId {studyGroupId} was not found!");
 
-            if (studentAssignment == null)
-            {
-                throw new EntityNotFoundException($"StudentAssignment with assignmentId {assignmentId} and studentId {studentId} was not found!");
-            }
+            var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.AssignmentId ==
+            assignmentId && x.StudyGroupId == studyGroupId);
+
             var assignmentFilesModel = new AssignmentFilesModel
             {
-                AssignmentId = assignmentId,
-                Deadline = studentAssignment.Assignment.Deadline,
-                Description = studentAssignment.Assignment.Description,
-                Title = studentAssignment.Assignment.Title,
-                Points = studentAssignment.Points,
-                CompletedAt = studentAssignment.CompletedAt,
-                StudentAssignmentId = studentAssignment.Id
+                Id = assignmentId,
+                Deadline = assignment.Deadline,
+                Description = assignment.Description,
+                Title = assignment.Title,
+                Points = studentAssignment?.Points ?? null,
+                CompletedAt = assignment.CompletedAt,
+                StudentGroupId = assignment.StudyGroupId
             };
 
-            var studentAssignmentFiles = (await unitOfWork.StudentAssignmentFilesRepository.GetAllAsync(x =>
-                x.StudentAssignment.AssignmentId == assignmentId && x.StudentAssignment.StudentId == studentId, includeProperties: nameof(StudentAssignment)))
+            var studyGroupAssignmentFiles = (await unitOfWork.StudyGroupAssignmentFilesRepository.GetAllAsync(x =>
+                x.AssignmentId == assignmentId && x.Assignment.StudyGroupId == studyGroupId))
             .ToList();
 
-            var fileIds = studentAssignmentFiles.Select(x => x.DriveFileId).ToList();
+            var fileIds = studyGroupAssignmentFiles.Select(x => x.DriveFileId).ToList();
             var filesDetails = await fileService.GetFilesDetailsAsync(fileIds);
-            assignmentFilesModel.StudentAssignmentFiles = MapToAssignmentFileDetailsModels(studentAssignmentFiles, filesDetails);
+            assignmentFilesModel.StudyGroupAssignmentFiles = MapToAssignmentFileDetailsModels(studyGroupAssignmentFiles, filesDetails);
 
             return assignmentFilesModel;
         }
 
-        public async Task<List<StudentAssignmentFileModel>> UploadWorkAsync(UploadAssignmentFilesModel model, DateTime completedAt)
+        public async Task<List<StudyGroupAssignmentFileModel>> UploadWorkAsync(UploadAssignmentFilesModel model, DateTime completedAt)
         {
-            var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.AssignmentId ==
-            model.AssignmentId && x.StudentId == model.StudentId, includeProperties: $"{nameof(Assignment)},{nameof(Student)}");
+            var assignment = await unitOfWork.AssignmentsRepository.GetFirstOrDefaultAsync(x => x.Id ==
+            model.AssignmentId && x.StudyGroupId == model.StudyGroupId) ?? throw new EntityNotFoundException($"Assignment with assignment id {model.AssignmentId} and study group id {model.StudyGroupId} was not found!");
 
-            if (studentAssignment == null)
-            {
-                throw new EntityNotFoundException($"Student assignment with assignment id {model.AssignmentId} and student id {model.StudentId} was not found!");
-            }
+            var (teacherEmail, driveFolderId) = await GetTeacherEmailDriveFolderIdAsync(model.AssignmentId);
+            var studentIdsEmails = await GetStudentIdEmailPairsAsync(model.StudyGroupId);
+            string ownerEmail = studentIdsEmails.First(x => x.Key == model.OwnerId).Value;
 
-            var assignmentDetails = (await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.Id == model.AssignmentId))
-                .Select(x => new
-                {
-                    TeacherEmail = x.Course.Teacher.Email,
-                    AssignmentsDriveFolderId = x.Course.AssignmentsDriveFolderId
-                })
-                .FirstOrDefault();
+            var uploadedFilesDetails = await SaveFilesAsync(
+                model.Files,
+                ownerEmail,
+                driveFolderId);
 
-            if (assignmentDetails == null)
-            {
-                throw new EntityNotFoundException($"Could not find details for assignment with id {model.AssignmentId}!");
-            }
+            await SetPemissionsAsync(
+                uploadedFilesDetails
+                    .Select(x => x.Value.FileDriveId)
+                    .ToList(),
+                teacherEmail,
+                studentIdsEmails
+                    .Where(x => x.Key != model.OwnerId)
+                    .Select(x => x.Value)
+                    .ToList());
 
-            return await SaveFilesAsync(
-                model.Files, 
-                studentAssignment, 
-                assignmentDetails.AssignmentsDriveFolderId, 
-                completedAt, 
-                assignmentDetails.TeacherEmail);
+            var savedFiles = await SaveToDBStudyGroupAssignmentFilesAsync(uploadedFilesDetails, model.AssignmentId, completedAt, model.OwnerId);
+
+            assignment.CompletedAt = completedAt;
+            await unitOfWork.AssignmentsRepository.UpdateAsync(assignment);
+            await unitOfWork.SaveChangesAsync();
+
+            return MapToAssignmentFileDetailsModels(savedFiles, uploadedFilesDetails);
         }
 
-        private async Task<List<StudentAssignmentFileModel>> SaveFilesAsync(
-            List<UploadFileModel> files,
-            StudentAssignment studentAssignment,
-            string driveFolderId,
-            DateTime completedAt,
-            string teacherEmail)
+        private async Task<(string teacherEmail, string driveFolderId)> GetTeacherEmailDriveFolderIdAsync(Guid assignmentId)
         {
-            List<StudentAssignmentFile> studentAssignmentFiles = new List<StudentAssignmentFile>();
+            var teacherEmailDriveFolderId = (await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.Id == assignmentId))
+               .Select(x => new
+               {
+                   TeacherEmail = x.CourseUnit.Course.Teacher.Email,
+                   x.CourseUnit.Course.AssignmentsDriveFolderId
+               })
+               .FirstOrDefault();
+
+            return teacherEmailDriveFolderId == null
+                ? throw new EntityNotFoundException($"Could not find details for assignment with id {assignmentId}!")
+                : (teacherEmailDriveFolderId.TeacherEmail, teacherEmailDriveFolderId.AssignmentsDriveFolderId);
+        }
+
+        private async Task<Dictionary<string, DriveFileDetailsModel>> SaveFilesAsync(
+            List<UploadFileModel> files,
+            string ownerEmail,
+            string driveFolderId)
+        {
             var uploadedFilesDetails = new Dictionary<string, DriveFileDetailsModel>();
 
             foreach (var file in files)
@@ -109,17 +123,11 @@ namespace PeerStudy.Core.DomainServices
                     {
                         FileContent = file.FileContent,
                         Name = file.Name,
-                        OwnerEmail = studentAssignment.Student.Email,
+                        OwnerEmail = ownerEmail,
                         ParentFolderId = driveFolderId
                     });
 
                     uploadedFilesDetails.Add(googleDriveFileDetails.FileDriveId, googleDriveFileDetails);
-                    studentAssignmentFiles.Add(new StudentAssignmentFile
-                    {
-                        DriveFileId = googleDriveFileDetails.FileDriveId,
-                        FileName = file.Name,
-                        StudentAssignmentId = studentAssignment.Id
-                    });
                 }
                 catch (Exception ex)
                 {
@@ -127,26 +135,64 @@ namespace PeerStudy.Core.DomainServices
                 }
             }
 
-            await drivePermissionService.SetPermissionsAsync(
-                studentAssignmentFiles.Select(x => x.DriveFileId).ToList(), 
-                new List<string> { teacherEmail }, 
-                "reader");
-
-            var savedFiles = await unitOfWork.StudentAssignmentFilesRepository.AddRangeAsync(studentAssignmentFiles);
-            studentAssignment.CompletedAt = completedAt;
-            await unitOfWork.StudentAssignmentsRepository.UpdateAsync(studentAssignment);
-            await unitOfWork.SaveChangesAsync();
-            return MapToAssignmentFileDetailsModels(savedFiles, uploadedFilesDetails);
+            return uploadedFilesDetails;
         }
 
-        private List<StudentAssignmentFileModel> MapToAssignmentFileDetailsModels(List<StudentAssignmentFile> resources, IDictionary<string, DriveFileDetailsModel> driveFileDetails)
+        private async Task SetPemissionsAsync(List<string> filesIds, string teacherEmail, List<string> studyGroupMembersEmails)
         {
-            var resourcesModels = new List<StudentAssignmentFileModel>();
+            await drivePermissionService.SetPermissionsAsync(filesIds,new List<string> { teacherEmail },"reader");
+
+            await drivePermissionService.SetPermissionsAsync(filesIds, studyGroupMembersEmails,"edit");
+        }
+
+        private async Task<List<StudyGroupAssignmentFile>> SaveToDBStudyGroupAssignmentFilesAsync(
+            Dictionary<string, DriveFileDetailsModel> uploadedFilesDetails,
+            Guid assignmentId,
+            DateTime completedAt,
+            Guid ownerId)
+        {
+            var studyGroupAssignmentFiles = new List<StudyGroupAssignmentFile>();
+
+            foreach (var pair in uploadedFilesDetails)
+            {
+                studyGroupAssignmentFiles.Add(new StudyGroupAssignmentFile
+                {
+                    AssignmentId = assignmentId,
+                    CreatedAt = completedAt,
+                    DriveFileId = pair.Value.FileDriveId,
+                    OwnerId = ownerId,
+                    FileName = pair.Value.Name
+                });
+            }
+
+            var savedFiles = await unitOfWork.StudyGroupAssignmentFilesRepository.AddRangeAsync(studyGroupAssignmentFiles);
+            await unitOfWork.SaveChangesAsync();
+
+            return savedFiles;
+        }
+
+        private async Task<Dictionary<Guid, string>> GetStudentIdEmailPairsAsync(Guid studyGroupId)
+        {
+            var studentIdsEmails = (await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.Id == studyGroupId))
+             .SelectMany(x => x.StudentStudyGroups)
+             .Select(x => new
+             {
+                 Id = x.StudentId,
+                 x.Student.Email
+             })
+             .ToList();
+
+            return studentIdsEmails.ToDictionary(x => x.Id, x => x.Email);
+        }
+
+        private List<StudyGroupAssignmentFileModel> MapToAssignmentFileDetailsModels(List<StudyGroupAssignmentFile> resources, IDictionary<string, DriveFileDetailsModel> driveFileDetails)
+        {
+            var resourcesModels = new List<StudyGroupAssignmentFileModel>();
             foreach (var resource in resources)
             {
                 if (driveFileDetails.TryGetValue(resource.DriveFileId, out var fileDriveDetails))
                 {
-                    resourcesModels.Add(new StudentAssignmentFileModel
+                    resourcesModels.Add(new StudyGroupAssignmentFileModel
                     {
                         Id = resource.Id,
                         IconLink = fileDriveDetails.IconLink,
@@ -164,7 +210,7 @@ namespace PeerStudy.Core.DomainServices
         {
             await fileService.DeleteAsync(driveFileId);
 
-            await unitOfWork.StudentAssignmentFilesRepository.RemoveAsync(studentAssignmentFileId);
+            await unitOfWork.StudyGroupAssignmentFilesRepository.RemoveAsync(studentAssignmentFileId);
             await unitOfWork.SaveChangesAsync();
         }
     }

@@ -8,6 +8,7 @@ using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.CourseUnits;
 using PeerStudy.Core.Models.Resources;
 using PeerStudy.Features.Courses.Store;
+using PeerStudy.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         [Inject]
         private ICourseUnitService CourseUnitService { get; set;}
+
+        [Inject]
+        private NavigationManager NavigationManager { get; set; }
 
 
         [Parameter]
@@ -64,6 +68,8 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private const string menuButtonsStyles = "color: white;";
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
 
+        private List<DropDownItem> studyGroupsDropdownItems = new List<DropDownItem>(); 
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -77,6 +83,13 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             SetCurrentCourseDetails();
             UpdateNavigationMenu();
             isReadOnly = courseDetails.Status == CourseStatus.Archived;
+            studyGroupsDropdownItems = (await StudyGroupService.GetStudyGroupIdNamePairsAsync(CourseId))
+                .Select(x => new DropDownItem
+                {
+                    Key = x.Key.ToString(),
+                    Value = x.Value
+                })
+                .ToList();
         }
 
         private void SetCurrentCourseDetails()
@@ -265,9 +278,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             }
         }
 
-        private void ShowCreateAssignmentDialog()
+        private void ShowCreateAssignmentDialog(Guid courseUnitId)
         {
-            showCreateMenu = false;
+            selectedCourseUnitId = courseUnitId;
             showAddAssigmentDialog = true;
         }
 
@@ -275,7 +288,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         {
             showAddAssigmentDialog = false;
             ToastService.ShowToast(ToastLevel.Info, "Adding assignment...", false);
-            assignmentModel.CourseId = CourseId;
+            assignmentModel.CourseUnitId = selectedCourseUnitId.Value;
             assignmentModel.TeacherId = currentUserId;
             assignmentModel.DueDate = assignmentModel.DueDate.AddDays(1); // fix for MatDatePicker
 
@@ -290,6 +303,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, "An error occurred. Please try again later.");
+                selectedCourseUnitId = null;
             }
 
             StateHasChanged();
@@ -332,6 +346,11 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             {
                 courseUnitModel = new CourseUnitModel();
             }
+        }
+
+        private void ViewAssignments(Guid courseUnitId)
+        {
+            NavigationManager.NavigateTo($"/{courseDetails.Title}/{courseDetails.Id}/{courseUnitId}/assignments");
         }
     }
 }

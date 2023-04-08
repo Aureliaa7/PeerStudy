@@ -13,9 +13,6 @@ namespace PeerStudy.Features.StudyGroups.Components
         [Inject]
         protected IStudyGroupService StudyGroupService { get; set; }
 
-
-        protected List<StudyGroupDetailsModel> studyGroups = new List<StudyGroupDetailsModel>();
-
         protected void HandleClickedStudyGroup(StudyGroupDetailsModel studyGroup)
         {
             NavigationManager.NavigateTo($"/{studyGroup.Id}/home");

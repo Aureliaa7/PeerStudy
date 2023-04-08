@@ -4,6 +4,6 @@ namespace PeerStudy.Core.Models.Assignments
 {
     public class AssignmentFilesModel : AssignmentDetailsModel
     {
-        public List<StudentAssignmentFileModel> StudentAssignmentFiles { get; set; }
+        public List<StudyGroupAssignmentFileModel> StudyGroupAssignmentFiles { get; set; }
     }
 }

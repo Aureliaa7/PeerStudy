@@ -74,6 +74,8 @@ namespace PeerStudy
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<INavigationMenuService, NavigationMenuService>();
             services.AddScoped<IPeerStudyToastService, PeerStudyToastService>();
+
+            services.AddScoped<IChartDataService, ChartDataService>();
         }
 
         private static void RegisterServicesFromInfrastructure(this IServiceCollection services)

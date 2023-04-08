@@ -1,7 +1,9 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Models.StudyGroups;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Features.StudyGroups.Components.CourseStudyGroupsComponent
@@ -17,6 +19,8 @@ namespace PeerStudy.Features.StudyGroups.Components.CourseStudyGroupsComponent
 
         [Parameter]
         public string CourseTitle { get; set; }
+
+        private List<StudyGroupDetailsModel> studyGroups = new List<StudyGroupDetailsModel>();
 
         protected override async Task OnInitializedAsync()
         {

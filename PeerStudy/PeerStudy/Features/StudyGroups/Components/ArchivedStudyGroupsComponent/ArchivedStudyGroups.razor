@@ -1,11 +1,12 @@
-﻿@using PeerStudy.Features.StudyGroups.Components.StudyGroupsListComponent
+﻿@using PeerStudy.Features.StudyGroups.Components.StudentStudyGroupsListComponent
+@using PeerStudy.Features.StudyGroups.Components.StudyGroupsListComponent
 
 @page "/archived-study-groups"
 @inherits StudentStudyGroupsBase
 @attribute [Authorize(Roles = "Student")]
 
 <h3 class="page-title">Archived Study Groups</h3>
-<StudyGroupsList StudyGroups="studyGroups"
+<StudentStudyGroupsList StudyGroups="studyGroups"
                  IsLoading="isLoading"
                  OnClicked="HandleClickedStudyGroup">
-</StudyGroupsList>
+</StudentStudyGroupsList>

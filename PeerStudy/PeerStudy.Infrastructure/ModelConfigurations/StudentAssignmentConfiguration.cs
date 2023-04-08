@@ -8,7 +8,6 @@ namespace PeerStudy.Infrastructure.ModelConfigurations
     {
         public void Configure(EntityTypeBuilder<StudentAssignment> builder)
         {
-            builder.Property(x => x.CompletedAt).IsRequired(false);
             builder.Property(x => x.Points).IsRequired(false);
 
             builder.HasOne(x => x.Student).WithMany(x => x.Assignments)

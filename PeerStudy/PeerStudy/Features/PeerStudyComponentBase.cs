@@ -1,4 +1,5 @@
-﻿using Fluxor.Blazor.Web.Components;
+﻿using Blazored.Toast.Services;
+using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Services.Interfaces;
@@ -28,7 +29,14 @@ namespace PeerStudy.Features
         protected override async Task OnInitializedAsync()
         {
             isLoading = true;
-            await InitializeAsync();
+            try
+            {
+                await InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
+            }
             isLoading = false;
         }
 

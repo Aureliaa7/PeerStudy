@@ -17,6 +17,6 @@ namespace PeerStudy.Core.Models.StudyGroups
 
         public bool IsActive { get; set; }
 
-        public Dictionary<WorkItemStatus, int> WorkItemsStatus { get; set; }
+        public Dictionary<WorkItemStatus, int> AllWorkItemsStatus { get; set; }
     }
 }

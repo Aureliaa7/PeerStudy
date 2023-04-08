@@ -10,7 +10,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
     {
         Task CreateAsync(CreateAssignmentModel model);
 
-        Task<List<ExtendedAssignmentDetailsModel>> GetByCourseIdAsync(Guid courseId);
+        Task<List<ExtendedAssignmentDetailsModel>> GetByCourseUnitIdAsync(Guid courseUnitId);
 
         Task<List<AssignmentDetailsModel>> GetAsync(Guid courseId, Guid studentId, AssignmentStatus status);
 
@@ -20,10 +20,10 @@ namespace PeerStudy.Core.Interfaces.DomainServices
 
         /// <summary>
         /// Called when a student cancels submission of work for an assignment.
-        /// Resets the CompletedAt field from a StudentAssignment entity
+        /// Resets the CompletedAt field from an Assignment entity
         /// </summary>
-        /// <param name="studentAssignmentId">The StudentAssignmentId</param>
+        /// <param name="assignmentId">The AssignmentId</param>
         /// <returns></returns>
-        Task ResetSubmitDateAsync(Guid studentAssignmentId);
+        Task ResetSubmitDateAsync(Guid assignmentId);
     }
 }

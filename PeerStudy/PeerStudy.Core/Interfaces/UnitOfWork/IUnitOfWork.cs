@@ -24,7 +24,7 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<StudentAssignment> StudentAssignmentsRepository { get; }
 
-        IRepository<StudentAssignmentFile> StudentAssignmentFilesRepository { get; }
+        IRepository<StudyGroupAssignmentFile> StudyGroupAssignmentFilesRepository { get; }
 
         IRepository<StudyGroupFile> StudyGroupFilesRepository { get; }
 

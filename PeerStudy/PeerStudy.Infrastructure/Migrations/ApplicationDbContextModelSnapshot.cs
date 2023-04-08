@@ -28,7 +28,10 @@ namespace PeerStudy.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CourseId")
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CourseUnitId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -40,13 +43,21 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("StudyGroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("CourseUnitId");
+
+                    b.HasIndex("StudyGroupId");
 
                     b.ToTable("Assignments");
                 });
@@ -201,13 +212,13 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Property<Guid>("AssignmentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int?>("Points")
                         .HasColumnType("int");
 
                     b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StudyGroupId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -216,37 +227,9 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
+                    b.HasIndex("StudyGroupId");
+
                     b.ToTable("StudentAssignments");
-                });
-
-            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignmentFile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DriveFileId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("StudentAssignmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentAssignmentId");
-
-                    b.ToTable("StudentAssignmentFiles");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentCourse", b =>
@@ -313,6 +296,36 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("StudyGroups");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupAssignmentFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AssignmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DriveFileId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.ToTable("StudyGroupAssignmentFiles");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupFile", b =>
@@ -444,13 +457,21 @@ namespace PeerStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Assignment", b =>
                 {
-                    b.HasOne("PeerStudy.Core.DomainEntities.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
+                    b.HasOne("PeerStudy.Core.DomainEntities.CourseUnit", "CourseUnit")
+                        .WithMany("Assignments")
+                        .HasForeignKey("CourseUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Course");
+                    b.HasOne("PeerStudy.Core.DomainEntities.StudyGroup", "StudyGroup")
+                        .WithMany("Assignments")
+                        .HasForeignKey("StudyGroupId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CourseUnit");
+
+                    b.Navigation("StudyGroup");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Course", b =>
@@ -535,20 +556,17 @@ namespace PeerStudy.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Assignment");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignmentFile", b =>
-                {
-                    b.HasOne("PeerStudy.Core.DomainEntities.StudentAssignment", "StudentAssignment")
+                    b.HasOne("PeerStudy.Core.DomainEntities.StudyGroup", "StudyGroup")
                         .WithMany()
-                        .HasForeignKey("StudentAssignmentId")
+                        .HasForeignKey("StudyGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("StudentAssignment");
+                    b.Navigation("Assignment");
+
+                    b.Navigation("Student");
+
+                    b.Navigation("StudyGroup");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentCourse", b =>
@@ -598,6 +616,17 @@ namespace PeerStudy.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupAssignmentFile", b =>
+                {
+                    b.HasOne("PeerStudy.Core.DomainEntities.Assignment", "Assignment")
+                        .WithMany()
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupFile", b =>
@@ -651,11 +680,15 @@ namespace PeerStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.CourseUnit", b =>
                 {
+                    b.Navigation("Assignments");
+
                     b.Navigation("Resources");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroup", b =>
                 {
+                    b.Navigation("Assignments");
+
                     b.Navigation("StudentStudyGroups");
 
                     b.Navigation("StudyGroupFiles");

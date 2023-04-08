@@ -4,7 +4,7 @@ using PeerStudy.Core.Models.Resources;
 using System;
 using System.Threading.Tasks;
 
-namespace PeerStudy.Features.CourseUnits.CourseUnitComponent
+namespace PeerStudy.Features.CourseUnits.Components.CourseUnitComponent
 {
     public partial class CourseUnitDetails
     {
@@ -25,6 +25,12 @@ namespace PeerStudy.Features.CourseUnits.CourseUnitComponent
 
         [Parameter]
         public EventCallback<Guid> OnUploadFiles { get; set; }
+
+        [Parameter]
+        public EventCallback<Guid> OnAddAssignment { get; set; }
+
+        [Parameter]
+        public EventCallback<Guid> OnViewAssignments { get; set; }
 
         [Parameter]
         public EventCallback<DeleteCourseUnitResourceModel> OnDeleteResource { get; set; }
@@ -71,6 +77,18 @@ namespace PeerStudy.Features.CourseUnits.CourseUnitComponent
                 CourseUnitId = CourseUnit.Id,
                 ResourceId = resourceId
             });
+        }
+
+        private async Task AddAssignment()
+        {
+            HideMenuOptions();
+            await OnAddAssignment.InvokeAsync(CourseUnit.Id);
+        }
+
+        private async Task ViewAssignments()
+        {
+            HideMenuOptions();
+            await OnViewAssignments.InvokeAsync(CourseUnit.Id);
         }
     }
 }

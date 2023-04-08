@@ -1,7 +1,7 @@
 ﻿@using PeerStudy.Core.Models.Resources
 @using PeerStudy.Features.Assignments.Components.CreateAssignmentComponent
-@using PeerStudy.Features.CourseUnits.CourseUnitsListComponent
-@using PeerStudy.Features.CourseUnits.CreateUpdateCourseUnitComponent
+@using PeerStudy.Features.CourseUnits.Components.CourseUnitsListComponent
+@using PeerStudy.Features.CourseUnits.Components.CreateUpdateCourseUnitComponent
 @using PeerStudy.Features.Resources.Components.ResourcesListComponent
 @using PeerStudy.Features.StudyGroups.Components.CreateStudyGroupsComponent
 
@@ -26,9 +26,6 @@
                 <div class="create-menu">
                     <div class="create-menu-btn">
                         <MatButton Style="@menuButtonsStyles" OnClick="ShowCourseUnitDialog">Course unit</MatButton>
-                    </div>
-                    <div class="create-menu-btn">
-                        <MatButton Style="@menuButtonsStyles" OnClick="ShowCreateAssignmentDialog">Assignment</MatButton>
                     </div>
                     <div class="create-menu-btn">
                         @if (courseDetails != null && !courseDetails.HasStudyGroups)
@@ -69,6 +66,7 @@
 
     <CreateAssignment AssignmentModel="assignmentModel"
                       IsVisible="showAddAssigmentDialog"
+                      StudyGroups="studyGroupsDropdownItems"
                       OnCancel=CancelCreateAssignment
                       OnConfirm="SaveAssignment">
     </CreateAssignment>
@@ -81,5 +79,7 @@
                  OnDelete="DeleteCourseUnit"
                  OnRename="ShowEditCourseUnitDialog"
                  OnUploadFiles="ShowUploadFileDialog"
-                 OnDeleteResource="DeleteResource">
+                 OnDeleteResource="DeleteResource"
+                 OnAddAssignment="ShowCreateAssignmentDialog"
+                 OnViewAssignments="ViewAssignments">
 </CourseUnitsList>

@@ -1,0 +1,16 @@
+﻿@using PeerStudy.Core.Models.StudyGroups;
+@using PeerStudy.Features.StudyGroups.Components.StudyGroupCardBaseComponent;
+@using PeerStudy.Features.StudyGroups.Components.StudyGroupWorkItemsOverviewComponent;
+
+@inherits StudyGroupCardBase<StudentStudyGroupDetailsModel>
+
+@{
+    base.BuildRenderTree(__builder);
+
+    ChildContent =
+    @<div>
+        <b>My Tasks</b><div style="width: 100%;">
+            <StudyGroupWorkItemsOverview Data="@myWorkItemsChartData"></StudyGroupWorkItemsOverview>
+        </div>
+    </div>;
+}

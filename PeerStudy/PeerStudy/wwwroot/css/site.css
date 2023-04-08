@@ -95,6 +95,21 @@ body::-webkit-scrollbar {
     background-color: #E8E8E8;
 }
 
+/*study groups list components styles*/
+.study-groups-container {
+    position: relative;
+    width: 95%;
+}
+
+.study-groups {
+    width: 95%;
+    height: 95%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 35px;
+    margin-left: 10%;
+}
+
 /* custom styling rules applied globally - MatBlazor */
 .alert {
     border-radius: 50px;

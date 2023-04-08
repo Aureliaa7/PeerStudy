@@ -1,4 +1,8 @@
-﻿@using PeerStudy.Features.StudyGroups.Components.StudyGroupCardComponent
+﻿@using PeerStudy.Core.Models.StudyGroups;
+@using PeerStudy.Features.StudyGroups.Components.StudyGroupCardComponent;
+@using PeerStudy.Features.StudyGroups.Components;
+
+@inherits StudyGroupsListBase<StudyGroupDetailsModel>
 
 <div class="study-groups-container center-elements">
     @if (IsLoading)

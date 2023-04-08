@@ -1,13 +1,1 @@
-﻿.study-groups-container {
-    position: relative;
-    width: 85%;
-}
-
-.study-groups {
-    width: 95%;
-    height: 95%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin-top: 35px;
-    margin-left: 10%;
-}
+﻿

@@ -65,11 +65,6 @@ namespace PeerStudy.Services
                     Href = $"/{userId}/courses/{courseId}/home",
                     Name = "Home"
                 },
-                  new MenuItem
-                {
-                    Href = $"/{courseTitle}/{courseId}/assignments",
-                    Name = "Assignments"
-                },
                 new MenuItem
                 {
                     Href = $"/courses/{courseTitle}/{courseId}/students",

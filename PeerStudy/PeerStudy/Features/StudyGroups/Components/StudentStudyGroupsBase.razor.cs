@@ -8,7 +8,9 @@ namespace PeerStudy.Features.StudyGroups.Components
 {
     public abstract partial class StudentStudyGroupsBase : StudyGroupsBase
     {
-        protected abstract Task<List<StudyGroupDetailsModel>> GetStudyGroupsDetailsAsync();
+        protected List<StudentStudyGroupDetailsModel> studyGroups = new List<StudentStudyGroupDetailsModel>();
+
+        protected abstract Task<List<StudentStudyGroupDetailsModel>> GetStudyGroupsDetailsAsync();
 
         protected override async Task OnInitializedAsync()
         {

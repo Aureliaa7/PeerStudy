@@ -12,7 +12,7 @@ namespace PeerStudy.Features.StudyGroups.Components.ActiveStudyGroupsComponent
             await base.OnInitializedAsync();
         }
 
-        protected override Task<List<StudyGroupDetailsModel>> GetStudyGroupsDetailsAsync()
+        protected override Task<List<StudentStudyGroupDetailsModel>> GetStudyGroupsDetailsAsync()
         {
             return StudyGroupService.GetByStudentIdAsync(currentUserId, CourseStatus.Active);
         }

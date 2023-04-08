@@ -71,6 +71,7 @@ namespace PeerStudy.Services
         public async Task LogoutAsync()
         {
             await ClearCacheAsync();
+            navigationMenuService.Reset();
 
             navigationMenuService.CurrentUsername = null;
             await localStorageService.RemoveItemAsync(ClientConstants.Token);
