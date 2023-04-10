@@ -2,9 +2,9 @@
 
 <div class="course-unit">
     <div class="course-unit-header">
-        <div class="title"><b>@CourseUnit?.Title</b></div>
-
         <AuthorizeView Roles="Teacher">
+            <div class="title"><b>@CourseUnit?.Title</b></div>
+
             @if (IsMenuIconVisible)
             {
                 <div class="menu">
@@ -33,21 +33,80 @@
                 }
             }
         </AuthorizeView>
+
+        <AuthorizeView Roles="Student">
+            <div>
+                <div class="title @(!CourseUnit.IsAvailable ? "grey-out" : "")">
+                    <b>@CourseUnit?.Title</b>
+                </div>
+
+                @if (!CourseUnit.IsAvailable)
+                {
+                    if (CourseUnit.IsActive)
+                    {
+                        <div class="lock-icon">
+                            <MatButton Icon="@MatIconNames.Lock"
+                               OnClick="HandleClickedLockIcon">
+                            </MatButton>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="lock-icon">
+                            <MatButton Style="@defaultCursor" 
+                                Icon="@MatIconNames.Lock">
+                            </MatButton>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="lock-icon">
+                        <MatButton Style="@defaultCursor" Icon="@MatIconNames.Lock_open">
+                        </MatButton>
+                    </div>
+                }
+            </div>
+        </AuthorizeView>
     </div>
 
-    <div class="course-unit-elements">
-        @if (CourseUnit != null && CourseUnit.Resources != null && CourseUnit.Resources.Any())
-        {
-            @foreach (var resource in CourseUnit?.Resources)
+
+    <AuthorizeView Roles="Teacher">
+        <div class="course-unit-elements">
+            @if (CourseUnit != null && CourseUnit.Resources != null && CourseUnit.Resources.Any())
             {
-                <div class="resource">
-                    <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
-                            OnDeleteResource="DeleteResource"
-                            CurrentUserId="CurrentUserId"
-                            ResourceDetails="resource">
-                    </CourseResource>
-                </div>
+                @foreach (var resource in CourseUnit?.Resources)
+                {
+                    <div class="resource">
+                        <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
+                                OnDeleteResource="DeleteResource"
+                                CurrentUserId="CurrentUserId"
+                                ResourceDetails="resource">
+                        </CourseResource>
+                    </div>
+                }
             }
+        </div>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="Student">
+        @if (CourseUnit.IsAvailable)
+        {
+            <div class="course-unit-elements">
+                @if (CourseUnit != null && CourseUnit.Resources != null && CourseUnit.Resources.Any())
+                {
+                    @foreach (var resource in CourseUnit?.Resources)
+                    {
+                        <div class="resource">
+                            <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
+                                OnDeleteResource="DeleteResource"
+                                CurrentUserId="CurrentUserId"
+                                ResourceDetails="resource">
+                            </CourseResource>
+                        </div>
+                    }
+                }
+            </div>
         }
-    </div>
+    </AuthorizeView>
 </div>  

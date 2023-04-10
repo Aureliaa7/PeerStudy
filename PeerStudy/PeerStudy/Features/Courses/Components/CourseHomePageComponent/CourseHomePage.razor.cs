@@ -39,6 +39,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         [Inject]
         private NavigationManager NavigationManager { get; set; }
 
+        [Inject]
+        private IStudentAssetService StudentAssetService { get; set; }
+
 
         [Parameter]
         public Guid TeacherId { get; set; }
@@ -68,7 +71,13 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private const string menuButtonsStyles = "color: white;";
         private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
 
-        private List<DropDownItem> studyGroupsDropdownItems = new List<DropDownItem>(); 
+        private List<DropDownItem> studyGroupsDropdownItems = new List<DropDownItem>();
+
+        private bool showUnlockCourseUnitDialog;
+        private bool isConfirmUnlockUnitButtonDisabled;
+        private string unlockCourseUnitMessage;
+        private const string unlockCourseUnitDialogTitle = "Unlock course unit";
+        private int numberOfPoints;
 
         protected override async Task OnInitializedAsync()
         {
@@ -78,8 +87,16 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         protected override async Task InitializeAsync()
         {
             await SetCurrentUserDataAsync();
+            if (currentUserRole == Role.Student)
+            {
+                numberOfPoints = await StudentAssetService.GetNoAssetsAsync(AssetType.Points, StudentId);
+                courseUnits = await CourseUnitService.GetByCourseAndStudentIdAsync(CourseId, StudentId);
+            }
+            else if (currentUserRole == Role.Teacher)
+            {
+                courseUnits = await CourseUnitService.GetByCourseIdAsync(CourseId);
+            }
 
-            courseUnits = await CourseUnitService.GetByCourseIdAsync(CourseId);
             SetCurrentCourseDetails();
             UpdateNavigationMenu();
             isReadOnly = courseDetails.Status == CourseStatus.Archived;
@@ -228,7 +245,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
                 courseUnitModel = new UpdateCourseUnitModel
                 {
                     Id = id,
-                    Title = courseUnitToBeUpdated.Title
+                    Title = courseUnitToBeUpdated.Title,
+                    IsAvailable = courseUnitToBeUpdated.IsAvailable,
+                    NoPointsToUnlock = courseUnitToBeUpdated.NoPointsToUnlock
                 };
             }
 
@@ -351,6 +370,54 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private void ViewAssignments(Guid courseUnitId)
         {
             NavigationManager.NavigateTo($"/{courseDetails.Title}/{courseDetails.Id}/{courseUnitId}/assignments");
+        }
+
+        private void DisplayUnlockCourseUnitDialog(Guid courseUnitId)
+        {
+            showUnlockCourseUnitDialog = true;
+            selectedCourseUnitId = courseUnitId;
+            var courseUnitToBeUnlocked = courseUnits.First(x => x.Id == selectedCourseUnitId);
+
+            string message;
+
+            if (numberOfPoints >= courseUnitToBeUnlocked.NoPointsToUnlock)
+            {
+                message = "Are you sure you want to unlock this course unit?";
+                isConfirmUnlockUnitButtonDisabled = false;
+            }
+            else
+            {
+                message = $"To unlock this course unit, you need {courseUnitToBeUnlocked.NoPointsToUnlock - numberOfPoints} more points."; ;
+                isConfirmUnlockUnitButtonDisabled = true;
+            }
+
+            unlockCourseUnitMessage = $"This course unit requires {courseUnitToBeUnlocked.NoPointsToUnlock} points to unlock. You currently have {numberOfPoints} points. \r\n {message}";
+        }
+
+        private void CancelUnlockCourseUnit()
+        {
+            showUnlockCourseUnitDialog = false;
+            selectedCourseUnitId = null;
+        }
+
+        private async void UnlockCourseUnit()
+        {
+            showUnlockCourseUnitDialog = false;
+            try
+            {
+                await CourseUnitService.UnlockAsync(selectedCourseUnitId.Value, StudentId);
+
+                var courseUnitToBeUnlocked = courseUnits.First(x => x.Id == selectedCourseUnitId);
+                courseUnitToBeUnlocked.IsAvailable = true;
+                numberOfPoints -= courseUnitToBeUnlocked.NoPointsToUnlock;
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while unlocking the course...");
+            }
+            selectedCourseUnitId = null;
+            unlockCourseUnitMessage = null;
         }
     }
 }

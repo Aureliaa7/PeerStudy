@@ -33,6 +33,9 @@ namespace PeerStudy.Features.CourseUnits.Components.CourseUnitComponent
         public EventCallback<Guid> OnViewAssignments { get; set; }
 
         [Parameter]
+        public EventCallback<Guid> OnClickedLockIcon { get; set; }
+
+        [Parameter]
         public EventCallback<DeleteCourseUnitResourceModel> OnDeleteResource { get; set; }
 
 
@@ -40,6 +43,7 @@ namespace PeerStudy.Features.CourseUnits.Components.CourseUnitComponent
 
         private const string menuButtonStyles = "float:right; height:20px;";
         private const string menuButtonsStyles = "color: white;";
+        private const string defaultCursor = "cursor: default;";
 
         private void ToggleMenuOptions()
         {
@@ -89,6 +93,12 @@ namespace PeerStudy.Features.CourseUnits.Components.CourseUnitComponent
         {
             HideMenuOptions();
             await OnViewAssignments.InvokeAsync(CourseUnit.Id);
+        }
+
+        private async Task HandleClickedLockIcon()
+        {
+            HideMenuOptions();
+            await OnClickedLockIcon.InvokeAsync(CourseUnit.Id);
         }
     }
 }

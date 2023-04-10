@@ -24,7 +24,6 @@
     padding: 7px;
 }
 
-
 .menu-options {
     position: absolute;
     right: 0;
@@ -51,4 +50,12 @@
 
 .create-menu-btn:hover {
     background-color: rgba(255,255,255,0.1);
+}
+
+.lock-icon {
+    float: right;
+}
+
+.grey-out {
+    opacity: 0.5;
 }

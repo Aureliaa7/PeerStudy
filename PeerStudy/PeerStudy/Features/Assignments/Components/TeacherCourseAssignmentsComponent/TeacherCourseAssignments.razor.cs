@@ -83,6 +83,10 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
             try
             {
                 await AssignmentService.GradeAssignmentAsync(data);
+               
+                var assignment = assignments.First(x => x.Id == data.AssignmentId);
+                var studentAssignment = assignment.Students.First(x => x.StudentId == data.StudentId);
+                studentAssignment.HasBeenGraded = true;
             }
             catch (Exception)
             {

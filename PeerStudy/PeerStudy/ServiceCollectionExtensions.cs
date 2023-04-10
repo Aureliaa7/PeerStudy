@@ -62,6 +62,7 @@ namespace PeerStudy
             services.AddScoped<IStudyGroupResourceService, StudyGroupResourceService>();
             services.AddScoped<IWorkItemService, WorkItemService>();
             services.AddScoped<ICourseUnitService, CourseUnitService>();
+            services.AddScoped<IStudentAssetService, StudentAssetService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)

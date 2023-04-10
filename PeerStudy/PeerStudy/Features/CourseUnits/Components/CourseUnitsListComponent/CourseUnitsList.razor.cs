@@ -39,6 +39,9 @@ namespace PeerStudy.Features.CourseUnits.Components.CourseUnitsListComponent
         [Parameter]
         public EventCallback<DeleteCourseUnitResourceModel> OnDeleteResource { get; set; }
 
+        [Parameter]
+        public EventCallback<Guid> OnClickedLockIcon { get; set; }
+
         private async Task Delete(Guid courseUnitId)
         {
             await OnDelete.InvokeAsync(courseUnitId);
@@ -67,6 +70,11 @@ namespace PeerStudy.Features.CourseUnits.Components.CourseUnitsListComponent
         private async Task ViewAssignments(Guid id)
         {
             await OnViewAssignments.InvokeAsync(id);
+        }
+
+        private async Task HandleClickedLockIcon(Guid id)
+        {
+            await OnClickedLockIcon.InvokeAsync(id);
         }
     }
 }

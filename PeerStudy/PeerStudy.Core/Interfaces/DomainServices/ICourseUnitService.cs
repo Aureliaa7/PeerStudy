@@ -14,5 +14,9 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task RenameAsync(Guid id, string newName);
 
         Task<List<CourseUnitDetailsModel>> GetByCourseIdAsync(Guid courseId);
+
+        Task<List<CourseUnitDetailsModel>> GetByCourseAndStudentIdAsync(Guid courseId, Guid studentId);
+
+        Task UnlockAsync(Guid courseUnitId, Guid studentId);
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PeerStudy.Infrastructure.AppDbContext;
 
@@ -11,9 +12,10 @@ using PeerStudy.Infrastructure.AppDbContext;
 namespace PeerStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230409103406_Add_UnlockedCourseUnits_Table")]
+    partial class Add_UnlockedCourseUnits_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,7 +197,7 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
-                    b.Property<int>("NoPointsToUnlock")
+                    b.Property<int?>("NoPointsToUnlock")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -207,28 +209,6 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("CourseUnits");
-                });
-
-            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAsset", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Asset")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfAssets")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentAssets");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignment", b =>
@@ -591,17 +571,6 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAsset", b =>
-                {
-                    b.HasOne("PeerStudy.Core.DomainEntities.Student", "Student")
-                        .WithMany("Assets")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignment", b =>
                 {
                     b.HasOne("PeerStudy.Core.DomainEntities.Assignment", "Assignment")
@@ -777,8 +746,6 @@ namespace PeerStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Student", b =>
                 {
-                    b.Navigation("Assets");
-
                     b.Navigation("Assignments");
 
                     b.Navigation("CourseEnrollments");

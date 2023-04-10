@@ -48,6 +48,7 @@
     {
         <CreateUpdateCourseUnit IsVisible="showCourseUnitDialog"
                             CourseUnitModel="courseUnitModel"
+                            IsEditModeEnabled=true
                             OnCancel="CancelCreateUpdateCourseUnit"
                             OnSave="UpdateCourseUnit">
         </CreateUpdateCourseUnit>
@@ -70,16 +71,36 @@
                       OnCancel=CancelCreateAssignment
                       OnConfirm="SaveAssignment">
     </CreateAssignment>
+
+    <CourseUnitsList CourseUnits="courseUnits"
+                     IsLoading="isLoading"
+                     CurrentUserId="currentUserId"
+                     IsReadOnly="isReadOnly"
+                     OnDelete="DeleteCourseUnit"
+                     OnRename="ShowEditCourseUnitDialog"
+                     OnUploadFiles="ShowUploadFileDialog"
+                     OnDeleteResource="DeleteResource"
+                     OnAddAssignment="ShowCreateAssignmentDialog"
+                     OnViewAssignments="ViewAssignments">
+    </CourseUnitsList>
 </AuthorizeView>
 
-<CourseUnitsList CourseUnits="courseUnits"
-                 IsLoading="isLoading"
-                 CurrentUserId="currentUserId"
-                 IsReadOnly="isReadOnly"
-                 OnDelete="DeleteCourseUnit"
-                 OnRename="ShowEditCourseUnitDialog"
-                 OnUploadFiles="ShowUploadFileDialog"
-                 OnDeleteResource="DeleteResource"
-                 OnAddAssignment="ShowCreateAssignmentDialog"
-                 OnViewAssignments="ViewAssignments">
-</CourseUnitsList>
+
+
+<AuthorizeView Roles="Student">
+    <CourseUnitsList CourseUnits="courseUnits"
+                     IsLoading="isLoading"
+                     CurrentUserId="currentUserId"
+                     IsReadOnly="isReadOnly"
+                     OnClickedLockIcon="DisplayUnlockCourseUnitDialog">
+    </CourseUnitsList>
+
+    <ConfirmationPopup
+        IsOpen="showUnlockCourseUnitDialog" 
+        Message="@unlockCourseUnitMessage"
+        Title="@unlockCourseUnitDialogTitle"
+        IsConfirmButtonDisabled="isConfirmUnlockUnitButtonDisabled"
+        OnCancel="CancelUnlockCourseUnit" 
+        OnConfirm="UnlockCourseUnit">
+    </ConfirmationPopup>
+</AuthorizeView>

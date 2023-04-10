@@ -1,0 +1,12 @@
+﻿.points-to-unlock-content {
+    width: 50%;
+
+}
+
+.course-unit-availability {
+    width: 30%;
+}
+
+.points-to-unlock-content, .course-unit-availability {
+    display: inline-block;
+}

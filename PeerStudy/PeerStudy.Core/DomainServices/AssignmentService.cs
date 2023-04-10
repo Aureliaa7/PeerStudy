@@ -4,6 +4,7 @@ using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Assignments;
+using PeerStudy.Core.Models.StudentAssets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace PeerStudy.Core.DomainServices
     public class AssignmentService : IAssignmentService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IStudentAssetService studentAssetService;
 
-        public AssignmentService(IUnitOfWork unitOfWork)
+        public AssignmentService(IUnitOfWork unitOfWork, IStudentAssetService studentAssetService)
         {
             this.unitOfWork = unitOfWork;
+            this.studentAssetService = studentAssetService;
         }
 
         public async Task CreateAsync(CreateAssignmentModel model)
@@ -120,7 +123,9 @@ namespace PeerStudy.Core.DomainServices
                     {
                         StudentId = y.StudentId,
                         StudentName = $"{y.Student.FirstName} {y.Student.LastName}",
-                        Points = y.Points ?? 0
+                        //Note: fix for DataGrid component. It does not allow null values
+                        Points = y.Points ?? 0,
+                        HasBeenGraded = y.Points != null
                     })
                     .ToList()
                 })
@@ -132,17 +137,28 @@ namespace PeerStudy.Core.DomainServices
         public async Task GradeAssignmentAsync(SaveGradeModel model)
         {
             var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.AssignmentId ==
-            model.AssignmentId && x.StudentId == model.StudentId);
-
-            if (studentAssignment == null)
-            {
-                throw new EntityNotFoundException($"StudentAssignment entity with studentId {model.StudentId} and assignmentId {model.AssignmentId} " +
+            model.AssignmentId && x.StudentId == model.StudentId) ?? throw new EntityNotFoundException($"StudentAssignment entity with studentId {model.StudentId} and assignmentId {model.AssignmentId} " +
                     $"was not found!");
-            }
-
+           
             studentAssignment.Points = model.Points;
             await unitOfWork.StudentAssignmentsRepository.UpdateAsync(studentAssignment);
             await unitOfWork.SaveChangesAsync();
+
+            await SavePointsAsync(model.StudentId, model.Points);
+        }
+
+        private async Task SavePointsAsync(Guid studentId, int noPoints)
+        {
+            var studentAsset = await studentAssetService.GetAsync(AssetType.Points, studentId);
+            if (studentAsset == null)
+            {
+                await studentAssetService.CreateAsync(new CreateStudentAssetModel
+                {
+                    AssetType = AssetType.Points,
+                    NoAssets = noPoints,
+                    StudentId = studentId
+                });
+            }
         }
 
         private async Task CheckIfAssignmentExistsAsync(Guid id)

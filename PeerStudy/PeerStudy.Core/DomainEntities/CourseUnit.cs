@@ -19,6 +19,10 @@ namespace PeerStudy.Core.DomainEntities
 
         public Course Course { get; set; }
 
+        public bool IsAvailable { get; set; }
+
+        public int NoPointsToUnlock { get; set; }
+
         public ICollection<CourseResource> Resources { get; set; }
 
         public ICollection<Assignment> Assignments { get; set; }

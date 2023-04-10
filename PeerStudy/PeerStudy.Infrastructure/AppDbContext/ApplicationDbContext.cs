@@ -32,6 +32,10 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<CourseUnit> CourseUnits { get; set; }
 
+        public DbSet<UnlockedCourseUnit> UnlockedCourseUnits { get; set; }
+
+        public DbSet<StudentAsset> StudentAssets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -9,5 +9,7 @@ namespace PeerStudy.Core.Models.Assignments
         public string StudentName { get; set; }
 
         public int Points { get; set; }
+
+        public bool HasBeenGraded { get; set; }
     }
 }

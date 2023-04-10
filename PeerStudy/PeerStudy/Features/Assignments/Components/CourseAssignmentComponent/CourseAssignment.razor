@@ -54,7 +54,7 @@
                         @if (!IsReadOnly)
                         {
                             <Button Color="Color.Primary"
-                                Disabled="(selectedRow?.Points is null)"
+                                Disabled="(selectedRow == null || selectedRow.HasBeenGraded)"
                                 Clicked="context.EditCommand.Clicked"
                                 Style="margin-right: 10px;">
                                 Grade

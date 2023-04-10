@@ -11,6 +11,8 @@ namespace PeerStudy.Core.DomainEntities
             Assignments = new HashSet<StudentAssignment>();
             WorkItems = new HashSet<WorkItem>();
             StudyGroupFiles = new HashSet<StudyGroupFile>();
+            UnlockedCourseUnits = new HashSet<UnlockedCourseUnit>();
+            Assets = new HashSet<StudentAsset>();
         }
 
         public ICollection<StudentCourse> CourseEnrollments { get; set; }
@@ -22,5 +24,9 @@ namespace PeerStudy.Core.DomainEntities
         public ICollection<WorkItem> WorkItems { get; set; }
 
         public ICollection<StudyGroupFile> StudyGroupFiles { get; set; }
+
+        public ICollection<UnlockedCourseUnit> UnlockedCourseUnits { get; set; }
+
+        public ICollection<StudentAsset> Assets { get; set; }
     }
 }

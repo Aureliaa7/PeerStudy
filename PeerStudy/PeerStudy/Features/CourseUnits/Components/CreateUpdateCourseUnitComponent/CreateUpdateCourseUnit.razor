@@ -4,18 +4,41 @@
         <MatDialogTitle>Create course unit</MatDialogTitle>
         <MatDialogContent Class="mat-dialog-styles">
             <div class="center-elements">
-                <div style="width: 70%;">
+                <div style="width: 90%;">
                     <MatTextField Class="input-field"
                                   Style="width: 92%;"
                                   @bind-Value="CourseUnitModel.Title"
                                   Label="Title"
-                                  Required>
+                                            Required>
                     </MatTextField>
                 </div>
             </div>
+            <div class="center-elements">
+                <div class="course-unit-availability">
+                    <MatCheckbox @bind-Value="@CourseUnitModel.IsAvailable"
+                                 Label="Is available"
+                                 Disabled="IsEditModeEnabled">
+                    </MatCheckbox>
+                </div>
+                @if (!CourseUnitModel.IsAvailable)
+                {
+                    <div class="points-to-unlock-content">
+                        <MatTextField Class="input-field"
+                                  Style="width: 92%;"
+                                  @bind-Value="CourseUnitModel.NoPointsToUnlock"
+                                  Label="Points to unlock content"
+                                  TValue="int"
+                                  Required
+                                  Disabled="IsEditModeEnabled">
+                        </MatTextField>
+                    </div>
+                }
+
+            </div>
         </MatDialogContent>
         <MatDialogActions>
-            <MatButton Class="submit-button" Raised="true" OnClick="Save" Disabled=@(!context.IsModified() || !context.Validate())>Confirm</MatButton>
+            <MatButton Class="submit-button" Raised="true" OnClick="Save" Disabled=@(!context.IsModified() || !context.Validate()
+                       || (!CourseUnitModel.IsAvailable && CourseUnitModel.NoPointsToUnlock == null))>Confirm</MatButton>
             <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
         </MatDialogActions>
     </MatDialog>

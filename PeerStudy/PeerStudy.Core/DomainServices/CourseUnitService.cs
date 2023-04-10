@@ -1,4 +1,5 @@
 ﻿using PeerStudy.Core.DomainEntities;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
@@ -34,7 +35,9 @@ namespace PeerStudy.Core.DomainServices
             var savedCourseUnit = await unitOfWork.CourseUnitsRepository.AddAsync(new CourseUnit
             {
                 CourseId = courseUnit.CourseId,
-                Title = courseUnit.Title
+                Title = courseUnit.Title,
+                IsAvailable = courseUnit.IsAvailable,
+                NoPointsToUnlock = courseUnit.NoPointsToUnlock
             });
             await unitOfWork.SaveChangesAsync();
 
@@ -43,18 +46,15 @@ namespace PeerStudy.Core.DomainServices
                 Id = savedCourseUnit.Id,
                 Title = courseUnit.Title,
                 CourseId = courseUnit.CourseId,
-                Resources = new List<CourseResourceDetailsModel>()
+                Resources = new List<CourseResourceDetailsModel>(),
+                IsAvailable = courseUnit.IsAvailable,
+                NoPointsToUnlock = courseUnit.NoPointsToUnlock
             };
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            bool courseUnitExists = await unitOfWork.CourseUnitsRepository.ExistsAsync(x => x.Id == id);
-
-            if (!courseUnitExists)
-            {
-                throw new EntityNotFoundException($"Course unit with id {id} was not found!");
-            }
+            await CheckIfCourseUnitExistsAsync(id);
 
             var courseResourceIds = (await unitOfWork.CourseResourcesRepository.GetAllAsync(x => x.CourseUnitId == id))
                 .Select(x => x.Id)
@@ -66,28 +66,66 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.SaveChangesAsync();
         }
 
+        public async Task<List<CourseUnitDetailsModel>> GetByCourseAndStudentIdAsync(Guid courseId, Guid studentId)
+        {
+            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.CourseId == courseId);
+
+            var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync(x => x.StudentId == studentId &&
+            x.CourseUnit.CourseId == courseId);
+            var noResources = new List<CourseResourceDetailsModel>();
+
+            var result = from courseUnit in courseUnits
+                         join unlockedUnit in unlockedCourseUnits
+                         on courseUnit.Id equals unlockedUnit.CourseUnitId
+                         into foundResult
+                         from foundUnlockedCourseUnit in foundResult.DefaultIfEmpty()
+                         select new CourseUnitDetailsModel
+                         {
+                             IsActive = courseUnit.Course.Status == CourseStatus.Active,
+                             IsAvailable = courseUnit.IsAvailable || foundUnlockedCourseUnit != null,
+                             CourseId = courseId,
+                             Id = courseUnit.Id,
+                             NoPointsToUnlock = courseUnit.NoPointsToUnlock,
+                             Title = courseUnit.Title,
+                             Resources = noResources
+                         };
+
+            var foundCourseUnits = await SetResourcesAsync(courseId, result.ToList());
+
+            return foundCourseUnits;
+        }
+
         public async Task<List<CourseUnitDetailsModel>> GetByCourseIdAsync(Guid courseId)
         {
-            var resources = await courseResourceService.GetByCourseIdAsync(courseId);
-            var resourcesGroupedByCourseUnit = resources
-                .GroupBy(x => x.CouseUnitId)
-                .ToList();
-
             var noResources = new List<CourseResourceDetailsModel>();
 
             var courseUnits =
                 (await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.CourseId == courseId))
                 .Select(x => new CourseUnitDetailsModel
                 {
-                    IsActive = x.Course.Status == Enums.CourseStatus.Active,
+                    IsActive = x.Course.Status == CourseStatus.Active,
                     CourseId = x.CourseId,
                     Id = x.Id,
                     Title = x.Title,
+                    IsAvailable = x.IsAvailable,
+                    NoPointsToUnlock = x.NoPointsToUnlock,
                     Resources = noResources
                 })
                 .ToList();
+            var result = await SetResourcesAsync(courseId, courseUnits);
+
+            return result;
+        }
+
+        private async Task<List<CourseUnitDetailsModel>> SetResourcesAsync(Guid courseId, List<CourseUnitDetailsModel> courseUnits)
+        {
+            var resources = await courseResourceService.GetByCourseIdAsync(courseId);
+            var resourcesGroupedByCourseUnit = resources
+                .GroupBy(x => x.CouseUnitId)
+                .ToList();
 
             var courseUnitIdDetailsPairs = courseUnits.ToDictionary(x => x.Id, x => x);
+            var noResources = new List<CourseResourceDetailsModel>();
 
             foreach (var group in resourcesGroupedByCourseUnit)
             {
@@ -110,6 +148,42 @@ namespace PeerStudy.Core.DomainServices
             courseUnit.Title = newName;
             await unitOfWork.CourseUnitsRepository.UpdateAsync(courseUnit);
             await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task UnlockAsync(Guid courseUnitId, Guid studentId)
+        {
+            var courseUnitIsUnlocked = await unitOfWork.UnlockedCourseUnitsRepository
+                .ExistsAsync(x => x.CourseUnitId == courseUnitId && x.StudentId == studentId);
+            if (courseUnitIsUnlocked)
+            {
+                throw new DuplicateEntityException($"Course unit with id {courseUnitId} is already unlocked for student with id {studentId}");
+            }
+
+            var courseUnit = await unitOfWork.CourseUnitsRepository.GetFirstOrDefaultAsync(x => x.Id == courseUnitId) ?? 
+                throw new EntityNotFoundException($"Course unit with id {courseUnitId} was not found!");
+
+            var studentAsset = await unitOfWork.StudentAssetsRepository.GetFirstOrDefaultAsync(x => x.Asset == AssetType.Points &&
+            x.StudentId == studentId) ?? throw new EntityNotFoundException($"Entity with asset type {AssetType.Points.ToString()} and student id {studentId} was not found!");
+
+            studentAsset.NumberOfAssets -= courseUnit.NoPointsToUnlock;
+            await unitOfWork.StudentAssetsRepository.UpdateAsync(studentAsset);
+            await unitOfWork.UnlockedCourseUnitsRepository.AddAsync(new UnlockedCourseUnit
+            {
+                CourseUnitId = courseUnitId,
+                StudentId = studentId
+            });
+
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task CheckIfCourseUnitExistsAsync(Guid id)
+        {
+            bool courseUnitExists = await unitOfWork.CourseUnitsRepository.ExistsAsync(x => x.Id == id);
+
+            if (!courseUnitExists)
+            {
+                throw new EntityNotFoundException($"Course unit with id {id} was not found!");
+            }
         }
     }
 }

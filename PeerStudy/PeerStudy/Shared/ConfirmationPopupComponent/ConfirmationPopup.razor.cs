@@ -15,6 +15,9 @@ namespace PeerStudy.Shared.ConfirmationPopupComponent
         public string Message { get; set; }
 
         [Parameter]
+        public bool IsConfirmButtonDisabled { get; set; }
+
+        [Parameter]
         public EventCallback OnCancel { get; set; }
 
         [Parameter]
