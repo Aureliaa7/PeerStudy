@@ -8,6 +8,7 @@ namespace PeerStudy.Services
 {
     public class ChartDataService : IChartDataService
     {
+        //TODO: update
         public ChartData<int> GetChartData(Dictionary<WorkItemStatus, int> workItemsStatusNoWorkItems)
         {
             var chartData = new ChartData<int>

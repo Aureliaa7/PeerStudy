@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace PeerStudy.Core.Models
+namespace PeerStudy.Core.Models.Accounts
 {
     public class ChangePasswordModel
     {
@@ -17,6 +17,6 @@ namespace PeerStudy.Core.Models
 
         [Required]
         [Compare(nameof(NewPassword), ErrorMessage = "The password and confirmed password do not match.")]
-        public string ConfirmedPassword { get; set;}
+        public string ConfirmedPassword { get; set; }
     }
 }

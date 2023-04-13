@@ -2,6 +2,7 @@
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Blazorise.RichTextEdit;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,8 @@ namespace PeerStudy
             })
             .AddBootstrapProviders()
             .AddFontAwesomeIcons();
+
+            services.AddBlazoriseRichTextEdit();
         }
 
         private static void RegisterDomainServices(this IServiceCollection services)
@@ -63,6 +66,7 @@ namespace PeerStudy
             services.AddScoped<IWorkItemService, WorkItemService>();
             services.AddScoped<ICourseUnitService, CourseUnitService>();
             services.AddScoped<IStudentAssetService, StudentAssetService>();
+            services.AddScoped<IQuestionService, QuestionService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)

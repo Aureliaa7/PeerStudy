@@ -1,0 +1,14 @@
+﻿<div class="question-details-container" @onclick="ClickHandler">
+    <div class="title">
+        <h5>
+            @Question?.Title
+        </h5>
+    </div>
+
+    <div class="posted-at">
+        Posted at: @Question?.CreatedAt
+    </div>
+    <div class="no-answers">
+        @Question?.NoAnswers answers
+    </div>
+</div>

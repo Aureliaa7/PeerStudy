@@ -1,6 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
-using PeerStudy.Core.Models;
+using PeerStudy.Core.Models.Accounts;
 using PeerStudy.Services.Interfaces;
 using System.Threading.Tasks;
 

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
-using PeerStudy.Core.Models;
+using PeerStudy.Core.Models.Accounts;
 using PeerStudy.Infrastructure;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Services.Interfaces;

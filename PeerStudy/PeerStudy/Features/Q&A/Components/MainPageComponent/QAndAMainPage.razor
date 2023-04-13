@@ -1,0 +1,13 @@
+﻿@page "/q-and-a"
+
+@attribute [Authorize(Roles="Student")]
+<div>
+    <div class="search-bar">
+    </div>
+    <div>
+        <MatButton Class="submit-button" Raised=true OnClick="HandleAddQuestion">Ask a question</MatButton>
+    </div>
+    <div class="recent-questions">
+        //TO BE IMPLEMENTED
+    </div>
+</div>

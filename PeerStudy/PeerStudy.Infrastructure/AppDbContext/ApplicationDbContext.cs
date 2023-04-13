@@ -36,6 +36,14 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<StudentAsset> StudentAssets { get; set; }
 
+        public DbSet<Question> Questions { get; set; }
+
+        public DbSet<Answer> Answers { get; set; }
+
+        public DbSet<Tag> Tags { get; set; }
+
+        public DbSet<QuestionTag> QuestionTags { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -54,6 +62,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new CourseResourceConfiguration().Configure(modelBuilder.Entity<CourseResource>());
             new StudyGroupFileConfiguration().Configure(modelBuilder.Entity<StudyGroupFile>());
             new CourseUnitConfiguration().Configure(modelBuilder.Entity<CourseUnit>());
+            new AnswerConfiguration().Configure(modelBuilder.Entity<Answer>());
         }
     }
 }

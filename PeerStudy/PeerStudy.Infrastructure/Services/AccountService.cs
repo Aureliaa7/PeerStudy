@@ -3,7 +3,7 @@ using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
-using PeerStudy.Core.Models;
+using PeerStudy.Core.Models.Accounts;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Infrastructure.Interfaces;
 using System;

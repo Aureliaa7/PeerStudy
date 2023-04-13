@@ -36,6 +36,12 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<UnlockedCourseUnit> UnlockedCourseUnitsRepository { get; }
 
+        IRepository<Question> QuestionsRepository { get; }
+
+        IRepository<Tag> TagsRepository { get; }
+
+        IRepository<QuestionTag> QuestionTagsRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

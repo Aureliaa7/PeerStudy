@@ -1,4 +1,4 @@
-﻿using PeerStudy.Core.Models;
+﻿using PeerStudy.Core.Models.Accounts;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Services.Interfaces

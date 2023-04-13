@@ -1,0 +1,43 @@
+﻿@page "/questions/{questionId:guid}"
+@using PeerStudy.Features.Q_A.Components.QuestionDescriptionComponent
+@using PeerStudy.Features.Q_A.Components.TagsListComponent
+
+@inherits PeerStudyComponentBase
+@attribute [Authorize(Roles = "Student")]
+
+<Loading IsLoading="isLoading" HasData="@(!isLoading && questionDetails != null)">
+    <div class="header">
+        <h3>@questionDetails?.Title</h3>
+        <span class="posted-at">Posted: @questionDetails?.CreatedAt</span>
+    </div>
+    <hr />
+
+    <div class="question-content">
+        <div>
+            <QuestionDescription HtmlContent="@questionDetails?.HtmlDescription"></QuestionDescription>
+        </div>
+
+
+        <TagsList Tags="questionDetails?.Tags"></TagsList>
+
+        @if (questionDetails?.AuthorId == currentUserId)
+        {
+            <div class="action-buttons">
+                <MatIconButton Icon="@MatIconNames.Edit" OnClick="Edit"></MatIconButton>
+                <MatIconButton Icon="@MatIconNames.Delete" OnClick="ShowDeletePopup"></MatIconButton>
+            </div>
+        }
+       
+        <div class="answers">
+            HERE ARE THE ANSWERS
+        </div>
+    </div>
+
+    <ConfirmationPopup
+        Title="Delete Question"
+        Message="@deleteQuestionConfirmationMessage"
+        IsOpen="showDeleteQuestionConfirmationPopup"
+        OnCancel="@(() => showDeleteQuestionConfirmationPopup = false)"
+        OnConfirm="Delete">
+    </ConfirmationPopup>
+</Loading>

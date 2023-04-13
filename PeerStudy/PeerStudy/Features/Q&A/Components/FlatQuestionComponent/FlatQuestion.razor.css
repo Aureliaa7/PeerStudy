@@ -1,0 +1,23 @@
+﻿.question-details-container {
+    cursor: pointer;
+    border: 1px solid grey;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+.title {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    color: #0063BF;
+}
+
+.posted-at {
+    float: right;
+}
+
+.posted-at {
+    display: inline-block;
+}

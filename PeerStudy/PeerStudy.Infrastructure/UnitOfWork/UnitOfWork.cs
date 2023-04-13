@@ -25,6 +25,9 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<CourseUnit> courseUnitsRepository;
         private IRepository<StudentAsset> studentAssetsRepository;
         private IRepository<UnlockedCourseUnit> unlockedCourseUnitsRepository;
+        private IRepository<Question> questionsRepository;
+        private IRepository<Tag> tagsRepository;
+        private IRepository<QuestionTag> questionTagsRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -35,10 +38,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (usersRepository == null)
-                {
-                    usersRepository = new Repository<User>(dbContext);
-                }
+                usersRepository ??= new Repository<User>(dbContext);
                 return usersRepository;
             }
         }
@@ -47,10 +47,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (coursesRepository == null)
-                {
-                    coursesRepository = new Repository<Course>(dbContext);
-                }
+                coursesRepository ??= new Repository<Course>(dbContext);
                 return coursesRepository;
             }
         }
@@ -59,10 +56,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (courseEnrollmentRequestsRepository == null)
-                {
-                    courseEnrollmentRequestsRepository = new Repository<CourseEnrollmentRequest>(dbContext);
-                }
+                courseEnrollmentRequestsRepository ??= new Repository<CourseEnrollmentRequest>(dbContext);
                 return courseEnrollmentRequestsRepository;
             }
         }
@@ -70,10 +64,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (studentCoursesRepository == null)
-                {
-                    studentCoursesRepository = new Repository<StudentCourse>(dbContext);
-                }
+                studentCoursesRepository ??= new Repository<StudentCourse>(dbContext);
                 return studentCoursesRepository;
             }
         }
@@ -82,10 +73,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (courseResourcesRepository == null)
-                {
-                    courseResourcesRepository = new Repository<CourseResource>(dbContext);
-                }
+                courseResourcesRepository ??= new Repository<CourseResource>(dbContext);
                 return courseResourcesRepository;
             }
         }
@@ -94,10 +82,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (studyGroupRepository == null)
-                {
-                    studyGroupRepository = new Repository<StudyGroup>(dbContext);
-                }
+                studyGroupRepository ??= new Repository<StudyGroup>(dbContext);
                 return studyGroupRepository;
             }
         }
@@ -106,10 +91,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (studentStudyGroupRepository == null)
-                {
-                    studentStudyGroupRepository = new Repository<StudentStudyGroup>(dbContext);
-                }
+                studentStudyGroupRepository ??= new Repository<StudentStudyGroup>(dbContext);
                 return studentStudyGroupRepository;
             }
         }
@@ -118,10 +100,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (assignmentRepository == null)
-                {
-                    assignmentRepository = new Repository<Assignment>(dbContext);
-                }
+                assignmentRepository ??= new Repository<Assignment>(dbContext);
                 return assignmentRepository;
             }
         }
@@ -130,10 +109,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (studentAssignmentRepository == null)
-                {
-                    studentAssignmentRepository = new Repository<StudentAssignment>(dbContext);
-                }
+                studentAssignmentRepository ??= new Repository<StudentAssignment>(dbContext);
                 return studentAssignmentRepository;
             }
         }
@@ -142,10 +118,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (studentAssignmentFilesRepository == null)
-                {
-                    studentAssignmentFilesRepository = new Repository<StudyGroupAssignmentFile>(dbContext);
-                }
+                studentAssignmentFilesRepository ??= new Repository<StudyGroupAssignmentFile>(dbContext);
                 return studentAssignmentFilesRepository;
             }
         }
@@ -154,10 +127,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (studyGroupFilesRepository == null)
-                {
-                    studyGroupFilesRepository = new Repository<StudyGroupFile>(dbContext);
-                }
+                studyGroupFilesRepository ??= new Repository<StudyGroupFile>(dbContext);
                 return studyGroupFilesRepository;
             }
         }
@@ -166,10 +136,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (workItemsRepository == null)
-                {
-                    workItemsRepository = new Repository<WorkItem>(dbContext);
-                }
+                workItemsRepository ??= new Repository<WorkItem>(dbContext);
                 return workItemsRepository;
             }
         }
@@ -178,10 +145,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (courseUnitsRepository == null)
-                {
-                    courseUnitsRepository = new Repository<CourseUnit>(dbContext);
-                }
+                courseUnitsRepository ??= new Repository<CourseUnit>(dbContext);
                 return courseUnitsRepository;
             }
         }
@@ -190,23 +154,44 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         {
             get
             {
-                if (studentAssetsRepository == null)
-                {
-                    studentAssetsRepository = new Repository<StudentAsset>(dbContext);
-                }
+                studentAssetsRepository ??= new Repository<StudentAsset>(dbContext);
                 return studentAssetsRepository;
             }
         }
 
-       public IRepository<UnlockedCourseUnit> UnlockedCourseUnitsRepository
+        public IRepository<UnlockedCourseUnit> UnlockedCourseUnitsRepository
         {
             get
             {
-                if (unlockedCourseUnitsRepository == null)
-                {
-                    unlockedCourseUnitsRepository = new Repository<UnlockedCourseUnit>(dbContext);
-                }
+                unlockedCourseUnitsRepository ??= new Repository<UnlockedCourseUnit>(dbContext);
                 return unlockedCourseUnitsRepository;
+            }
+        }
+
+        public IRepository<Question> QuestionsRepository
+        {
+            get
+            {
+                questionsRepository ??= new Repository<Question>(dbContext);
+                return questionsRepository;
+            }
+        }
+
+        public IRepository<Tag> TagsRepository
+        {
+            get
+            {
+                tagsRepository ??= new Repository<Tag>(dbContext);
+                return tagsRepository;
+            }
+        }
+
+        public IRepository<QuestionTag> QuestionTagsRepository
+        {
+            get
+            {
+                questionTagsRepository ??= new Repository<QuestionTag>(dbContext);
+                return questionTagsRepository;
             }
         }
 

@@ -1,0 +1,13 @@
+﻿.title {
+    width: 80%;
+    margin: auto;
+}
+
+.text-editor-container {
+    height: 300px;
+    margin-bottom: 10px;
+}
+
+.post-question-container {
+    padding: 10px;
+}

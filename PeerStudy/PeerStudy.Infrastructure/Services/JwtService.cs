@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.UnitOfWork;
-using PeerStudy.Core.Models;
+using PeerStudy.Core.Models.Accounts;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Infrastructure.Interfaces;
 using System;

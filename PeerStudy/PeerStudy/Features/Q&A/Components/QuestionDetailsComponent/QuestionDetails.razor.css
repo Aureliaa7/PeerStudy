@@ -1,0 +1,7 @@
+﻿.posted-at, .action-buttons {
+    float: right;
+}
+
+.question-content, .header {
+    padding: 10px;
+}

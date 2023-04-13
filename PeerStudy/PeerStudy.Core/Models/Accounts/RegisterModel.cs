@@ -1,7 +1,7 @@
 ﻿using PeerStudy.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace PeerStudy.Core.Models
+namespace PeerStudy.Core.Models.Accounts
 {
     public class RegisterModel
     {

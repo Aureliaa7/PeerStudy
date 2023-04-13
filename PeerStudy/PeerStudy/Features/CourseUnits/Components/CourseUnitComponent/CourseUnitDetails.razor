@@ -75,7 +75,7 @@
         <div class="course-unit-elements">
             @if (CourseUnit != null && CourseUnit.Resources != null && CourseUnit.Resources.Any())
             {
-                @foreach (var resource in CourseUnit?.Resources)
+                @foreach (var resource in CourseUnit.Resources)
                 {
                     <div class="resource">
                         <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
@@ -95,7 +95,7 @@
             <div class="course-unit-elements">
                 @if (CourseUnit != null && CourseUnit.Resources != null && CourseUnit.Resources.Any())
                 {
-                    @foreach (var resource in CourseUnit?.Resources)
+                    @foreach (var resource in CourseUnit.Resources)
                     {
                         <div class="resource">
                             <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"

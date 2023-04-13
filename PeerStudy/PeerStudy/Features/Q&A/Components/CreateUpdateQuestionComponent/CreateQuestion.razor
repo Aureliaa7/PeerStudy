@@ -1,0 +1,106 @@
+﻿@using PeerStudy.Features.Q_A.Components.QuestionDescriptionComponent
+@using PeerStudy.Features.Q_A.Components.TagComponent
+@using PeerStudy.Features.Q_A.Components.TagsListComponent
+
+@page "/post-question"
+@attribute [Authorize(Roles = "Student")]
+
+<div class="post-question-container">
+    <h3>Ask a question</h3>
+    <Steps @ref="stepsRef" @bind-SelectedStep="selectedStep" NavigationAllowed="NavigationAllowed">
+        <Items>
+            <Step Name="1">Add Title</Step>
+            <Step Name="2">Add Description</Step>
+            <Step Name="3">Add Tags</Step>
+            <Step Name="4">Post Question</Step>
+        </Items>
+        <Content>
+            <StepPanel Name="1">
+                <div class="title">
+                    <MatTextField Class="input-field"
+                                  Style="width:100%;"
+                                  @bind-Value="CreateQuestionModel.Title"
+                                  Label="Title"
+                                  Required>
+                    </MatTextField>
+                </div>
+            </StepPanel>
+            <StepPanel Name="2">
+                <Alert Color="Color.Info" @bind-Visible="showDescriptionInfoMessage">
+                    <AlertDescription>@descriptionInfoMessage</AlertDescription>
+                </Alert>
+                <div class="text-editor-container">
+                    <RichTextEdit @bind-Value="CreateQuestionModel.Description" Style="height: 80%;" @ref="richTextEditRef"
+                                  Theme="RichTextEditTheme.Snow"
+                                  PlaceHolder="Type the description here..."
+                                  ReadOnly="false"
+                                  SubmitOnEnter="false"
+                                  ToolbarPosition="Placement.Top">
+                        <Editor></Editor>
+
+                        <Toolbar>
+                            <RichTextEditToolbarGroup>
+                                <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+                                <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+                                <RichTextEditToolbarButton Action="RichTextEditAction.Underline" />
+                                <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                                    <RichTextEditToolbarSelectItem Value="small" />
+                                    <RichTextEditToolbarSelectItem Selected />
+                                    <RichTextEditToolbarSelectItem Value="large" />
+                                    <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+                                </RichTextEditToolbarSelect>
+                                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+                                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+                                <RichTextEditToolbarButton Action="RichTextEditAction.Link" />
+                            </RichTextEditToolbarGroup>
+
+                            <RichTextEditToolbarGroup Float="Float.End">
+                                <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
+                            </RichTextEditToolbarGroup>
+                        </Toolbar>
+                    </RichTextEdit>
+                </div>
+            </StepPanel>
+            <StepPanel Name="3">
+                <TagsList 
+                    Tags="CreateQuestionModel.Tags"
+                    ShowDeleteButton="true"
+                    OnDelete="DeleteTag">
+                </TagsList>
+                <div class="center-elements">
+                    <EditForm Model="@newTag" OnSubmit="@AddNewTag">
+                        <InputText class="form-control" @bind-Value="newTag" maxlength="30" />
+                    </EditForm>
+                </div>
+            </StepPanel>
+            <StepPanel Name="4">
+                <div>
+                    <h3>@CreateQuestionModel.Title</h3>
+                    <TagsList
+                        Tags="CreateQuestionModel.Tags"
+                        ShowDeleteButton="true"
+                        OnDelete="DeleteTag">
+                    </TagsList>
+                   <QuestionDescription HtmlContent="@CreateQuestionModel.Description"></QuestionDescription>
+                </div>
+            </StepPanel>
+        </Content>
+    </Steps>
+    <Div Display="Display.Flex" Class="justify-content-center">
+        <Button Color="Color.Secondary" Margin="Margin.Is2.FromEnd" Clicked="() => stepsRef.PreviousStep()">
+            Previous
+        </Button>
+        @if (int.Parse(stepsRef.SelectedStep) < 4)
+        {
+            <Button Color="Color.Primary" Clicked="() => stepsRef.NextStep()">
+                Next
+            </Button>
+        }
+        @if (int.Parse(stepsRef.SelectedStep) == 4)
+        {
+            <Button Color="Color.Primary" Clicked="SaveQuestion">
+                Post
+            </Button>
+        }
+    </Div>
+</div>
