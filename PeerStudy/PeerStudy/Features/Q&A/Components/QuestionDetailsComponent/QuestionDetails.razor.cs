@@ -224,10 +224,12 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
                 if (voteType == VoteType.Upvote)
                 {
                     RemoveVoteIfExists(answer, VoteType.Downvote);
+                    answer.NoUpvotes += 1;
                 }
                 else
                 {
                     RemoveVoteIfExists(answer, VoteType.Upvote);
+                    answer.NoDownvotes += 1;
                 }
 
                 answer.Votes.Add(new VoteAnswerDetailsModel
@@ -236,15 +238,6 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
                     UserId = currentUserId,
                     VoteType = voteType
                 });
-
-                if (voteType == VoteType.Upvote)
-                {
-                    answer.NoUpvotes += 1;
-                }
-                else
-                {
-                    answer.NoDownvotes += 1;
-                }
             }
         }
 

@@ -22,8 +22,17 @@
             else
             {
                 <div class="buttons">
-                    <MatButton Style="@($"color: {(!CurrentUserVotedAnswer(VoteType.Upvote) ? "#C8C8C8" : "")}")" Icon="@MatIconNames.Thumb_up" OnClick="Upvote">@Answer.NoUpvotes</MatButton>
-                    <MatButton Style="@($"color: {(!CurrentUserVotedAnswer(VoteType.Downvote) ? "#C8C8C8" : "")}")" Icon="@MatIconNames.Thumb_down" OnClick="Downvote">@Answer.NoDownvotes</MatButton>
+                    <MatButton 
+                        Style="@($"color: {(!CurrentUserVotedAnswer(VoteType.Upvote) ? "#C8C8C8" : "")}")"
+                        Icon="@MatIconNames.Thumb_up"
+                        OnClick="Upvote">@Answer.NoUpvotes
+                    </MatButton>
+
+                    <MatButton 
+                        Style="@($"color: {(!CurrentUserVotedAnswer(VoteType.Downvote) ? "#C8C8C8" : "")}")" 
+                        Icon="@MatIconNames.Thumb_down"
+                        OnClick="Downvote">@Answer.NoDownvotes
+                    </MatButton>
                 </div>
             }
             <div class="author-and-date">
