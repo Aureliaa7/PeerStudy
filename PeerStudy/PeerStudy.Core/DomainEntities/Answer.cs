@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PeerStudy.Core.DomainEntities
 {
     public class Answer
     {
+        public Answer()
+        {
+            Votes = new HashSet<AnswerVote>();       
+        }
+
         public Guid Id { get; set; }
 
         public string Content { get; set; }
@@ -12,14 +18,12 @@ namespace PeerStudy.Core.DomainEntities
 
         public Guid QuestionId { get; set; }
 
-        public int NoUpvotes { get; set; }
-
-        public int NoDownvotes { get; set; }
-
         public DateTime CreatedAt { get; set; }
 
         public Student Author { get; set; }
 
         public Question Question { get; set; }
+
+        public ICollection<AnswerVote> Votes { get; set; }
     }
 }

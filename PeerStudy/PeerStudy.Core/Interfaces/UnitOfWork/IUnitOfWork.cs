@@ -44,6 +44,8 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<Answer> AnswersRepository { get; }
 
+        IRepository<AnswerVote> AnswerVotesRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

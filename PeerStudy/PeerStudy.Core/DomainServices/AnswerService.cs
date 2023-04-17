@@ -1,4 +1,5 @@
 ﻿using PeerStudy.Core.DomainEntities;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
@@ -62,6 +63,34 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.SaveChangesAsync();
         }
 
+        public async Task VoteAsync(VoteAnswerModel voteAnswerModel)
+        {
+            // if answer is upvoted/downvoted => delete the vote
+            bool voteExisted = await DeleteVoteIfExistsAsync(voteAnswerModel.AnswerId, voteAnswerModel.UserId, voteAnswerModel.VoteType);
+            
+            if (!voteExisted)
+            {
+                // if answer is downvoted => upvote it
+                if (voteAnswerModel.VoteType == VoteType.Upvote)
+                {
+                    await DeleteVoteIfExistsAsync(voteAnswerModel.AnswerId, voteAnswerModel.UserId, VoteType.Downvote);              
+                }
+                // if answer is upvoted => downvote it
+                else if (voteAnswerModel.VoteType == VoteType.Downvote)
+                {
+                    await DeleteVoteIfExistsAsync(voteAnswerModel.AnswerId, voteAnswerModel.UserId, VoteType.Upvote);
+                }
+
+                await unitOfWork.AnswerVotesRepository.AddAsync(new AnswerVote
+                {
+                    AnswerId = voteAnswerModel.AnswerId,
+                    UserId = voteAnswerModel.UserId,
+                    Type = voteAnswerModel.VoteType
+                });
+                await unitOfWork.SaveChangesAsync();
+            }
+        }
+
         private async Task CheckIfAnswerExistsAsync(Guid id, Guid authorId)
         {
             bool answerExists = await unitOfWork.AnswersRepository.ExistsAsync(x => x.Id == id && x.AuthorId == authorId);
@@ -70,6 +99,36 @@ namespace PeerStudy.Core.DomainServices
             {
                 throw new EntityNotFoundException($"Answer with id {id} and authorId {authorId} was not found!");
             }
+        }
+
+        /// <summary>
+        /// Returns true if the vote was found and deleted
+        /// </summary>
+        /// <param name="answerId"></param>
+        /// <param name="authorId"></param>
+        /// <param name="voteType"></param>
+        /// <returns></returns>
+        private async Task<bool> DeleteVoteIfExistsAsync(Guid answerId, Guid authorId, VoteType voteType)
+        {
+            var vote = await GetVoteAsync(answerId, authorId, voteType);
+
+            if (vote != null)
+            {
+                await unitOfWork.AnswerVotesRepository.RemoveAsync(vote);
+                await unitOfWork.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private Task<AnswerVote> GetVoteAsync(Guid answerId, Guid authorId, VoteType voteType)
+        {
+            return unitOfWork.AnswerVotesRepository.GetFirstOrDefaultAsync(
+                x => x.AnswerId == answerId &&
+                x.UserId == authorId &&
+                x.Type == voteType);
         }
     }
 }

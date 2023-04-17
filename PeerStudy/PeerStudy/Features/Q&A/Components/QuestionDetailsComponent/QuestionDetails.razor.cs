@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.QAndA.Answers;
 using PeerStudy.Core.Models.QAndA.Questions;
@@ -183,6 +184,90 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
         {
             var answerToBeUpdated = questionDetails.Answers.First(x => x.Id == answerId);
             answerToBeUpdated.IsReadOnly = true;
+        }
+
+        private async Task UpvoteAnswer(Guid answerId)
+        {
+            await VoteAsync(answerId, VoteType.Upvote);
+        }
+
+        private async Task DownvoteAnswer(Guid answerId)
+        {
+            await VoteAsync(answerId, VoteType.Downvote);
+        }
+
+        private async Task VoteAsync(Guid answerId,  VoteType voteType)
+        {
+            try
+            {
+                await AnswerService.VoteAsync(new VoteAnswerModel
+                {
+                    AnswerId = answerId,
+                    UserId = currentUserId,
+                    VoteType = voteType
+                });
+
+                UpdateVotesInUI(answerId, voteType);
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the answer...");
+            }
+        }
+
+        private void UpdateVotesInUI(Guid answerId, VoteType voteType)
+        {
+            var answer = questionDetails.Answers.First(x => x.Id == answerId);
+            if (!RemoveVoteIfExists(answer, voteType))
+            {
+                if (voteType == VoteType.Upvote)
+                {
+                    RemoveVoteIfExists(answer, VoteType.Downvote);
+                }
+                else
+                {
+                    RemoveVoteIfExists(answer, VoteType.Upvote);
+                }
+
+                answer.Votes.Add(new VoteAnswerDetailsModel
+                {
+                    AnswerId = answerId,
+                    UserId = currentUserId,
+                    VoteType = voteType
+                });
+
+                if (voteType == VoteType.Upvote)
+                {
+                    answer.NoUpvotes += 1;
+                }
+                else
+                {
+                    answer.NoDownvotes += 1;
+                }
+            }
+        }
+
+        private bool RemoveVoteIfExists(AnswerDetailsModel answer, VoteType voteType)
+        {
+            var vote = answer.Votes.FirstOrDefault(x => x.AnswerId == answer.Id &&
+                x.UserId == currentUserId &&
+                x.VoteType == voteType);
+            if (vote != null)
+            {
+                answer.Votes.Remove(vote);
+                if(voteType == VoteType.Downvote)
+                {
+                    answer.NoDownvotes -= 1;
+                }
+                else
+                {
+                    answer.NoUpvotes -= 1;
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }

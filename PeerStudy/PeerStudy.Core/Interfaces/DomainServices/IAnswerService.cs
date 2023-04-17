@@ -11,5 +11,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task DeleteAsync(Guid id, Guid authorId);
 
         Task UpdateAsync(UpdateAnswerModel updateAnswerModel);
+
+        Task VoteAsync(VoteAnswerModel voteAnswerModel);
     }
 }

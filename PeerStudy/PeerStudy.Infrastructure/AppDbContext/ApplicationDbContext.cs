@@ -44,6 +44,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<QuestionTag> QuestionTags { get; set; }
 
+        public DbSet<AnswerVote> AnswerVotes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -63,6 +65,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new StudyGroupFileConfiguration().Configure(modelBuilder.Entity<StudyGroupFile>());
             new CourseUnitConfiguration().Configure(modelBuilder.Entity<CourseUnit>());
             new AnswerConfiguration().Configure(modelBuilder.Entity<Answer>());
+            new AnswerVoteConfiguration().Configure(modelBuilder.Entity<AnswerVote>());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PeerStudy.Core.Models.QAndA.Answers
 {
@@ -17,6 +18,8 @@ namespace PeerStudy.Core.Models.QAndA.Answers
         public int NoUpvotes { get; set; }
 
         public int NoDownvotes { get; set; }
+
+        public List<VoteAnswerDetailsModel> Votes { get; set; } = new List<VoteAnswerDetailsModel>();
 
         //Flag used for updating an answer. It's needed by PeerStudyTextEditor component
         public bool IsReadOnly { get; set; } = true;

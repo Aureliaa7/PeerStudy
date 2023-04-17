@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.QAndA.Answers;
 using System;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace PeerStudy.Features.Q_A.Components.AnswerComponent
         public AnswerDetailsModel Answer { get; set; }
 
         [Parameter]
-        public bool ShowActionButtons { get; set; }
+        public Guid CurrentUserId { get; set; }
 
         [Parameter]
         public EventCallback<Guid> OnDelete { get; set; }
@@ -25,6 +26,16 @@ namespace PeerStudy.Features.Q_A.Components.AnswerComponent
         [Parameter]
         public EventCallback<Guid> OnCancel { get; set; }
 
+        [Parameter]
+        public EventCallback<Guid> OnUpvote { get; set; }
+
+        [Parameter]
+        public EventCallback<Guid> OnDownvote { get; set; }
+
+        private bool CurrentUserVotedAnswer(VoteType voteType)
+        {
+            return Answer.Votes.Exists(x => x.UserId == CurrentUserId && x.VoteType == voteType);
+        }
 
         private async Task Delete()
         {
@@ -44,6 +55,16 @@ namespace PeerStudy.Features.Q_A.Components.AnswerComponent
         private async Task CancelEdit()
         {
             await OnCancel.InvokeAsync(Answer.Id);
+        }
+
+        private async Task Upvote()
+        {
+            await OnUpvote.InvokeAsync(Answer.Id);
+        }
+
+        private async Task Downvote()
+        {
+            await OnDownvote.InvokeAsync(Answer.Id);
         }
     }
 }

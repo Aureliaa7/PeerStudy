@@ -26,8 +26,8 @@
         @if (questionDetails?.AuthorId == currentUserId && isEditQuestionDisabled)
         {
             <div class="action-buttons">
-                <MatIconButton Icon="@MatIconNames.Edit" OnClick="EnableEditQuestion"></MatIconButton>
-                <MatIconButton Icon="@MatIconNames.Delete" OnClick="ShowDeleteQuestionPopup"></MatIconButton>
+                <MatButton Icon="@MatIconNames.Edit" OnClick="EnableEditQuestion"></MatButton>
+                <MatButton Icon="@MatIconNames.Delete" OnClick="ShowDeleteQuestionPopup"></MatButton>
             </div>
         }
         else if (questionDetails?.AuthorId != currentUserId)
@@ -57,11 +57,13 @@
             @foreach (var answer in questionDetails.Answers)
             {
                 <AnswerDetails Answer="answer"
-                           ShowActionButtons="@(answer.AuthorId == currentUserId)"
+                           CurrentUserId="@currentUserId"
                            OnDelete="ShowDeleteAnswerPopup"
                            OnEdit="EnableEditAnswer"
                            OnSave="SaveUpdatedAnswer"
-                           OnCancel="DisableAnswerEditMode">
+                           OnCancel="DisableAnswerEditMode"
+                           OnUpvote="UpvoteAnswer"
+                           OnDownvote="DownvoteAnswer">
                 </AnswerDetails>
             }
         </div>

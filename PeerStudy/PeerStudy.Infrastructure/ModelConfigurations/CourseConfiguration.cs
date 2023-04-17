@@ -4,7 +4,7 @@ using PeerStudy.Core.DomainEntities;
 
 namespace PeerStudy.Infrastructure.ModelConfigurations
 {
-    public class CourseConfiguration : IEntityTypeConfiguration<Course>
+    internal class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         public void Configure(EntityTypeBuilder<Course> builder)
         {

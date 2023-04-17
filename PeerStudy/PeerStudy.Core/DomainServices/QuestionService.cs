@@ -1,4 +1,5 @@
 ﻿using PeerStudy.Core.DomainEntities;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
@@ -90,8 +91,17 @@ namespace PeerStudy.Core.DomainServices
                         AuthorName = $"{y.Author.FirstName}{y.Author.LastName}",
                         CreatedAt= y.CreatedAt,
                         HtmlContent = y.Content,
-                        NoDownvotes = y.NoDownvotes,
-                        NoUpvotes = y.NoUpvotes
+                        NoDownvotes = y.Votes.Where(x => x.Type == VoteType.Downvote).Count(),
+                        NoUpvotes = y.Votes.Where(x => x.Type == VoteType.Upvote).Count(),
+                        Votes = y.Votes
+                                .Select(z => new VoteAnswerDetailsModel
+                                {
+                                    Id = z.Id,
+                                    AnswerId = z.AnswerId,
+                                    UserId = z.UserId,
+                                    VoteType = z.Type
+                                })
+                                .ToList()
                     })
                     .ToList()
                 })
