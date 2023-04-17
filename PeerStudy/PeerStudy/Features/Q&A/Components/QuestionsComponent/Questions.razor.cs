@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
-using PeerStudy.Core.Models.QAndA;
-using System;
+using PeerStudy.Core.Models.QAndA.Questions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,11 +22,6 @@ namespace PeerStudy.Features.Q_A.Components.QuestionsComponent
         {
             await SetCurrentUserDataAsync();
             questionsModels = await QuestionService.GetFlatQuestionsAsync(currentUserId);
-        }
-
-        private void HandleClickedQuestion(Guid questionId)
-        {
-            NavigationManager.NavigateTo($"/questions/{questionId}");
         }
 
         private void AddQuestion()

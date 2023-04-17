@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PeerStudy.Core.Models.QAndA
+namespace PeerStudy.Core.Models.QAndA.Questions
 {
     public class QuestionModel
     {

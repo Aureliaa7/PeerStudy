@@ -1,7 +1,15 @@
-﻿.posted-at, .action-buttons {
+﻿.action-buttons {
+    text-align: end;
+}
+
+.posted-at {
     float: right;
 }
 
 .question-content, .header {
+    padding: 10px;
+}
+
+.answers {
     padding: 10px;
 }

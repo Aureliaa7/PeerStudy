@@ -1,0 +1,21 @@
+﻿.answer {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.author-and-date {
+    font-size: 0.8rem;
+    text-align: end;
+    padding: 7px;
+    display: inline-block;
+}
+
+.answer-buttons {
+    display: inline-block;
+    float: left;
+}
+
+.answer-details {
+    text-align: end;
+}

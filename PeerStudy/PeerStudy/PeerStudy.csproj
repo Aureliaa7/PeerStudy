@@ -15,11 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Features\Q&amp;A\Components\AnswerComponent\AnswerDetails.razor.css" />
     <None Remove="Pages\Index.razor.css" />
     <None Remove="Resources.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Features\Q&amp;A\Components\AnswerComponent\AnswerDetails.razor.css" />
     <Content Include="Pages\Index.razor.css" />
     <Content Include="Resources.txt" />
   </ItemGroup>
@@ -46,6 +48,10 @@
   <ItemGroup>
     <ProjectReference Include="..\PeerStudy.Core\PeerStudy.Core.csproj" />
     <ProjectReference Include="..\PeerStudy.Infrastructure\PeerStudy.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Q&amp;A\Components\QuestionDescriptionComponent\" />
   </ItemGroup>
 
 </Project>

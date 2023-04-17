@@ -1,8 +1,10 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
-using PeerStudy.Core.Models.QAndA;
+using PeerStudy.Core.Models.QAndA.Answers;
+using PeerStudy.Core.Models.QAndA.Questions;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
@@ -11,6 +13,9 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
     {
         [Inject]
         private IQuestionService QuestionService { get; set; }
+
+        [Inject]
+        private IAnswerService AnswerService { get; set; }
 
         [Inject]
         private NavigationManager NavigationManager { get; set; }
@@ -22,7 +27,15 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
 
         private QuestionDetailsModel questionDetails;
         private bool showDeleteQuestionConfirmationPopup;
+        private bool showDeleteAnswerConfirmationPopup;
         private const string deleteQuestionConfirmationMessage = "Are you sure you want to delete this question?";
+        private const string deleteAnswerConfirmationMessage = "Are you sure you want to delete this answer?";
+
+        private bool showAddCommentEditor;
+        private bool showAddAnswerEditor;
+        private bool isEditQuestionDisabled = true;
+
+        private Guid? answerId;
 
         protected override async Task InitializeAsync()
         {
@@ -30,17 +43,42 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
             questionDetails = await QuestionService.GetAsync(QuestionId);
         }
 
-        private void Edit()
+        private void EnableEditQuestion()
         {
-
+            isEditQuestionDisabled = false;
         }
 
-        private void ShowDeletePopup()
+        private async Task UpdateQuestion(string htmlContent)
+        {
+            isEditQuestionDisabled = true;
+
+            try
+            {
+                await QuestionService.UpdateAsync(new UpdateQuestionModel
+                {
+                    Id = questionDetails.Id,
+                    CurrentUserId = currentUserId,
+                    Description = htmlContent
+                });
+                questionDetails.HtmlDescription = htmlContent;
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the question...");
+            }
+        }
+
+        private void CancelUpdateQuestion()
+        {
+            isEditQuestionDisabled = true;
+        }
+
+        private void ShowDeleteQuestionPopup()
         {
             showDeleteQuestionConfirmationPopup = true;
         }
 
-        private async Task Delete()
+        private async Task DeleteQuestion()
         {
             showDeleteQuestionConfirmationPopup = false;
 
@@ -53,6 +91,98 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
             {
                 ToastService.ShowToast(ToastLevel.Error, "An error occurred while deleting the question...");
             }
+        }
+
+        private async Task SaveAnswer(string htmlContent)
+        {
+            showAddAnswerEditor = false;
+            try
+            {
+                var savedAnswer = await AnswerService.AddAsync(new AddAnswerModel
+                {
+                    AuthorId = currentUserId,
+                    Content = htmlContent,
+                    QuestionId = QuestionId
+                });
+
+                savedAnswer.AuthorName = userName;
+                questionDetails.Answers.Add(savedAnswer);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while posting your answer...");
+            }
+        }
+
+        private void SaveComment(string htmlContent)
+        {
+            showAddCommentEditor = false;
+            //TODO: save the comment
+        }
+
+        private void CancelAddComment()
+        {
+            showAddCommentEditor = false;
+        }
+
+        private void CancelAddAnswer()
+        {
+            showAddAnswerEditor = false;
+        }
+
+        private void ShowDeleteAnswerPopup(Guid answerId)
+        {
+            this.answerId = answerId;
+            showDeleteAnswerConfirmationPopup = true;
+        }
+
+        private async Task DeleteAnswer()
+        {
+            showDeleteAnswerConfirmationPopup = false;
+            try
+            {
+                await AnswerService.DeleteAsync(answerId.Value, currentUserId);
+                var deletedAnswer = questionDetails.Answers.First(x => x.Id == answerId);
+                questionDetails.Answers.Remove(deletedAnswer);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while deleting the answer...");
+            }
+
+            answerId = null;
+        }
+
+        private void EnableEditAnswer(Guid answerId)
+        {
+            var answerToBeUpdated = questionDetails.Answers.First(x => x.Id == answerId);
+            answerToBeUpdated.IsReadOnly = false;
+        }
+
+        private async Task SaveUpdatedAnswer((string htmlContent, Guid answerId) data)
+        {
+            try
+            {
+                await AnswerService.UpdateAsync(new UpdateAnswerModel
+                {
+                    Id = data.answerId,
+                    AuthorId = currentUserId,
+                    Content = data.htmlContent
+                });
+                var answerToBeUpdated = questionDetails.Answers.First(x => x.Id == data.answerId);
+                answerToBeUpdated.HtmlContent = data.htmlContent;
+                answerToBeUpdated.IsReadOnly = true;
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the answer...");
+            }
+        }
+
+        private void DisableAnswerEditMode(Guid answerId)
+        {
+            var answerToBeUpdated = questionDetails.Answers.First(x => x.Id == answerId);
+            answerToBeUpdated.IsReadOnly = true;
         }
     }
 }

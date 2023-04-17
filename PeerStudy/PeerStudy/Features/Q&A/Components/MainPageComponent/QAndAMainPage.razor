@@ -1,6 +1,11 @@
-﻿@page "/q-and-a"
+﻿@using PeerStudy.Features.Q_A.Components.QuestionsListComponent
+@using PeerStudy.Shared.PaginationComponent
 
-@attribute [Authorize(Roles="Student")]
+@page "/q-and-a"
+@inherits PeerStudyComponentBase
+@attribute [Authorize(Roles = "Student")]
+
+
 <div>
     <div class="search-bar">
     </div>
@@ -8,6 +13,17 @@
         <MatButton Class="submit-button" Raised=true OnClick="HandleAddQuestion">Ask a question</MatButton>
     </div>
     <div class="recent-questions">
-        //TO BE IMPLEMENTED
+        <QuestionsList IsLoading="isLoading"
+                       Questions="currentDataSource">
+
+            <div class="page-numbers">
+                <PeerStudyPagination NoTotalPages="noPages"
+                                     NoPreviousNextPagesDisplayed="noPreviousNextPagesDisplayed"
+                                     OnNavigateToNextPage="GoToNextPage"
+                                     OnNavigateToPreviousPage="GoToPreviousPage"
+                                     OnSetActivePage="SetActivePage">
+                </PeerStudyPagination>
+            </div>
+        </QuestionsList>
     </div>
 </div>

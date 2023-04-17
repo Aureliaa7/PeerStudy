@@ -4,13 +4,13 @@ using Blazorise.RichTextEdit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using PeerStudy.Core.Interfaces.DomainServices;
-using PeerStudy.Core.Models.QAndA;
+using PeerStudy.Core.Models.QAndA.Questions;
 using PeerStudy.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PeerStudy.Features.Q_A.Components.CreateUpdateQuestionComponent
+namespace PeerStudy.Features.Q_A.Components.CreateQuestionComponent
 {
     public partial class CreateQuestion
     {

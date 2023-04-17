@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using PeerStudy.Core.Models.QAndA;
+using PeerStudy.Core.Models.QAndA.Questions;
 using System;
 using System.Threading.Tasks;
 

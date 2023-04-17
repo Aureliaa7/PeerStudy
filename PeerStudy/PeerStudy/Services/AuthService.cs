@@ -99,5 +99,10 @@ namespace PeerStudy.Services
         {
             return ClientConstants.CacheConstants.Select(x => $"{userId}_{x}").ToList();
         }
+
+        public Task<string> GetCurrentUserNameAsync()
+        {
+            return GetClaimByNameAsync(ClaimTypes.Name);
+        }
     }
 }

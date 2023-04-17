@@ -1,4 +1,5 @@
-﻿using PeerStudy.Core.Models.QAndA;
+﻿using PeerStudy.Core.Models.Pagination;
+using PeerStudy.Core.Models.QAndA.Questions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,5 +15,9 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<List<FlatQuestionModel>> GetFlatQuestionsAsync(Guid authorId);
 
         Task DeleteAsync(Guid id, Guid authorId);
+        
+        Task<PagedResponseModel<FlatQuestionModel>> GetAllAsync(Guid currentUserId, PaginationFilter paginationFilter);
+
+        Task UpdateAsync(UpdateQuestionModel updateQuestionModel);
     }
 }

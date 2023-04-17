@@ -2,10 +2,13 @@
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
-using PeerStudy.Core.Models.QAndA;
+using PeerStudy.Core.Models.Pagination;
+using PeerStudy.Core.Models.QAndA.Answers;
+using PeerStudy.Core.Models.QAndA.Questions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
@@ -13,10 +16,12 @@ namespace PeerStudy.Core.DomainServices
     public class QuestionService : IQuestionService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IQuestionPaginationService questionPaginationService;
 
-        public QuestionService(IUnitOfWork unitOfWork)
+        public QuestionService(IUnitOfWork unitOfWork, IQuestionPaginationService questionPaginationService)
         {
             this.unitOfWork = unitOfWork;
+            this.questionPaginationService = questionPaginationService;
         }
 
         public async Task<QuestionDetailsModel> CreateAsync(CreateQuestionModel createQuestionModel)
@@ -77,7 +82,18 @@ namespace PeerStudy.Core.DomainServices
                     CreatedAt = x.CreatedAt,
                     HtmlDescription = x.Description,
                     Title = x.Title,
-                    Tags = x.QuestionTags.Select(x => x.Tag.Content).ToList()
+                    Tags = x.QuestionTags.Select(x => x.Tag.Content).ToList(),
+                    Answers = x.Answers.Select(y => new AnswerDetailsModel
+                    {
+                        Id = y.Id,
+                        AuthorId = y.AuthorId,
+                        AuthorName = $"{y.Author.FirstName}{y.Author.LastName}",
+                        CreatedAt= y.CreatedAt,
+                        HtmlContent = y.Content,
+                        NoDownvotes = y.NoDownvotes,
+                        NoUpvotes = y.NoUpvotes
+                    })
+                    .ToList()
                 })
                 .FirstOrDefault();
 
@@ -101,6 +117,15 @@ namespace PeerStudy.Core.DomainServices
                 .ToList();
 
             return questionModels;
+        }
+
+        public async Task<PagedResponseModel<FlatQuestionModel>> GetAllAsync(Guid currentUserId, PaginationFilter paginationFilter)
+        {
+            Expression<Func<Question, bool>> filter = x => x.AuthorId != currentUserId;
+
+            var response = await questionPaginationService.GetPagedResponseAsync(paginationFilter, filter);
+            
+            return response;
         }
 
         private async Task<List<Guid>> GetTagsIdsAsync(List<string> tags)
@@ -133,6 +158,17 @@ namespace PeerStudy.Core.DomainServices
                 .Union(createdTags
                     .Select(x => x.Id))
                 .ToList();
+        }
+
+        public async Task UpdateAsync(UpdateQuestionModel updateQuestionModel)
+        {
+            var question = await unitOfWork.QuestionsRepository.GetFirstOrDefaultAsync(x => x.Id == updateQuestionModel.Id
+             && x.AuthorId == updateQuestionModel.CurrentUserId) ?? 
+             throw new EntityNotFoundException($"The question with id {updateQuestionModel.Id} and author id {updateQuestionModel.CurrentUserId} was not found!");
+           
+            question.Description = updateQuestionModel.Description;
+            await unitOfWork.QuestionsRepository.UpdateAsync(question);
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

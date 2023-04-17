@@ -1,5 +1,4 @@
-﻿@using PeerStudy.Features.Q_A.Components.QuestionDescriptionComponent
-@using PeerStudy.Features.Q_A.Components.TagComponent
+﻿@using PeerStudy.Features.Q_A.Components.TagComponent
 @using PeerStudy.Features.Q_A.Components.TagsListComponent
 
 @page "/post-question"
@@ -21,7 +20,7 @@
                                   Style="width:100%;"
                                   @bind-Value="CreateQuestionModel.Title"
                                   Label="Title"
-                                  Required>
+                                                Required>
                     </MatTextField>
                 </div>
             </StepPanel>
@@ -29,6 +28,8 @@
                 <Alert Color="Color.Info" @bind-Visible="showDescriptionInfoMessage">
                     <AlertDescription>@descriptionInfoMessage</AlertDescription>
                 </Alert>
+
+                @*  TODO: refactor*@
                 <div class="text-editor-container">
                     <RichTextEdit @bind-Value="CreateQuestionModel.Description" Style="height: 80%;" @ref="richTextEditRef"
                                   Theme="RichTextEditTheme.Snow"
@@ -62,10 +63,9 @@
                 </div>
             </StepPanel>
             <StepPanel Name="3">
-                <TagsList 
-                    Tags="CreateQuestionModel.Tags"
-                    ShowDeleteButton="true"
-                    OnDelete="DeleteTag">
+                <TagsList Tags="CreateQuestionModel.Tags"
+                          ShowDeleteButton="true"
+                          OnDelete="DeleteTag">
                 </TagsList>
                 <div class="center-elements">
                     <EditForm Model="@newTag" OnSubmit="@AddNewTag">
@@ -76,12 +76,14 @@
             <StepPanel Name="4">
                 <div>
                     <h3>@CreateQuestionModel.Title</h3>
-                    <TagsList
-                        Tags="CreateQuestionModel.Tags"
-                        ShowDeleteButton="true"
-                        OnDelete="DeleteTag">
+                    <TagsList Tags="CreateQuestionModel.Tags"
+                              ShowDeleteButton="true"
+                              OnDelete="DeleteTag">
                     </TagsList>
-                   <QuestionDescription HtmlContent="@CreateQuestionModel.Description"></QuestionDescription>
+
+                    <PeerStudyTextEditor HtmlContent="@CreateQuestionModel.Description"
+                                         IsReadOnly="true">
+                    </PeerStudyTextEditor>
                 </div>
             </StepPanel>
         </Content>

@@ -1,4 +1,4 @@
-﻿@using PeerStudy.Features.Q_A.Components.FlatQuestionComponent
+﻿@using PeerStudy.Features.Q_A.Components.QuestionsListComponent
 
 @page "/my-questions"
 @attribute [Authorize(Roles = "Student")]
@@ -11,13 +11,8 @@
     </div>
 </div>
 
-<Loading IsLoading="isLoading"
-         HasData="@(!isLoading && questionsModels.Any())"
-         NotFoundMessage="@noQuestionsMessage">
-
-    @foreach (var question in questionsModels)
-    {
-        <FlatQuestion Question="question" OnClick="HandleClickedQuestion"></FlatQuestion>
-    }
-
-</Loading>
+<div class="my-questions">
+    <QuestionsList IsLoading="isLoading"
+                   Questions="questionsModels">
+    </QuestionsList>
+</div>

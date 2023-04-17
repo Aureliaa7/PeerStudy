@@ -22,6 +22,7 @@ namespace PeerStudy.Features
         protected Guid currentUserId;
         protected Role? currentUserRole;
         protected string userEmail;
+        protected string userName;
         protected bool isLoading;
 
         protected abstract Task InitializeAsync();
@@ -46,6 +47,7 @@ namespace PeerStudy.Features
             string userRole = await AuthService.GetCurrentUserRole();
             currentUserRole = GetCurrentUserRole(userRole);
             userEmail = await AuthService.GetCurrentUserEmailAsync();
+            userName = await AuthService.GetCurrentUserNameAsync();
         }
 
         protected void ResetNavigationBar()

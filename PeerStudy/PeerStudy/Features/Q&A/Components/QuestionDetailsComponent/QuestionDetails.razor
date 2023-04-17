@@ -1,7 +1,7 @@
-﻿@page "/questions/{questionId:guid}"
-@using PeerStudy.Features.Q_A.Components.QuestionDescriptionComponent
+﻿@using PeerStudy.Features.Q_A.Components.AnswerComponent
 @using PeerStudy.Features.Q_A.Components.TagsListComponent
 
+@page "/questions/{questionId:guid}"
 @inherits PeerStudyComponentBase
 @attribute [Authorize(Roles = "Student")]
 
@@ -14,30 +14,70 @@
 
     <div class="question-content">
         <div>
-            <QuestionDescription HtmlContent="@questionDetails?.HtmlDescription"></QuestionDescription>
+            <PeerStudyTextEditor HtmlContent="@questionDetails?.HtmlDescription"
+                                 IsReadOnly="isEditQuestionDisabled"
+                                 OnSave="UpdateQuestion"
+                                 OnCancel="CancelUpdateQuestion">
+            </PeerStudyTextEditor>
         </div>
-
 
         <TagsList Tags="questionDetails?.Tags"></TagsList>
 
-        @if (questionDetails?.AuthorId == currentUserId)
+        @if (questionDetails?.AuthorId == currentUserId && isEditQuestionDisabled)
         {
             <div class="action-buttons">
-                <MatIconButton Icon="@MatIconNames.Edit" OnClick="Edit"></MatIconButton>
-                <MatIconButton Icon="@MatIconNames.Delete" OnClick="ShowDeletePopup"></MatIconButton>
+                <MatIconButton Icon="@MatIconNames.Edit" OnClick="EnableEditQuestion"></MatIconButton>
+                <MatIconButton Icon="@MatIconNames.Delete" OnClick="ShowDeleteQuestionPopup"></MatIconButton>
             </div>
         }
-       
+        else if (questionDetails?.AuthorId != currentUserId)
+        {
+            <MatButton Class="submit-button" Raised=true OnClick="@(() => showAddAnswerEditor = true)">Reply</MatButton>
+            <MatButton Class="submit-button" OnClick="@(() => showAddCommentEditor = true)">Add a comment</MatButton>
+        }
+
+
+        @if (showAddAnswerEditor)
+        {
+            <PeerStudyTextEditor Placeholder="Type your answer here..."
+                             OnSave="SaveAnswer"
+                             OnCancel="CancelAddAnswer">
+            </PeerStudyTextEditor>
+        }
+
+        @if (showAddCommentEditor)
+        {
+            <PeerStudyTextEditor Placeholder="Type your comment here..."
+                             OnSave="SaveComment"
+                             OnCancel="CancelAddComment">
+            </PeerStudyTextEditor>
+        }
         <div class="answers">
-            HERE ARE THE ANSWERS
+            <h4>@questionDetails.Answers.Count() Answers</h4>
+            @foreach (var answer in questionDetails.Answers)
+            {
+                <AnswerDetails Answer="answer"
+                           ShowActionButtons="@(answer.AuthorId == currentUserId)"
+                           OnDelete="ShowDeleteAnswerPopup"
+                           OnEdit="EnableEditAnswer"
+                           OnSave="SaveUpdatedAnswer"
+                           OnCancel="DisableAnswerEditMode">
+                </AnswerDetails>
+            }
         </div>
     </div>
 
-    <ConfirmationPopup
-        Title="Delete Question"
-        Message="@deleteQuestionConfirmationMessage"
-        IsOpen="showDeleteQuestionConfirmationPopup"
-        OnCancel="@(() => showDeleteQuestionConfirmationPopup = false)"
-        OnConfirm="Delete">
+    <ConfirmationPopup Title="Delete Question"
+                       Message="@deleteQuestionConfirmationMessage"
+                       IsOpen="showDeleteQuestionConfirmationPopup"
+                       OnCancel="@(() => showDeleteQuestionConfirmationPopup = false)"
+                       OnConfirm="DeleteQuestion">
+    </ConfirmationPopup>
+
+    <ConfirmationPopup Title="Delete Answer"
+                       Message="@deleteAnswerConfirmationMessage"
+                       IsOpen="showDeleteAnswerConfirmationPopup"
+                       OnCancel="@(() => showDeleteAnswerConfirmationPopup = false)"
+                       OnConfirm="DeleteAnswer">
     </ConfirmationPopup>
 </Loading>

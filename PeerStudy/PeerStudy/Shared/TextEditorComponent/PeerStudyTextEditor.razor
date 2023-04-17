@@ -1,0 +1,42 @@
+﻿@*Note: Blazorise does not allow to add custom code inside the RichTextEdit*@
+
+@if (IsReadOnly)
+{
+    <RichTextEdit Class="editor-styles" @ref="editorRef"
+              Theme="RichTextEditTheme.Bubble"
+              ReadOnly="true">
+        <Editor></Editor>
+    </RichTextEdit>
+}
+else
+{
+    <RichTextEdit Class="editor-styles" @ref="editorRef"
+              Theme="RichTextEditTheme.Snow"
+              PlaceHolder="@Placeholder"
+              ReadOnly="false"
+              SubmitOnEnter="false"
+              ToolbarPosition="Placement.Top">
+        <Editor></Editor>
+
+        <Toolbar>
+            <RichTextEditToolbarGroup>
+                <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.Underline" />
+                <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                    <RichTextEditToolbarSelectItem Value="small" />
+                    <RichTextEditToolbarSelectItem Selected />
+                    <RichTextEditToolbarSelectItem Value="large" />
+                    <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+                </RichTextEditToolbarSelect>
+                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.Link" />
+            </RichTextEditToolbarGroup>
+        </Toolbar>
+    </RichTextEdit>
+    <div>
+        <MatButton Style="@buttonStyles" Raised=true Class="submit-button" OnClick="@Save">Save</MatButton>
+        <MatButton Style="@buttonStyles" Class="submit-button" OnClick="@Cancel">Cancel</MatButton>
+    </div>
+}
