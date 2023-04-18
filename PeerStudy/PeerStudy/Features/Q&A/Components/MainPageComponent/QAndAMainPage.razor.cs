@@ -21,16 +21,18 @@ namespace PeerStudy.Features.Q_A.Components.MainPageComponent
 
 
         private const int pageSize = 20;
+        private const int firstPage = 1;
         private const int noPreviousNextPagesDisplayed = 2;
         private const string noQuestionsMessage = "No questions were found...";
         private static List<FlatQuestionModel> emptyDataSource = new List<FlatQuestionModel>();
 
         private readonly Dictionary<int, List<FlatQuestionModel>> savedQuestions = new Dictionary<int, List<FlatQuestionModel>>();
         private List<FlatQuestionModel> currentDataSource = emptyDataSource;
-        private int noPages;
+        private int currentNoPages;
+        private int noPagesForRecentQuestions;
+        private int currentPage;
 
         private bool isSearchModeEnabled;
-        private bool isSearchFieldDisabled;
         private bool showSearchQuestionsInstructions;
         private string searchQuery = string.Empty;
 
@@ -52,10 +54,10 @@ namespace PeerStudy.Features.Q_A.Components.MainPageComponent
         {
             await SetCurrentUserDataAsync();
             var response = await QuestionService.GetAllAsync(currentUserId, new PaginationFilter(1, pageSize));
-            
-            currentDataSource = response.Data;
-            noPages = response.TotalPages;
-            savedQuestions.Add(1, response.Data);
+            SetCurrentData(response.Data, response.TotalPages);
+            noPagesForRecentQuestions = response.TotalPages;
+            currentPage = firstPage;
+            savedQuestions.Add(firstPage, response.Data);
         }
 
         private void HandleAddQuestion()
@@ -65,74 +67,81 @@ namespace PeerStudy.Features.Q_A.Components.MainPageComponent
 
         private async Task SetDataForPageNumber(int page)
         {
-            await SetQuestionsAsync(page);
+            await SetQuestionsToBeDisplayed(page);
         }
 
-        private async Task SetQuestionsAsync(int pageNumber)
+        private async Task SetQuestionsToBeDisplayed(int pageNumber)
         {
+            currentPage = pageNumber;
+            isLoading = true;
+            SetCurrentData(currentDataSource, 0);
+
             if (isSearchModeEnabled)
             {
-                isLoading = true;
-                try
-                {
-                    var questionsPagedModel = await QuestionService.SearchAsync(searchQuery, new PaginationFilter(pageNumber, pageSize));
-
-                    currentDataSource = questionsPagedModel.Data;
-                }
-                catch (Exception ex)
-                {
-                    ToastService.ShowToast(ToastLevel.Error, "An error occurred while fetching the questions...");
-                }
-                isLoading = false;
+                await SetSearchResultsAsync(pageNumber);
             }
             else
             {
-                if (savedQuestions.TryGetValue(pageNumber, out var foundQuestions))
+                await SetQuestionsByCreationDateAsync(pageNumber);
+            }
+
+            isLoading = false;
+        }
+
+        private async Task SetSearchResultsAsync(int pageNumber)
+        {
+            try
+            {
+                var questionsPagedModel = await QuestionService.SearchAsync(searchQuery, new PaginationFilter(pageNumber, pageSize));
+                SetCurrentData(questionsPagedModel.Data, questionsPagedModel.TotalPages);
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while fetching the questions...");
+            }
+        }
+
+        private async Task SetQuestionsByCreationDateAsync(int pageNumber)
+        {
+            if (savedQuestions.TryGetValue(pageNumber, out var foundQuestions))
+            {
+                currentDataSource = foundQuestions;
+                currentNoPages = noPagesForRecentQuestions;
+            }
+            else
+            {
+                try
                 {
-                    currentDataSource = foundQuestions;
+                    PagedResponseModel<FlatQuestionModel>? response = await QuestionService.GetAllAsync(currentUserId, new PaginationFilter(pageNumber, pageSize));
+                    SetCurrentData(response.Data, response.TotalPages);
+                    noPagesForRecentQuestions = response.TotalPages;
+                    savedQuestions.Add(pageNumber, currentDataSource);
                 }
-                else
+                catch (Exception ex)
                 {
-                    isLoading = true;
-                    try
-                    {
-                        PagedResponseModel<FlatQuestionModel>? response = await QuestionService.GetAllAsync(currentUserId, new PaginationFilter(pageNumber, pageSize));
-                        currentDataSource = response.Data;
-                        savedQuestions.Add(pageNumber, currentDataSource);
-                    }
-                    catch (Exception ex)
-                    {
-                        ToastService.ShowToast(ToastLevel.Error, ex.Message);
-                    }
-                    isLoading = false;
+                    ToastService.ShowToast(ToastLevel.Error, ex.Message);
                 }
             }
         }
 
-        //search questions
         private async Task HandleKeyDownEvent(KeyboardEventArgs args)
         {
             isSearchModeEnabled = true;
 
             if (args.Code == "Enter")
             {
-                isSearchFieldDisabled = true;
                 showSearchQuestionsInstructions = false;
-                isLoading = true;
-                currentDataSource = emptyDataSource;
                 StateHasChanged();
 
                 try
                 {
-                    var pagedQuestionsModel = await QuestionService.SearchAsync(searchQuery, new PaginationFilter());
-                    currentDataSource = pagedQuestionsModel.Data;
-
+                    await SetDataForPageNumber(firstPage);
                 }
                 catch (Exception ex) 
-                { 
+                {
+                    ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
                 }
-                isSearchFieldDisabled = false;
-                isLoading = false;
             }
         }
 
@@ -144,10 +153,15 @@ namespace PeerStudy.Features.Q_A.Components.MainPageComponent
         private async void DisplayRecentQuestions()
         {
             isSearchModeEnabled = false;
-            currentDataSource = emptyDataSource;
             searchQuery = string.Empty;
 
-            await SetQuestionsAsync(1);
+            await SetQuestionsToBeDisplayed(firstPage);
+        }
+
+        private void SetCurrentData(List<FlatQuestionModel> questions, int totalPages)
+        {
+            currentDataSource = questions;
+            currentNoPages = totalPages;
         }
 
         protected override void Dispose(bool disposed)

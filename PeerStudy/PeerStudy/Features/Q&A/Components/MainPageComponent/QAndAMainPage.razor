@@ -15,8 +15,7 @@
                       OnInput="SetSearchQuery"
                       OnKeyDown="HandleKeyDownEvent"
                       Icon="search"
-                      Label="Search questions..."
-                      Disabled="isSearchFieldDisabled">
+                      Label="Search questions...">
         </MatTextField>
     </div>
 
@@ -39,7 +38,8 @@
                            NoQuestionsMessage="@noQuestionsMessage">
 
                 <div class="page-numbers">
-                    <PeerStudyPagination NoTotalPages="noPages"
+                    <PeerStudyPagination NoTotalPages="currentNoPages"
+                                         CurrentPage="currentPage"
                                          NoPreviousNextPagesDisplayed="noPreviousNextPagesDisplayed"
                                          OnNavigateToNextPage="SetDataForPageNumber"
                                          OnNavigateToPreviousPage="SetDataForPageNumber"

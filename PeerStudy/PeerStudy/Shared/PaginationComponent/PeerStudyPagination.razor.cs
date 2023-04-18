@@ -12,6 +12,9 @@ namespace PeerStudy.Shared.PaginationComponent
         public int NoPreviousNextPagesDisplayed { get; set; } = 2;
 
         [Parameter]
+        public int CurrentPage { get; set; } = 1;
+
+        [Parameter]
         public EventCallback<int> OnNavigateToPreviousPage { get; set; }
 
         [Parameter]
@@ -23,60 +26,54 @@ namespace PeerStudy.Shared.PaginationComponent
 
         private const string previous = "previous";
         private const string next = "next";
-        private string currentPage = "1";
         private int startPage;
         private int endPage;
 
-        protected override void OnInitialized()
+        protected override void OnParametersSet()
         {
-            base.OnInitialized();
+            base.OnParametersSet();
             startPage = 1;
             endPage = NoTotalPages > NoPreviousNextPagesDisplayed + 1 ? NoPreviousNextPagesDisplayed + 1 : NoTotalPages;
         }
 
-        private bool IsActive(string page) => currentPage == page;
+        private bool IsActive(int page) => CurrentPage == page;
 
         private bool IsPageNavigationDisabled(string navigation)
         {
             if (navigation.Equals(previous))
             {
-                return currentPage.Equals("1");
+                return CurrentPage.Equals("1");
             }
             else if (navigation.Equals(next))
             {
-                return currentPage.Equals(NoTotalPages.ToString());
+                return CurrentPage.Equals(NoTotalPages.ToString());
             }
             return false;
         }
 
         private async Task GoToPreviousPage()
         {
-            var currentPageAsInt = int.Parse(currentPage);
-            if (currentPageAsInt > 1)
+            if (CurrentPage > 1)
             {
-                currentPage = (currentPageAsInt - 1).ToString();
-                UpdatePageIntervals(int.Parse(currentPage));
-                await OnNavigateToPreviousPage.InvokeAsync(int.Parse(currentPage));
+                UpdatePageIntervals(CurrentPage - 1);
+                await OnNavigateToPreviousPage.InvokeAsync(CurrentPage - 1);
             }
         }
 
         private async Task GoToNextPage()
         {
-            var currentPageAsInt = int.Parse(currentPage);
-            if (currentPageAsInt < NoTotalPages)
+            if (CurrentPage < NoTotalPages)
             {
-                currentPage = (currentPageAsInt + 1).ToString();
-                UpdatePageIntervals(int.Parse(currentPage));
-                await OnNavigateToNextPage.InvokeAsync(int.Parse(currentPage));
+                UpdatePageIntervals(CurrentPage + 1);
+                await OnNavigateToNextPage.InvokeAsync(CurrentPage + 1);
             }
         }
 
         private async Task SetActive(string page)
         {
-            currentPage = page;
-            var currentPageAsInt = int.Parse(currentPage);
-            UpdatePageIntervals(currentPageAsInt);
-            await OnSetActivePage.InvokeAsync(int.Parse(currentPage));
+            CurrentPage = int.Parse(page);
+            UpdatePageIntervals(CurrentPage);
+            await OnSetActivePage.InvokeAsync(CurrentPage);
         }
 
         private void UpdatePageIntervals(int currentPage)

@@ -8,14 +8,14 @@
     @{
         @if (startPage > 1)
         {
-            <PaginationItem @key="1" Active="@IsActive("1")">
+            <PaginationItem @key="1" Active="@IsActive(1)">
                 <PaginationLink Page="1" Clicked="SetActive">
                     1
                 </PaginationLink>
             </PaginationItem>
         }
 
-        @if (int.Parse(currentPage) - NoPreviousNextPagesDisplayed > 2)
+        @if (CurrentPage - NoPreviousNextPagesDisplayed > 2)
         {
             <span>...</span>
         }
@@ -23,21 +23,21 @@
         for (var i = startPage; i <= endPage; i++)
         {
             var pageNumber = i.ToString();
-            <PaginationItem @key="pageNumber" Active="@IsActive(pageNumber)">
+            <PaginationItem @key="pageNumber" Active="@IsActive(i)">
                 <PaginationLink Page="@pageNumber" Clicked="SetActive">
                     @pageNumber
                 </PaginationLink>
             </PaginationItem>
         }
 
-        @if (int.Parse(currentPage) + NoPreviousNextPagesDisplayed < NoTotalPages - 1)
+        @if (CurrentPage + NoPreviousNextPagesDisplayed < NoTotalPages - 1)
         {
             <span>...</span>
         }
 
         @if (endPage < NoTotalPages)
         {
-            <PaginationItem @key="@NoTotalPages" Active="@IsActive(NoTotalPages.ToString())">
+            <PaginationItem @key="@NoTotalPages" Active="@IsActive(NoTotalPages)">
                 <PaginationLink Page="@NoTotalPages.ToString()" Clicked="SetActive">
                     @NoTotalPages
                 </PaginationLink>
