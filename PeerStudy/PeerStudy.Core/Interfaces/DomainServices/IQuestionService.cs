@@ -19,5 +19,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<PagedResponseModel<FlatQuestionModel>> GetAllAsync(Guid currentUserId, PaginationFilter paginationFilter);
 
         Task UpdateAsync(UpdateQuestionModel updateQuestionModel);
+
+        Task<PagedResponseModel<FlatQuestionModel>> SearchAsync(string searchQuery, PaginationFilter paginationFilter);
     }
 }

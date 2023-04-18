@@ -1,6 +1,7 @@
 ﻿using PeerStudy.Core.DomainEntities;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
+using PeerStudy.Core.Extensions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Pagination;
@@ -179,6 +180,69 @@ namespace PeerStudy.Core.DomainServices
             question.Description = updateQuestionModel.Description;
             await unitOfWork.QuestionsRepository.UpdateAsync(question);
             await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<PagedResponseModel<FlatQuestionModel>> SearchAsync(string searchQuery, PaginationFilter paginationFilter)
+        {
+            // [tag1] AND/OR [tag2] AND/OR "some text" 
+
+            var filter = GetSearchFilter(searchQuery);
+
+            var response = await questionPaginationService.GetPagedResponseAsync(paginationFilter, filter);
+            return response;
+        }
+
+        private static Expression<Func<Question, bool>> GetSearchFilter(string searchQuery)
+        {
+            Expression<Func<Question, bool>> filter = x => false;
+            var wordsSplitByOr = searchQuery.Split("OR");
+
+            foreach (var word in wordsSplitByOr)
+            {
+                var wordsSplitByAnd = word.Trim().Split("AND", StringSplitOptions.TrimEntries);
+                Expression<Func<Question, bool>> andFilter = x => true;
+
+                andFilter = andFilter.And(GetTagsFilter(wordsSplitByAnd));
+                andFilter = andFilter.And(GetDescriptionFilter(wordsSplitByAnd));
+
+                filter = filter.Or(andFilter);
+            }
+
+            return filter;
+        }
+
+        private static Expression<Func<Question, bool>> GetTagsFilter(string[] words)
+        {
+            Expression<Func<Question, bool>> filter = x => true;
+
+            var tags = words
+                .Where(x => x.StartsWith("[") && x.EndsWith("]"))
+                .Select(x => x.Trim('[', ']'))
+                .ToList();
+
+            foreach (var tag in tags)
+            {
+                filter = filter.And(x => x.QuestionTags.Any(t => t.Tag.Content == tag));
+            }
+
+            return filter;
+        }
+
+        private static Expression<Func<Question, bool>> GetDescriptionFilter(string[] words)
+        {
+            Expression<Func<Question, bool>> filter = x => true;
+
+            var wordsFromDescription = words
+                    .Where(x => x.StartsWith("\"") && x.EndsWith("\""))
+                    .Select(x => x.Trim('"'))
+                    .ToList();
+
+            foreach (var descriptionWord in wordsFromDescription)
+            {
+                filter = filter.And(x => x.Description.Contains(descriptionWord));
+            }
+
+            return filter;
         }
     }
 }

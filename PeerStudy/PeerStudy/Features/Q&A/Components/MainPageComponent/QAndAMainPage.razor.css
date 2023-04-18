@@ -5,3 +5,17 @@
 .page-numbers {
     padding: 10px;
 }
+
+.search-bar {
+    margin: 10px;
+    width: 92%;
+}
+
+.search-questions-instructions {
+    background-color: white;
+    position: absolute;
+    border-radius: 10px;
+    z-index: 1;
+    width: 70%;
+    padding: 7px;
+}

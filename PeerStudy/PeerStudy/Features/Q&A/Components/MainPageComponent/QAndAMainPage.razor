@@ -7,23 +7,46 @@
 
 
 <div>
-    <div class="search-bar">
+    <div class="search-bar" @onclick="@(() => showSearchQuestionsInstructions = true)">
+        <MatTextField Class="input-field"
+                      Style="width: 92%;"
+                      @bind-Value="@searchQuery"
+                      Type="string"
+                      OnInput="SetSearchQuery"
+                      OnKeyDown="HandleKeyDownEvent"
+                      Icon="search"
+                      Label="Search questions..."
+                      Disabled="isSearchFieldDisabled">
+        </MatTextField>
     </div>
-    <div>
-        <MatButton Class="submit-button" Raised=true OnClick="HandleAddQuestion">Ask a question</MatButton>
-    </div>
-    <div class="recent-questions">
-        <QuestionsList IsLoading="isLoading"
-                       Questions="currentDataSource">
 
-            <div class="page-numbers">
-                <PeerStudyPagination NoTotalPages="noPages"
-                                     NoPreviousNextPagesDisplayed="noPreviousNextPagesDisplayed"
-                                     OnNavigateToNextPage="GoToNextPage"
-                                     OnNavigateToPreviousPage="GoToPreviousPage"
-                                     OnSetActivePage="SetActivePage">
-                </PeerStudyPagination>
-            </div>
-        </QuestionsList>
+    @if (showSearchQuestionsInstructions)
+    {
+        <div class="search-questions-instructions">
+            <p>Search by tags: [tag1] AND/OR [tag2]</p>
+            <p>Search by phrase: "searched words"</p>
+        </div>
+    }
+    <div @onclick="@(() => showSearchQuestionsInstructions = false)">
+        <div>
+            <MatButton Class="submit-button" Raised=true OnClick="HandleAddQuestion">Ask a question</MatButton>
+            <MatButton Style="float:right;" OnClick="DisplayRecentQuestions">View recent questions</MatButton>
+
+        </div>
+        <div class="recent-questions">
+            <QuestionsList IsLoading="isLoading"
+                           Questions="currentDataSource"
+                           NoQuestionsMessage="@noQuestionsMessage">
+
+                <div class="page-numbers">
+                    <PeerStudyPagination NoTotalPages="noPages"
+                                         NoPreviousNextPagesDisplayed="noPreviousNextPagesDisplayed"
+                                         OnNavigateToNextPage="SetDataForPageNumber"
+                                         OnNavigateToPreviousPage="SetDataForPageNumber"
+                                         OnSetActivePage="SetDataForPageNumber">
+                    </PeerStudyPagination>
+                </div>
+            </QuestionsList>
+        </div>
     </div>
 </div>

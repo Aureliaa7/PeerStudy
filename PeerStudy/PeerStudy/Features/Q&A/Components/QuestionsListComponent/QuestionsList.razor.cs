@@ -18,10 +18,10 @@ namespace PeerStudy.Features.Q_A.Components.QuestionsListComponent
         public bool IsLoading { get; set; }
 
         [Parameter]
+        public string NoQuestionsMessage { get; set; } = "There are no questions yet...";
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
-
-
-        private const string noQuestionsMessage = "There are no questions yet...";
 
         private void HandleClickedQuestion(Guid questionId)
         {
