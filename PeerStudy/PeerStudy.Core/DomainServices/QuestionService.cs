@@ -197,13 +197,48 @@ namespace PeerStudy.Core.DomainServices
             Expression<Func<Question, bool>> filter = x => false;
             var wordsSplitByOr = searchQuery.Split("OR");
 
-            foreach (var word in wordsSplitByOr)
+            var isSearchByTagAndOrTitleOrDescription = searchQuery.IndexOfAny(new char[] { '[', ']', '"' }) != -1;
+            if (!isSearchByTagAndOrTitleOrDescription)
+            {
+                var splitSearchQuery = searchQuery.Split(' ', StringSplitOptions.TrimEntries);
+
+                return GetFilterForSimpleSearch(splitSearchQuery);
+            }
+
+            var operators = new List<string> { "AND", "OR" };
+            bool isMixedSearch = isSearchByTagAndOrTitleOrDescription && !operators.Any(x => searchQuery.Contains(x));
+
+            if (!isMixedSearch)
+            {
+                return GetFilterForMixedSearch(wordsSplitByOr);
+            }
+
+            return filter;
+        }
+
+        private static Expression<Func<Question, bool>> GetFilterForSimpleSearch(string[] words)
+        {
+            Expression<Func<Question, bool>> filter = x => false;
+
+            foreach (var word in words)
+            {
+                filter = filter.Or(x => x.Title.Contains(word) || x.Description.Contains(word));
+            }
+
+            return filter;
+        }
+
+        private static Expression<Func<Question, bool>> GetFilterForMixedSearch(string[] words)
+        {
+            Expression<Func<Question, bool>> filter = x => false;
+
+            foreach (var word in words)
             {
                 var wordsSplitByAnd = word.Trim().Split("AND", StringSplitOptions.TrimEntries);
                 Expression<Func<Question, bool>> andFilter = x => true;
 
                 andFilter = andFilter.And(GetTagsFilter(wordsSplitByAnd));
-                andFilter = andFilter.And(GetDescriptionFilter(wordsSplitByAnd));
+                andFilter = andFilter.And(GetDescriptionTitleFilter(wordsSplitByAnd));
 
                 filter = filter.Or(andFilter);
             }
@@ -228,7 +263,7 @@ namespace PeerStudy.Core.DomainServices
             return filter;
         }
 
-        private static Expression<Func<Question, bool>> GetDescriptionFilter(string[] words)
+        private static Expression<Func<Question, bool>> GetDescriptionTitleFilter(string[] words)
         {
             Expression<Func<Question, bool>> filter = x => true;
 
@@ -239,7 +274,7 @@ namespace PeerStudy.Core.DomainServices
 
             foreach (var descriptionWord in wordsFromDescription)
             {
-                filter = filter.And(x => x.Description.Contains(descriptionWord));
+                filter = filter.And(x => x.Title.Contains(descriptionWord) || x.Description.Contains(descriptionWord));
             }
 
             return filter;
