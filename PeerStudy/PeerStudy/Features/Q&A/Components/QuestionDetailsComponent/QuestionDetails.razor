@@ -33,7 +33,6 @@
         else if (questionDetails?.AuthorId != currentUserId)
         {
             <MatButton Class="submit-button" Raised=true OnClick="@(() => showAddAnswerEditor = true)">Reply</MatButton>
-            <MatButton Class="submit-button" OnClick="@(() => showAddCommentEditor = true)">Add a comment</MatButton>
         }
 
 
@@ -45,13 +44,6 @@
             </PeerStudyTextEditor>
         }
 
-        @if (showAddCommentEditor)
-        {
-            <PeerStudyTextEditor Placeholder="Type your comment here..."
-                             OnSave="SaveComment"
-                             OnCancel="CancelAddComment">
-            </PeerStudyTextEditor>
-        }
         <div class="answers">
             <h4>@questionDetails.Answers.Count() Answers</h4>
             @foreach (var answer in questionDetails.Answers)

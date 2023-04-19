@@ -108,13 +108,13 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             {
                 var workItemToBeRemoved = allWorkItems.First(x => x.Id == selectedRow.Id);
                 await WorkItemService.DeleteAsync(selectedRow.Id);
-                allWorkItems = allWorkItems.Except(new List<WorkItemDetailsModel> { workItemToBeRemoved }).ToList();
-                selectedRow = null;
+                allWorkItems.Remove(workItemToBeRemoved);
             }
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, "The work item could not be deleted...");
             }
+            selectedRow = null;
         }
 
         private async Task AddWorkItem()
@@ -132,10 +132,8 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             {
                 ToastService.ShowToast(ToastLevel.Error, "An error occurred while creating the work item...");
             }
-            finally
-            {
-                workItemModel = new CreateUpdateWorkItemModel();
-            }
+
+            workItemModel = new CreateUpdateWorkItemModel();
         }
 
         private void CloseWorkItemDetailsPopup()
@@ -190,10 +188,8 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             {
                 ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the work item..."); 
             }
-            finally
-            {
-                workItemModel = new CreateUpdateWorkItemModel();
-            }
+
+            workItemModel = new CreateUpdateWorkItemModel();
         }
 
         private Task HandleSelectedWorkItemStatusChanged(WorkItemStatus? status)

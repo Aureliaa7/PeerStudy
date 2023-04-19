@@ -32,7 +32,6 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
         private const string deleteQuestionConfirmationMessage = "Are you sure you want to delete this question?";
         private const string deleteAnswerConfirmationMessage = "Are you sure you want to delete this answer?";
 
-        private bool showAddCommentEditor;
         private bool showAddAnswerEditor;
         private bool isEditQuestionDisabled = true;
 
@@ -113,17 +112,6 @@ namespace PeerStudy.Features.Q_A.Components.QuestionDetailsComponent
             {
                 ToastService.ShowToast(ToastLevel.Error, "An error occurred while posting your answer...");
             }
-        }
-
-        private void SaveComment(string htmlContent)
-        {
-            showAddCommentEditor = false;
-            //TODO: save the comment
-        }
-
-        private void CancelAddComment()
-        {
-            showAddCommentEditor = false;
         }
 
         private void CancelAddAnswer()
