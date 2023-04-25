@@ -31,7 +31,7 @@
                 <MatButton Icon="@MatIconNames.Delete" OnClick="ShowDeleteQuestionPopup"></MatButton>
             </div>
         }
-        else if (questionDetails?.AuthorId != currentUserId && !showAddAnswerEditor)
+        else if (questionDetails?.AuthorId != currentUserId)
         {
             if (!showAddAnswerEditor)
             {

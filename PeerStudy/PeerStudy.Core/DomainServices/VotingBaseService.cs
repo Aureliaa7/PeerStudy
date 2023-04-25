@@ -20,17 +20,17 @@ namespace PeerStudy.Core.DomainServices
 
         protected async Task VoteEntityAsync(VoteModel voteModel)
         {
-            // if answer is upvoted/downvoted => delete the vote
+            // if entity is upvoted/downvoted => delete the vote
             bool voteExisted = await DeleteVoteIfExistsAsync(voteModel.EntityId, voteModel.UserId, voteModel.VoteType);
 
             if (!voteExisted)
             {
-                // if answer is downvoted => upvote it
+                // if entity is downvoted => upvote it
                 if (voteModel.VoteType == VoteType.Upvote)
                 {
                     await DeleteVoteIfExistsAsync(voteModel.EntityId, voteModel.UserId, VoteType.Downvote);
                 }
-                // if answer is upvoted => downvote it
+                // if entity is upvoted => downvote it
                 else if (voteModel.VoteType == VoteType.Downvote)
                 {
                     await DeleteVoteIfExistsAsync(voteModel.EntityId, voteModel.UserId, VoteType.Upvote);
