@@ -1,5 +1,6 @@
 ﻿@using PeerStudy.Features.Q_A.Components.AnswerComponent
 @using PeerStudy.Features.Q_A.Components.TagsListComponent
+@using PeerStudy.Features.Q_A.Components.VotingComponent
 
 @page "/questions/{questionId:guid}"
 @inherits PeerStudyComponentBase
@@ -7,8 +8,8 @@
 
 <Loading IsLoading="isLoading" HasData="@(!isLoading && questionDetails != null)">
     <div class="header">
-        <h3>@questionDetails?.Title</h3>
-        <span class="posted-at">Posted: @questionDetails?.CreatedAt</span>
+        <h3>@questionDetails.Title</h3>
+        <span class="posted-at">@questionDetails.AuthorName posted on: @questionDetails?.CreatedAt</span>
     </div>
     <hr />
 
@@ -30,11 +31,21 @@
                 <MatButton Icon="@MatIconNames.Delete" OnClick="ShowDeleteQuestionPopup"></MatButton>
             </div>
         }
-        else if (questionDetails?.AuthorId != currentUserId)
+        else if (questionDetails?.AuthorId != currentUserId && !showAddAnswerEditor)
         {
-            <MatButton Class="submit-button" Raised=true OnClick="@(() => showAddAnswerEditor = true)">Reply</MatButton>
-        }
+            if (!showAddAnswerEditor)
+            {
+                <MatButton Class="submit-button" Raised=true OnClick="@(() => showAddAnswerEditor = true)">Reply</MatButton>
+            }
 
+            <Voting NoDownvotes="questionDetails.NoDownvotes"
+                    NoUpvotes="questionDetails.NoUpvotes"
+                    Votes="questionDetails.Votes"
+                    CurrentUserId="currentUserId"
+                    OnUpvote="UpvoteQuestion"
+                    OnDownvote="DownvoteQuestion">
+            </Voting>
+        }
 
         @if (showAddAnswerEditor)
         {
@@ -49,7 +60,7 @@
             @foreach (var answer in questionDetails.Answers)
             {
                 <AnswerDetails Answer="answer"
-                           CurrentUserId="@currentUserId"
+                           CurrentUserId="currentUserId"
                            OnDelete="ShowDeleteAnswerPopup"
                            OnEdit="EnableEditAnswer"
                            OnSave="SaveUpdatedAnswer"

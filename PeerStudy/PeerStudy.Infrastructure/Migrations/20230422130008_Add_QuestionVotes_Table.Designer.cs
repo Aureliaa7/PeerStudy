@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PeerStudy.Infrastructure.AppDbContext;
 
@@ -11,9 +12,10 @@ using PeerStudy.Infrastructure.AppDbContext;
 namespace PeerStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230422130008_Add_QuestionVotes_Table")]
+    partial class Add_QuestionVotes_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +49,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answers", (string)null);
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.AnswerVote", b =>
@@ -71,7 +73,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("AnswerVotes", (string)null);
+                    b.ToTable("AnswerVotes");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Assignment", b =>
@@ -111,7 +113,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudyGroupId");
 
-                    b.ToTable("Assignments", (string)null);
+                    b.ToTable("Assignments");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Course", b =>
@@ -165,7 +167,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.CourseEnrollmentRequest", b =>
@@ -192,7 +194,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("CourseEnrollmentRequests", (string)null);
+                    b.ToTable("CourseEnrollmentRequests");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.CourseResource", b =>
@@ -232,7 +234,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("CourseResources", (string)null);
+                    b.ToTable("CourseResources");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.CourseUnit", b =>
@@ -258,7 +260,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("CourseUnits", (string)null);
+                    b.ToTable("CourseUnits");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Question", b =>
@@ -285,7 +287,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Questions", (string)null);
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.QuestionTag", b =>
@@ -306,7 +308,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("QuestionTags", (string)null);
+                    b.ToTable("QuestionTags");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.QuestionVote", b =>
@@ -330,7 +332,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("QuestionVotes", (string)null);
+                    b.ToTable("QuestionVotes");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAsset", b =>
@@ -352,7 +354,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentAssets", (string)null);
+                    b.ToTable("StudentAssets");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentAssignment", b =>
@@ -381,7 +383,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudyGroupId");
 
-                    b.ToTable("StudentAssignments", (string)null);
+                    b.ToTable("StudentAssignments");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentCourse", b =>
@@ -402,7 +404,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("StudentCourses", (string)null);
+                    b.ToTable("StudentCourses");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentStudyGroup", b =>
@@ -423,7 +425,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudyGroupId");
 
-                    b.ToTable("StudentStudyGroup", (string)null);
+                    b.ToTable("StudentStudyGroup");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroup", b =>
@@ -447,7 +449,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("StudyGroups", (string)null);
+                    b.ToTable("StudyGroups");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupAssignmentFile", b =>
@@ -477,7 +479,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("AssignmentId");
 
-                    b.ToTable("StudyGroupAssignmentFiles", (string)null);
+                    b.ToTable("StudyGroupAssignmentFiles");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudyGroupFile", b =>
@@ -509,7 +511,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudyGroupId");
 
-                    b.ToTable("StudyGroupFiles", (string)null);
+                    b.ToTable("StudyGroupFiles");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Tag", b =>
@@ -524,7 +526,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.UnlockedCourseUnit", b =>
@@ -545,7 +547,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("UnlockedCourseUnits", (string)null);
+                    b.ToTable("UnlockedCourseUnits");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.User", b =>
@@ -589,7 +591,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
@@ -626,7 +628,7 @@ namespace PeerStudy.Infrastructure.Migrations
 
                     b.HasIndex("StudyGroupId");
 
-                    b.ToTable("WorkItems", (string)null);
+                    b.ToTable("WorkItems");
                 });
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.Student", b =>

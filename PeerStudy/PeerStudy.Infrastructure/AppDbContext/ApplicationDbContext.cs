@@ -46,6 +46,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<AnswerVote> AnswerVotes { get; set; }
 
+        public DbSet<QuestionVote> QuestionVotes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -66,6 +68,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new CourseUnitConfiguration().Configure(modelBuilder.Entity<CourseUnit>());
             new AnswerConfiguration().Configure(modelBuilder.Entity<Answer>());
             new AnswerVoteConfiguration().Configure(modelBuilder.Entity<AnswerVote>());
+            new QuestionVoteConfiguration().Configure(modelBuilder.Entity<QuestionVote>());
         }
     }
 }

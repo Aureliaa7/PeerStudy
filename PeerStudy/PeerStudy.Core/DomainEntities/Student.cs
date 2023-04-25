@@ -16,6 +16,7 @@ namespace PeerStudy.Core.DomainEntities
             Questions = new HashSet<Question>();
             Answers = new HashSet<Answer>();
             AnswerVotes = new HashSet<AnswerVote>();
+            QuestionVotes = new HashSet<QuestionVote>();
         }
 
         public ICollection<StudentCourse> CourseEnrollments { get; set; }
@@ -37,5 +38,7 @@ namespace PeerStudy.Core.DomainEntities
         public ICollection<Answer> Answers { get; set; }
 
         public ICollection<AnswerVote> AnswerVotes { get; set; }
+
+        public ICollection<QuestionVote> QuestionVotes { get; set; }
     }
 }

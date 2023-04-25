@@ -7,6 +7,7 @@ using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Pagination;
 using PeerStudy.Core.Models.QAndA.Answers;
 using PeerStudy.Core.Models.QAndA.Questions;
+using PeerStudy.Core.Models.QAndA.Votes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
 {
-    public class QuestionService : IQuestionService
+    public class QuestionService : VotingBaseService, IQuestionService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IQuestionPaginationService questionPaginationService;
@@ -85,24 +86,35 @@ namespace PeerStudy.Core.DomainServices
                     HtmlDescription = x.Description,
                     Title = x.Title,
                     Tags = x.QuestionTags.Select(x => x.Tag.Content).ToList(),
+                    AuthorName = $"{x.Author.FirstName} {x.Author.LastName}",
                     Answers = x.Answers.Select(y => new AnswerDetailsModel
                     {
                         Id = y.Id,
                         AuthorId = y.AuthorId,
-                        AuthorName = $"{y.Author.FirstName}{y.Author.LastName}",
+                        AuthorName = $"{y.Author.FirstName} {y.Author.LastName}",
                         CreatedAt= y.CreatedAt,
                         HtmlContent = y.Content,
-                        NoDownvotes = y.Votes.Where(x => x.Type == VoteType.Downvote).Count(),
-                        NoUpvotes = y.Votes.Where(x => x.Type == VoteType.Upvote).Count(),
+                        NoDownvotes = y.Votes.Where(x => x.VoteType == VoteType.Downvote).Count(),
+                        NoUpvotes = y.Votes.Where(x => x.VoteType == VoteType.Upvote).Count(),
                         Votes = y.Votes
-                                .Select(z => new VoteAnswerDetailsModel
+                                .Select(z => new VoteDetailsModel
                                 {
                                     Id = z.Id,
-                                    AnswerId = z.AnswerId,
-                                    UserId = z.UserId,
-                                    VoteType = z.Type
+                                    EntityId = z.AnswerId,
+                                    UserId = z.AuthorId,
+                                    VoteType = z.VoteType
                                 })
                                 .ToList()
+                    })
+                    .ToList(),
+                    NoUpvotes = x.QuestionVotes.Count(x => x.VoteType == VoteType.Upvote),
+                    NoDownvotes = x.QuestionVotes.Count(x => x.VoteType == VoteType.Downvote),
+                    Votes = x.QuestionVotes.Select(x => new VoteDetailsModel
+                    {
+                        EntityId = x.QuestionId,
+                        UserId = x.AuthorId,
+                        VoteType = x.VoteType,
+                        Id = x.Id
                     })
                     .ToList()
                 })
@@ -190,6 +202,45 @@ namespace PeerStudy.Core.DomainServices
 
             var response = await questionPaginationService.GetPagedResponseAsync(paginationFilter, filter);
             return response;
+        }
+
+        public async Task VoteAsync(VoteModel voteAnswerModel)
+        {
+            await VoteEntityAsync(voteAnswerModel);
+        }
+
+        protected override async Task<bool> DeleteVoteIfExistsAsync(Guid questionId, Guid authorId, VoteType voteType)
+        {
+            var vote = await GetVoteAsync(questionId, authorId, voteType);
+
+            if (vote != null)
+            {
+                await unitOfWork.QuestionVotesRepository.RemoveAsync(vote);
+                await unitOfWork.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        protected override async Task SaveVoteAsync(VoteModel voteModel)
+        {
+            await unitOfWork.QuestionVotesRepository.AddAsync(new QuestionVote
+            {
+                QuestionId = voteModel.EntityId,
+                AuthorId = voteModel.UserId,
+                VoteType = voteModel.VoteType
+            });
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        private Task<QuestionVote> GetVoteAsync(Guid questionId, Guid authorId, VoteType voteType)
+        {
+            return unitOfWork.QuestionVotesRepository.GetFirstOrDefaultAsync(
+                x => x.QuestionId == questionId &&
+                x.AuthorId == authorId &&
+                x.VoteType == voteType);
         }
 
         private static Expression<Func<Question, bool>> GetSearchFilter(string searchQuery)

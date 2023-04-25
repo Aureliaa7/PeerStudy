@@ -9,6 +9,7 @@ namespace PeerStudy.Core.DomainEntities
         {
             Answers = new HashSet<Answer>();
             QuestionTags = new HashSet<QuestionTag>();
+            QuestionVotes = new HashSet<QuestionVote>();
         }
 
         public Guid Id { get; set; }
@@ -26,5 +27,7 @@ namespace PeerStudy.Core.DomainEntities
         public ICollection<Answer> Answers { get; set; }
 
         public ICollection<QuestionTag> QuestionTags { get; set; }
+
+        public ICollection<QuestionVote> QuestionVotes { get; set; }
     }
 }

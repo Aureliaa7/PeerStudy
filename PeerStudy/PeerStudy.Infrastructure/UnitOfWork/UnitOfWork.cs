@@ -30,6 +30,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<QuestionTag> questionTagsRepository;
         private IRepository<Answer> answersRepository;
         private IRepository<AnswerVote> answerVotesRepository;
+        private IRepository<QuestionVote> questionVotesRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -212,6 +213,15 @@ namespace PeerStudy.Infrastructure.UnitOfWork
             {
                 answerVotesRepository ??= new Repository<AnswerVote>(dbContext);
                 return answerVotesRepository;
+            }
+        }
+
+        public IRepository<QuestionVote> QuestionVotesRepository
+        {
+            get
+            {
+                questionVotesRepository ??= new Repository<QuestionVote>(dbContext);
+                return questionVotesRepository;
             }
         }
 

@@ -4,13 +4,13 @@ using PeerStudy.Core.DomainEntities;
 
 namespace PeerStudy.Infrastructure.ModelConfigurations
 {
-    internal class AnswerVoteConfiguration : IEntityTypeConfiguration<AnswerVote>
+    internal class QuestionVoteConfiguration : IEntityTypeConfiguration<QuestionVote>
     {
-        public void Configure(EntityTypeBuilder<AnswerVote> builder)
+        public void Configure(EntityTypeBuilder<QuestionVote> builder)
         {
             builder.HasOne(x => x.Author)
-                .WithMany(x => x.AnswerVotes)
-                .OnDelete(DeleteBehavior.NoAction);
+               .WithMany(x => x.QuestionVotes)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

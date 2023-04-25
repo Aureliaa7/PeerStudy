@@ -1,0 +1,13 @@
+﻿@using PeerStudy.Core.Enums
+
+<MatButton Style="@($"color: {(!CurrentUserVotedAnswer(VoteType.Upvote) ? "#C8C8C8" : "")}")"
+            Icon="@MatIconNames.Thumb_up"
+            OnClick="Upvote">
+    @NoUpvotes
+</MatButton>
+
+<MatButton Style="@($"color: {(!CurrentUserVotedAnswer(VoteType.Downvote) ? "#C8C8C8" : "")}")"
+            Icon="@MatIconNames.Thumb_down"
+            OnClick="Downvote">
+    @NoDownvotes
+</MatButton>

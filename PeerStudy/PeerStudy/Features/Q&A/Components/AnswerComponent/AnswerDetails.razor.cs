@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.QAndA.Answers;
 using System;
 using System.Threading.Tasks;
@@ -31,11 +30,6 @@ namespace PeerStudy.Features.Q_A.Components.AnswerComponent
 
         [Parameter]
         public EventCallback<Guid> OnDownvote { get; set; }
-
-        private bool CurrentUserVotedAnswer(VoteType voteType)
-        {
-            return Answer.Votes.Exists(x => x.UserId == CurrentUserId && x.VoteType == voteType);
-        }
 
         private async Task Delete()
         {

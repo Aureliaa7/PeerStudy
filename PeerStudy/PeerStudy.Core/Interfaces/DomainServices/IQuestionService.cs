@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Core.Interfaces.DomainServices
 {
-    public interface IQuestionService
+    public interface IQuestionService : IVotingService
     {
         Task<QuestionDetailsModel> CreateAsync(CreateQuestionModel createQuestionModel);
 
