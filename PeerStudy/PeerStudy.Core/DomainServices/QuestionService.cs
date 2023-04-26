@@ -248,8 +248,10 @@ namespace PeerStudy.Core.DomainServices
             Expression<Func<Question, bool>> filter = x => false;
             var wordsSplitByOr = searchQuery.Split("OR");
 
-            var isSearchByTagAndOrTitleOrDescription = searchQuery.IndexOfAny(new char[] { '[', ']', '"' }) != -1;
-            if (!isSearchByTagAndOrTitleOrDescription)
+            var isSearchByTags = searchQuery.IndexOfAny(new char[] { '[', ']' }) != -1;
+            var isSearchByTitleOrDescription = searchQuery.IndexOfAny(new char[] { '"' }) != -1;
+
+            if (!isSearchByTags && !isSearchByTitleOrDescription)
             {
                 var splitSearchQuery = searchQuery.Split(' ', StringSplitOptions.TrimEntries);
 
@@ -257,11 +259,21 @@ namespace PeerStudy.Core.DomainServices
             }
 
             var operators = new List<string> { "AND", "OR" };
-            bool isMixedSearch = isSearchByTagAndOrTitleOrDescription && !operators.Any(x => searchQuery.Contains(x));
+            bool isMixedSearch = isSearchByTags && isSearchByTitleOrDescription && operators.Any(x => searchQuery.Contains(x));
 
-            if (!isMixedSearch)
+            if (isMixedSearch)
             {
                 return GetFilterForMixedSearch(wordsSplitByOr);
+            }
+
+            if (isSearchByTags)
+            {
+                return GetTagsFilter(wordsSplitByOr);
+            }
+
+            if (isSearchByTitleOrDescription)
+            {
+                return GetDescriptionTitleFilter(wordsSplitByOr);
             }
 
             return filter;
@@ -303,8 +315,13 @@ namespace PeerStudy.Core.DomainServices
 
             var tags = words
                 .Where(x => x.StartsWith("[") && x.EndsWith("]"))
-                .Select(x => x.Trim('[', ']'))
+                .Select(x => x.Trim('[', ']').Trim())
                 .ToList();
+
+            if (!tags.Any())
+            {
+                return x => false;
+            }
 
             foreach (var tag in tags)
             {
@@ -320,8 +337,13 @@ namespace PeerStudy.Core.DomainServices
 
             var wordsFromDescription = words
                     .Where(x => x.StartsWith("\"") && x.EndsWith("\""))
-                    .Select(x => x.Trim('"'))
+                    .Select(x => x.Trim('"').Trim())
                     .ToList();
+
+            if (!wordsFromDescription.Any())
+            {
+                return x => false;
+            }
 
             foreach (var descriptionWord in wordsFromDescription)
             {
