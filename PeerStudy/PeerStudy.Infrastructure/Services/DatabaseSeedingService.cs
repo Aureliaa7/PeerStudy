@@ -1,4 +1,5 @@
 ﻿using PeerStudy.Core.DomainEntities;
+using PeerStudy.Core.Enums;
 using PeerStudy.Infrastructure.AppDbContext;
 using PeerStudy.Infrastructure.Helpers;
 using PeerStudy.Infrastructure.Interfaces;
@@ -22,8 +23,7 @@ namespace PeerStudy.Infrastructure.Services
         {
             try
             {
-                string filePath = @"C:\Users\Aura.LAPTOP-GLQOS0K8\Desktop\disertatie\Project\PeerStudy\PeerStudy\PeerStudy.Infrastructure\teachers.json";
-
+                var filePath = $@"{Directory.GetCurrentDirectory()}\teachers.json";
                 StreamReader sr = new StreamReader(filePath);
                 var jsonData = sr.ReadToEnd();
                 var users = JsonSerializer.Deserialize<List<Teacher>>(jsonData);
@@ -56,9 +56,42 @@ namespace PeerStudy.Infrastructure.Services
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            user.Role = Core.Enums.Role.Teacher;
+            user.Role = Role.Teacher;
 
             return user;
+        }
+
+        public void InsertBadges()
+        {
+            try
+            {
+                var filePath = $@"{Directory.GetCurrentDirectory()}\badges.json";
+                StreamReader sr = new StreamReader(filePath);
+                var jsonData = sr.ReadToEnd();
+                var badges = JsonSerializer.Deserialize<List<Badge>>(jsonData);
+
+                if (badges == null || !badges.Any())
+                {
+                    return;
+                }
+
+                var badgesToBeInserted = new List<Badge>();
+
+                foreach (var badge in badges)
+                {
+                    bool badgeExists = context.Badges.Where(x => x.Type == badge.Type).Any();
+                    if (!badgeExists)
+                    {
+                        badgesToBeInserted.Add(badge);
+                    }
+                }
+
+                context.Badges.AddRange(badgesToBeInserted);
+                context.SaveChanges();
+            }
+            catch (Exception ex) 
+            {
+            }
         }
     }
 }

@@ -48,6 +48,10 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<QuestionVote> QuestionVotes { get; set; }
 
+        public DbSet<Badge> Badges { get; set; }
+
+        public DbSet<StudentBadge> StudentBadges { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -55,7 +59,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
             ConfigureEntities(modelBuilder);
         }
 
-        private void ConfigureEntities(ModelBuilder modelBuilder)
+        private static void ConfigureEntities(ModelBuilder modelBuilder)
         {
             new UserConfiguration().Configure(modelBuilder.Entity<User>());
             new CourseConfiguration().Configure(modelBuilder.Entity<Course>());
@@ -69,6 +73,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new AnswerConfiguration().Configure(modelBuilder.Entity<Answer>());
             new AnswerVoteConfiguration().Configure(modelBuilder.Entity<AnswerVote>());
             new QuestionVoteConfiguration().Configure(modelBuilder.Entity<QuestionVote>());
+            new BadgeConfiguration().Configure(modelBuilder.Entity<Badge>());
+            new StudentBadgeConfiguration().Configure(modelBuilder.Entity<StudentBadge>());
         }
     }
 }

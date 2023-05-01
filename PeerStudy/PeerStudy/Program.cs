@@ -34,6 +34,7 @@ var serviceProvider = builder.Services.BuildServiceProvider();
 var service = serviceProvider.GetService<IDatabaseSeedingService>();
 
 service?.InsertTeachers();
+service?.InsertBadges();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

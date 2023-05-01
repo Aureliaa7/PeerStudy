@@ -17,6 +17,7 @@ namespace PeerStudy.Core.DomainEntities
             Answers = new HashSet<Answer>();
             AnswerVotes = new HashSet<AnswerVote>();
             QuestionVotes = new HashSet<QuestionVote>();
+            StudentBadges = new HashSet<StudentBadge>();
         }
 
         public ICollection<StudentCourse> CourseEnrollments { get; set; }
@@ -40,5 +41,7 @@ namespace PeerStudy.Core.DomainEntities
         public ICollection<AnswerVote> AnswerVotes { get; set; }
 
         public ICollection<QuestionVote> QuestionVotes { get; set; }
+
+        public ICollection<StudentBadge> StudentBadges { get; set; }
     }
 }
