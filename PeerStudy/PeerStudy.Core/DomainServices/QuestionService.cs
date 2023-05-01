@@ -20,11 +20,15 @@ namespace PeerStudy.Core.DomainServices
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IQuestionPaginationService questionPaginationService;
+        private readonly IRewardingService rewardingService;
 
-        public QuestionService(IUnitOfWork unitOfWork, IQuestionPaginationService questionPaginationService)
+        public QuestionService(IUnitOfWork unitOfWork,
+            IQuestionPaginationService questionPaginationService,
+            IRewardingService rewardingService)
         {
             this.unitOfWork = unitOfWork;
             this.questionPaginationService = questionPaginationService;
+            this.rewardingService = rewardingService;
         }
 
         public async Task<QuestionDetailsModel> CreateAsync(CreateQuestionModel createQuestionModel)
@@ -50,6 +54,8 @@ namespace PeerStudy.Core.DomainServices
             }
             await unitOfWork.QuestionTagsRepository.AddRangeAsync(questionTags);
             await unitOfWork.SaveChangesAsync();
+
+            await rewardingService.UpdateBadgesForQuestionsAsync(createQuestionModel.AuthorId);
 
             return new QuestionDetailsModel
             {
@@ -204,9 +210,10 @@ namespace PeerStudy.Core.DomainServices
             return response;
         }
 
-        public async Task VoteAsync(VoteModel voteAnswerModel)
+        public async Task VoteAsync(VoteModel voteModel)
         {
-            await VoteEntityAsync(voteAnswerModel);
+            await VoteEntityAsync(voteModel);
+            await rewardingService.UpdateBadgesForUpvotedQuestionAsync(voteModel.EntityId);
         }
 
         protected override async Task<bool> DeleteVoteIfExistsAsync(Guid questionId, Guid authorId, VoteType voteType)

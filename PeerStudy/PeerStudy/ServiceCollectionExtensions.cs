@@ -69,6 +69,8 @@ namespace PeerStudy
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IQuestionPaginationService, QuestionPaginationService>();
             services.AddScoped<IAnswerService, AnswerService>();
+            services.AddScoped<IBadgeService, BadgeService>();
+            services.AddScoped<IRewardingService, RewardingService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)

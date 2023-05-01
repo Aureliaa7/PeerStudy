@@ -17,5 +17,7 @@
         QuestionMaster,
 
         Mentor
+
+        //TODO: add more badges(for getting x upvotes for an answer/question)
     }
 }

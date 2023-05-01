@@ -13,10 +13,12 @@ namespace PeerStudy.Core.DomainServices
     public class AnswerService : VotingBaseService, IAnswerService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IRewardingService rewardingService;
 
-        public AnswerService(IUnitOfWork unitOfWork)
+        public AnswerService(IUnitOfWork unitOfWork, IRewardingService rewardingService)
         {
             this.unitOfWork = unitOfWork;
+            this.rewardingService = rewardingService;
         }
 
         public async Task<AnswerDetailsModel> AddAsync(AddAnswerModel answerModel)
@@ -35,6 +37,8 @@ namespace PeerStudy.Core.DomainServices
                 QuestionId = answerModel.QuestionId
             });
             await unitOfWork.SaveChangesAsync();
+
+            await rewardingService.UpdateBadgesForAnswersAsync(answerModel.AuthorId);
 
             return new AnswerDetailsModel
             {
@@ -64,9 +68,10 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task VoteAsync(VoteModel voteAnswerModel)
+        public async Task VoteAsync(VoteModel voteModel)
         {
-            await VoteEntityAsync(voteAnswerModel);
+            await VoteEntityAsync(voteModel);
+            await rewardingService.UpdateBadgesForUpvotedAnswerAsync(voteModel.EntityId);
         }
 
         private async Task CheckIfAnswerExistsAsync(Guid id, Guid authorId)

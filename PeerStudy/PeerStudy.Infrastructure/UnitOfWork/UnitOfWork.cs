@@ -1,4 +1,5 @@
-﻿using PeerStudy.Core.DomainEntities;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using PeerStudy.Core.DomainEntities;
 using PeerStudy.Core.Interfaces.Repositories;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Infrastructure.AppDbContext;
@@ -30,6 +31,8 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<Answer> answersRepository;
         private IRepository<AnswerVote> answerVotesRepository;
         private IRepository<QuestionVote> questionVotesRepository;
+        private IRepository<Badge> badgesRepository;
+        private IRepository<StudentBadge> studentBadgesRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -212,6 +215,24 @@ namespace PeerStudy.Infrastructure.UnitOfWork
             {
                 questionVotesRepository ??= new Repository<QuestionVote>(dbContext);
                 return questionVotesRepository;
+            }
+        }
+
+        public IRepository<Badge> BadgesRepository
+        {
+            get
+            {
+                badgesRepository ??= new Repository<Badge>(dbContext);
+                return badgesRepository;
+            }
+        }
+
+        public IRepository<StudentBadge> StudentBadgesRepository
+        {
+            get
+            {
+                studentBadgesRepository ??= new Repository<StudentBadge>(dbContext);
+                return studentBadgesRepository;
             }
         }
 

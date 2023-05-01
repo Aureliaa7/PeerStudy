@@ -5,6 +5,6 @@ namespace PeerStudy.Core.Interfaces.DomainServices
 {
     public interface IVotingService
     {
-        Task VoteAsync(VoteModel voteAnswerModel);
+        Task VoteAsync(VoteModel voteModel);
     }
 }

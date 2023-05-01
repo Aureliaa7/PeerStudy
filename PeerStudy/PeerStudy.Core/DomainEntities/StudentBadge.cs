@@ -8,8 +8,7 @@ namespace PeerStudy.Core.DomainEntities
 
         public Guid BadgeId { get; set; }
 
-        public DateTime RewardingDate { get; set; }
-
+        public int NumberOfBadges { get; set; }
 
         public Student Student { get; set; }
 
