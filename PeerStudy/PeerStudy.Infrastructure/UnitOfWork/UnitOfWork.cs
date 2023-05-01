@@ -23,7 +23,6 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<StudyGroupFile> studyGroupFilesRepository;
         private IRepository<WorkItem> workItemsRepository;
         private IRepository<CourseUnit> courseUnitsRepository;
-        private IRepository<StudentAsset> studentAssetsRepository;
         private IRepository<UnlockedCourseUnit> unlockedCourseUnitsRepository;
         private IRepository<Question> questionsRepository;
         private IRepository<Tag> tagsRepository;
@@ -150,15 +149,6 @@ namespace PeerStudy.Infrastructure.UnitOfWork
             {
                 courseUnitsRepository ??= new Repository<CourseUnit>(dbContext);
                 return courseUnitsRepository;
-            }
-        }
-
-        public IRepository<StudentAsset> StudentAssetsRepository
-        {
-            get
-            {
-                studentAssetsRepository ??= new Repository<StudentAsset>(dbContext);
-                return studentAssetsRepository;
             }
         }
 

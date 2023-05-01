@@ -16,11 +16,15 @@ namespace PeerStudy.Core.DomainServices
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly ICourseResourceService courseResourceService;
+        private readonly IStudentPointsService studentPointsService;
 
-        public CourseUnitService(IUnitOfWork unitOfWork, ICourseResourceService courseResourceService)
+        public CourseUnitService(IUnitOfWork unitOfWork,
+            ICourseResourceService courseResourceService,
+            IStudentPointsService studentPointsService)
         {
             this.unitOfWork = unitOfWork;
             this.courseResourceService = courseResourceService;
+            this.studentPointsService = studentPointsService;
         }
 
         public async Task<CourseUnitDetailsModel> CreateAsync(CourseUnitModel courseUnit)
@@ -162,11 +166,7 @@ namespace PeerStudy.Core.DomainServices
             var courseUnit = await unitOfWork.CourseUnitsRepository.GetFirstOrDefaultAsync(x => x.Id == courseUnitId) ?? 
                 throw new EntityNotFoundException($"Course unit with id {courseUnitId} was not found!");
 
-            var studentAsset = await unitOfWork.StudentAssetsRepository.GetFirstOrDefaultAsync(x => x.Asset == AssetType.Points &&
-            x.StudentId == studentId) ?? throw new EntityNotFoundException($"Entity with asset type {AssetType.Points.ToString()} and student id {studentId} was not found!");
-
-            studentAsset.NumberOfAssets -= courseUnit.NoPointsToUnlock;
-            await unitOfWork.StudentAssetsRepository.UpdateAsync(studentAsset);
+            await studentPointsService.SubtractPointsAsync(studentId, courseUnit.NoPointsToUnlock, false);
             await unitOfWork.UnlockedCourseUnitsRepository.AddAsync(new UnlockedCourseUnit
             {
                 CourseUnitId = courseUnitId,

@@ -34,8 +34,6 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<UnlockedCourseUnit> UnlockedCourseUnits { get; set; }
 
-        public DbSet<StudentAsset> StudentAssets { get; set; }
-
         public DbSet<Question> Questions { get; set; }
 
         public DbSet<Answer> Answers { get; set; }

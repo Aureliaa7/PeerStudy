@@ -40,7 +40,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        private IStudentAssetService StudentAssetService { get; set; }
+        private IStudentPointsService StudentAssetService { get; set; }
 
 
         [Parameter]
@@ -89,7 +89,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             await SetCurrentUserDataAsync();
             if (currentUserRole == Role.Student)
             {
-                numberOfPoints = await StudentAssetService.GetNoAssetsAsync(AssetType.Points, StudentId);
+                numberOfPoints = await StudentAssetService.GetNoPointsAsync(StudentId);
                 courseUnits = await CourseUnitService.GetByCourseAndStudentIdAsync(CourseId, StudentId);
             }
             else if (currentUserRole == Role.Teacher)

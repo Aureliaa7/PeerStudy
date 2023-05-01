@@ -16,12 +16,12 @@ namespace PeerStudy.Core.DomainServices
     public class AssignmentService : IAssignmentService
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly IStudentAssetService studentAssetService;
+        private readonly IStudentPointsService studentPointsService;
 
-        public AssignmentService(IUnitOfWork unitOfWork, IStudentAssetService studentAssetService)
+        public AssignmentService(IUnitOfWork unitOfWork, IStudentPointsService studentPointsService)
         {
             this.unitOfWork = unitOfWork;
-            this.studentAssetService = studentAssetService;
+            this.studentPointsService = studentPointsService;
         }
 
         public async Task CreateAsync(CreateAssignmentModel model)
@@ -149,16 +149,11 @@ namespace PeerStudy.Core.DomainServices
 
         private async Task SavePointsAsync(Guid studentId, int noPoints)
         {
-            var studentAsset = await studentAssetService.GetAsync(AssetType.Points, studentId);
-            if (studentAsset == null)
+            await studentPointsService.AddAsync(new SaveStudentPointsModel
             {
-                await studentAssetService.CreateAsync(new CreateStudentAssetModel
-                {
-                    AssetType = AssetType.Points,
-                    NoAssets = noPoints,
-                    StudentId = studentId
-                });
-            }
+                NoPoints = noPoints,
+                StudentId = studentId
+            });
         }
 
         private async Task CheckIfAssignmentExistsAsync(Guid id)
