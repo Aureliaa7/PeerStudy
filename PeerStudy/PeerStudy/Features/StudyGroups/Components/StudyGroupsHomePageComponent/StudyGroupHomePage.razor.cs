@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
 {
-    public partial class StudyGroupHomePage : PeerStudyComponentBase
+    public partial class StudyGroupHomePage : PeerStudyComponentBase, IDisposable
     {
         [Inject]
         private IStudyGroupResourceService StudyGroupResourceService { get; set; }
@@ -105,10 +105,8 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
             }
         }
 
-        // fix for https://github.com/mrpmorris/Fluxor/blob/master/Docs/disposable-callback-not-disposed.md
-        protected override void Dispose(bool disposed)
+        public void Dispose()
         {
-            base.Dispose(disposed);
             NavigationMenuService.Reset();
         }
     }

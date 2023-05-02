@@ -34,9 +34,6 @@
     <PackageReference Include="Blazorise.DataGrid" Version="1.2.0" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.0" />
     <PackageReference Include="Blazorise.RichTextEdit" Version="1.2.2" />
-    <PackageReference Include="Fluxor" Version="5.7.0" />
-    <PackageReference Include="Fluxor.Blazor.Web" Version="5.7.0" />
-    <PackageReference Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.7.0" />
     <PackageReference Include="MatBlazor" Version="2.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.13">

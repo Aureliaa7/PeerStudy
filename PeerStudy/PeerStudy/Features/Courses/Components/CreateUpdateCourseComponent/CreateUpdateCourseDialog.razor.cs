@@ -21,6 +21,9 @@ namespace PeerStudy.Features.Courses.Components.CreateUpdateCourseComponent
         [Parameter]
         public bool IsEditCourseEnabled { get; set; }
 
+        [Parameter]
+        public bool HasStudyGroups { get; set; }
+
 
         private string datePickerStyleRules = "width: 80%;";
         private string dialogStyleRules = "top: -95px;";

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
 {
-    public partial class WorkItemsList : PeerStudyComponentBase
+    public partial class WorkItemsList : PeerStudyComponentBase, IDisposable
     {
         [Inject]
         private IWorkItemService WorkItemService { get; set; }
@@ -249,9 +249,8 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             filteredWorkItems = allWorkItems;
         }
 
-        protected override void Dispose(bool disposed)
+        public void Dispose()
         {
-            base.Dispose(disposed);
             NavigationMenuService.Reset();
         }
     }

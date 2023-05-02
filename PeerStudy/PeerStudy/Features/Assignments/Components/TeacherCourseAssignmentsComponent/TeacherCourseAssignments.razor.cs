@@ -1,11 +1,8 @@
 ﻿using Blazored.Toast.Services;
-using Fluxor;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
-using PeerStudy.Core.Models.Courses;
-using PeerStudy.Features.Courses.Store;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +19,7 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
         private NavigationManager NavigationManager { get; set; }
 
         [Inject] 
-        private IStateSelection<CoursesState, CourseDetailsModel> SelectedCourse { get; set; }
-
-        [Inject]
-        private IState<CoursesState> CoursesState { get; set; }
+        private ICourseService CourseService { get; set; }
 
 
         [Parameter]
@@ -62,20 +56,11 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
             }
         }
 
-        private void CheckIfIsReadOnlyMode()
+        private async Task CheckIfIsReadOnlyMode()
         {
-            var course = CoursesState.Value.ActiveCourses.FirstOrDefault(x => x.Id == CourseId) ??
-                   CoursesState.Value.ArchivedCourses.FirstOrDefault(x => x.Id == CourseId);
+            var course = await CourseService.GetDetailsAsync(CourseId);
 
             isReadOnly = course.Status == CourseStatus.Archived;
-
-            SelectedCourse.Select(x => x.ActiveCourses.FirstOrDefault(y => y.Id == CourseId) ??
-            x.ArchivedCourses.FirstOrDefault(y => y.Id == CourseId));
-
-            SelectedCourse.SelectedValueChanged += (object? sender, CourseDetailsModel course) =>
-            {
-                isReadOnly = course.Status == CourseStatus.Archived;
-            };
         }
 
         private async Task SaveGradeHandler(SaveGradeModel data)

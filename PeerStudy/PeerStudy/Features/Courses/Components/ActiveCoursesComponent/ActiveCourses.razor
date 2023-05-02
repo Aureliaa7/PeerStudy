@@ -8,7 +8,7 @@
 
 
 <AuthorizeView Roles="Teacher">
-    @if (!CoursesState.Value.IsLoading)
+    @if (!isLoading)
     {
         <div>
             <MatButton Style="@addCourseBtnStyle" OnClick="ShowAddCourseDialog">
@@ -28,13 +28,14 @@
         <CreateUpdateCourseDialog IsVisible="displayCourseDialog"
                               IsEditCourseEnabled="true"
                               CourseModel="CourseModel"
+                              HasStudyGroups="courseHasStudyGroups"
                               OnSave="EditCourse"
                               OnCancel="CancelEditCourse">
         </CreateUpdateCourseDialog>
     }
 
-    <CoursesList Courses="CoursesState.Value.ActiveCourses"
-                 IsLoading="CoursesState.Value.IsLoading"
+    <CoursesList Courses="courses"
+                 IsLoading="isLoading"
                  CoursesNotFoundMessage="@noCoursesMessage"
                  OnEditCourse="EditCourseHandler"
                  OnArchiveCourse="ArchiveCourseHandler"
@@ -43,8 +44,8 @@
 </AuthorizeView>
 
 <AuthorizeView Roles="Student">
-    <CoursesList Courses="CoursesState.Value.ActiveCourses"
-                 IsLoading="CoursesState.Value.IsLoading"
+    <CoursesList Courses="courses"
+                 IsLoading="isLoading"
                  CoursesNotFoundMessage="@noCoursesMessage"
                  OnCourseClicked="CourseClickedHandler">
     </CoursesList>

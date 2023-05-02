@@ -1,8 +1,7 @@
-﻿using Fluxor;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
+using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Courses;
-using PeerStudy.Features.Courses.Store;
 
 namespace PeerStudy.Features.Courses.Components
 {
@@ -12,10 +11,7 @@ namespace PeerStudy.Features.Courses.Components
         private NavigationManager NavigationManager { get; set; }
 
         [Inject]
-        protected IDispatcher Dispatcher { get; set; }
-
-        [Inject]
-        protected IState<CoursesState> CoursesState { get; set; }
+        protected ICourseService CourseService { get; set; }
 
         protected void CourseClickedHandler(CourseDetailsModel courseDetails)
         {

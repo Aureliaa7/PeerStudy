@@ -1,5 +1,4 @@
 ﻿using Blazored.Toast.Services;
-using Fluxor;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
@@ -7,8 +6,8 @@ using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.CourseUnits;
 using PeerStudy.Core.Models.Resources;
-using PeerStudy.Features.Courses.Store;
 using PeerStudy.Models;
+using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,10 +27,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private IAssignmentService AssignmentService { get; set; }
 
         [Inject]
-        private IStateSelection<CoursesState, CourseDetailsModel> SelectedCourse { get; set; }
-
-        [Inject]
-        private IState<CoursesState> CoursesState { get; set; }
+        private ICourseService CourseService { get; set; }
 
         [Inject]
         private ICourseUnitService CourseUnitService { get; set;}
@@ -41,6 +37,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         [Inject]
         private IStudentPointsService StudentAssetService { get; set; }
+
+        [Inject]
+        private IPeerStudyToastService ToastService { get; set; }
 
 
         [Parameter]
@@ -97,7 +96,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
                 courseUnits = await CourseUnitService.GetByCourseIdAsync(CourseId);
             }
 
-            SetCurrentCourseDetails();
+            await SetCurrentCourseDetailsAsync();
             UpdateNavigationMenu();
             isReadOnly = courseDetails.Status == CourseStatus.Archived;
             studyGroupsDropdownItems = (await StudyGroupService.GetStudyGroupIdNamePairsAsync(CourseId))
@@ -109,18 +108,16 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
                 .ToList();
         }
 
-        private void SetCurrentCourseDetails()
+        private async Task SetCurrentCourseDetailsAsync()
         {
-            courseDetails = CoursesState.Value.ActiveCourses.FirstOrDefault(x => x.Id == CourseId) ??
-                CoursesState.Value.ArchivedCourses.FirstOrDefault(x => x.Id == CourseId);
-
-            SelectedCourse.Select(x => x.ActiveCourses.FirstOrDefault(y => y.Id == CourseId) ??
-           x.ArchivedCourses.FirstOrDefault(y => y.Id == CourseId));
-
-            SelectedCourse.SelectedValueChanged += (object? sender, CourseDetailsModel course) =>
+            try
             {
-                courseDetails = course;
-            };
+                courseDetails = await CourseService.GetDetailsAsync(CourseId);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occured while fetching the course details...");
+            }
         }
 
         private void UpdateNavigationMenu()

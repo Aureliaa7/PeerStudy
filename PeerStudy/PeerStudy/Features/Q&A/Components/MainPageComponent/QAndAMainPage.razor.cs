@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Q_A.Components.MainPageComponent
 {
-    public partial class QAndAMainPage : PeerStudyComponentBase
+    public partial class QAndAMainPage : PeerStudyComponentBase, IDisposable
     {
         [Inject]
         private NavigationManager NavigationManager { get; set; }
@@ -164,9 +164,8 @@ namespace PeerStudy.Features.Q_A.Components.MainPageComponent
             currentNoPages = totalPages;
         }
 
-        protected override void Dispose(bool disposed)
+        public void Dispose()
         {
-            base.Dispose(disposed);
             NavigationMenuService.Reset();
         }
     }

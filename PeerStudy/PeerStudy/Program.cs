@@ -1,5 +1,4 @@
 using Blazored.Toast;
-using Fluxor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,13 +16,6 @@ builder.Services.RegisterDbContext(builder.Configuration.GetConnectionString("DB
 
 builder.Services.RegisterServices();
 builder.Services.RegisterBlazorComponentLibraries();
-
-builder.Services.AddMemoryCache();
-
-builder.Services.AddFluxor(opt => {
-    opt.ScanAssemblies(typeof(Program).Assembly);
-    opt.UseReduxDevTools();
-});
 
 builder.Services.AddBlazoredToast();
 

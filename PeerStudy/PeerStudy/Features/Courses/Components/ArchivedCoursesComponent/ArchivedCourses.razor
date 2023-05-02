@@ -5,8 +5,8 @@
 @attribute [Authorize]
 @inherits CoursesBase
 
-<CoursesList Courses="CoursesState.Value.ArchivedCourses"
-             IsLoading="CoursesState.Value.IsLoading"
+<CoursesList Courses="courses"
+             IsLoading="isLoading"
              CoursesNotFoundMessage="@noCoursesMessage"
              OnCourseClicked="CourseClickedHandler">
 </CoursesList>

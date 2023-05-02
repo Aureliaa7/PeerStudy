@@ -1,4 +1,6 @@
-﻿using PeerStudy.Features.Courses.Store;
+﻿using PeerStudy.Core.Enums;
+using PeerStudy.Core.Models.Courses;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Courses.Components.ArchivedCoursesComponent
@@ -7,11 +9,20 @@ namespace PeerStudy.Features.Courses.Components.ArchivedCoursesComponent
     {
         private const string noCoursesMessage = "There are no archived courses yet...";
 
+        private List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
+       
         protected override async Task InitializeAsync()
         {
             ResetNavigationBar();
             await SetCurrentUserDataAsync();
-            Dispatcher.Dispatch(new FetchArchivedCoursesAction(currentUserId, currentUserRole));
+            if (currentUserRole == Role.Student)
+            {
+                courses = await CourseService.GetCoursesForStudentAsync(currentUserId, CourseStatus.Archived);
+            }
+            else if (currentUserRole == Role.Teacher)
+            {
+                courses = await CourseService.GetAsync(currentUserId, CourseStatus.Archived);
+            }
         }
 
         protected override async Task OnInitializedAsync()

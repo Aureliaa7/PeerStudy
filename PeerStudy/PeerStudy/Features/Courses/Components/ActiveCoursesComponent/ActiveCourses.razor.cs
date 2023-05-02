@@ -1,8 +1,9 @@
 ﻿using Blazored.Toast.Services;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.Courses;
-using PeerStudy.Features.Courses.Store;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
@@ -15,7 +16,9 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
         private bool displayCourseDialog = false;
         private string noCoursesMessage;
         private bool isEditCourseModeEnabled;
+        private bool courseHasStudyGroups;
         private CourseModel CourseModel = new();
+        private List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -26,14 +29,15 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
         {
             ResetNavigationBar();
             await SetCurrentUserDataAsync();
-            Dispatcher.Dispatch(new FetchActiveCoursesAction(currentUserId, currentUserRole));
 
             if (currentUserRole == Role.Teacher)
             {
+                courses = await CourseService.GetAsync(currentUserId, CourseStatus.Active);
                 noCoursesMessage = "There are no active courses. You can create one by clicking on the plus button.";
             }
             else if (currentUserRole == Role.Student)
             {
+                courses = await CourseService.GetCoursesForStudentAsync(currentUserId, CourseStatus.Active);
                 noCoursesMessage = "There are no active courses...";
             }
         }
@@ -55,9 +59,18 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
                 // fix for MatDatePicker
                 CourseModel.StartDate = CourseModel.StartDate.AddDays(1);
                 CourseModel.EndDate = CourseModel.EndDate.AddDays(1);
-
                 CourseModel.TeacherId = currentUserId;
-                Dispatcher.Dispatch(new AddCourseAction(CourseModel));
+
+                try
+                {
+                    var savedCourse = await CourseService.AddAsync(CourseModel);
+                    courses.Add(savedCourse);
+                    ToastService.ShowToast(ToastLevel.Success, "Course was successfully saved.");
+                }
+                catch (Exception ex)
+                {
+                    ToastService.ShowToast(ToastLevel.Error, "An error occurred while saving the course...");
+                }
                 CourseModel = new CourseModel();
             }
         }
@@ -78,6 +91,8 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
         {
             displayCourseDialog = true;
             isEditCourseModeEnabled = true;
+            courseHasStudyGroups = course.HasStudyGroups;
+
             CourseModel = new UpdateCourseModel
             {
                 Title = course.Title,
@@ -89,18 +104,41 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
             };
         }
 
-        private void EditCourse()
+        private async void EditCourse()
         {
             displayCourseDialog = false;
             isEditCourseModeEnabled = false;
-            Dispatcher.Dispatch(new UpdateCourseAction((UpdateCourseModel)CourseModel));
+            try
+            {
+                var updatedCourseModel = (UpdateCourseModel)CourseModel;
+                await CourseService.UpdateAsync(updatedCourseModel);
+
+                var courseToBeUpdated = courses.First(x => x.Id == updatedCourseModel.Id);
+                courseToBeUpdated.Title = updatedCourseModel.Title;
+                courseToBeUpdated.NoMaxStudents = updatedCourseModel.NumberOfStudents;
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the course details...");
+            }
 
             CourseModel = new CourseModel();
+            courseHasStudyGroups = false;
         }
 
         private void ArchiveCourseHandler(Guid courseId)
         {
-            Dispatcher.Dispatch(new ArchiveCourseAction(courseId, currentUserId));
+            try
+            {
+                CourseService.ArchiveCourseAsync(currentUserId, courseId);
+                var archivedCourse = courses.First(x => x.Id == courseId);
+                courses.Remove(archivedCourse);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, "Could not archive the course...");
+            }
         }
     }
 }

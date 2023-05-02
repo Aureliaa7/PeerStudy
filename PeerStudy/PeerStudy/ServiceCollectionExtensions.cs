@@ -11,7 +11,6 @@ using PeerStudy.Core.DomainServices;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
-using PeerStudy.Core.Services;
 using PeerStudy.Infrastructure.AppDbContext;
 using PeerStudy.Infrastructure.Interfaces;
 using PeerStudy.Infrastructure.Services;
@@ -36,8 +35,6 @@ namespace PeerStudy
             RegisterDomainServices(services);
             RegisterClientServices(services);
             RegisterServicesFromInfrastructure(services);
-
-            services.AddScoped<ICacheService, CacheService>();
         }
 
         public static void RegisterBlazorComponentLibraries(this IServiceCollection services)

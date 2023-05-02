@@ -1,5 +1,4 @@
 ﻿using Blazored.Toast.Services;
-using Fluxor.Blazor.Web.Components;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Services.Interfaces;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features
 {
-    public abstract class PeerStudyComponentBase : FluxorComponent
+    public abstract class PeerStudyComponentBase : ComponentBase
     {
         [Inject]
         protected IAuthService AuthService { get; set; }

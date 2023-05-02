@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 namespace PeerStudy.Core.Models.Resources
 {
     public class StudyGoupFileModel : FileModel
