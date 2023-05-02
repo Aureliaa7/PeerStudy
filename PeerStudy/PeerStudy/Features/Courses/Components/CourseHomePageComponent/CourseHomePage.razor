@@ -76,13 +76,27 @@
                      IsLoading="isLoading"
                      CurrentUserId="currentUserId"
                      IsReadOnly="isReadOnly"
-                     OnDelete="DeleteCourseUnit"
+                     OnDelete="ShowCourseUnitDeleteConfirmationPopup"
                      OnRename="ShowEditCourseUnitDialog"
                      OnUploadFiles="ShowUploadFileDialog"
-                     OnDeleteResource="DeleteResource"
+                     OnDeleteResource="ShowDeleteResourcePopup"
                      OnAddAssignment="ShowCreateAssignmentDialog"
                      OnViewAssignments="ViewAssignments">
     </CourseUnitsList>
+
+    <ConfirmationPopup IsOpen="isDeleteCourseUnitPopupVisible"
+                       Message="@deleteCourseUnitMessage"
+                       Title="@deleteCourseUnitPopupTitle"
+                       OnCancel="CancelDeleteCourseUnit"
+                       OnConfirm="DeleteCourseUnit">
+    </ConfirmationPopup>
+
+    <ConfirmationPopup IsOpen="isDeleteResourcePopupVisible"
+                       Message="@deleteResourceMessage"
+                       Title="@deleteResourcePopupTitle"
+                       OnCancel="CancelDeleteResource"
+                       OnConfirm="DeleteResource">
+    </ConfirmationPopup>
 </AuthorizeView>
 
 

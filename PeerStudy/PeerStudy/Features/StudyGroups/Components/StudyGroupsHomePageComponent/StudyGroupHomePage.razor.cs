@@ -31,6 +31,10 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
         private bool showUploadFileDialog;
         private StudyGroupDetailsModel studyGroup;
 
+        private bool isDeleteResourcePopupVisible;
+        private Guid? resourceId;
+        private const string deleteResourceTitle = "Delete Resource";
+        private const string deleteResourceMessage = "Are you sure you want to delete this resource?";
 
         protected override async Task OnInitializedAsync()
         {
@@ -90,19 +94,34 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
             };
         }
 
-        private async Task DeleteResource(Guid id)
+        private async Task DeleteResource()
         {
+            isDeleteResourcePopupVisible = false;
             ToastService.ShowToast(ToastLevel.Info, "Deleting resource...", false);
 
             try
             {
-                await StudyGroupResourceService.DeleteAsync(id);
-                resources = resources.Where(x => x.Id != id).ToList();
+                await StudyGroupResourceService.DeleteAsync(resourceId.Value);
+                resources = resources.Where(x => x.Id != resourceId.Value).ToList();
             }
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, "An error occurred while deleting the resource...");
             }
+
+            resourceId = null;
+        }
+
+        private void ShowDeleteResourceConfirmationPopup(Guid resourceId)
+        {
+            isDeleteResourcePopupVisible = true;
+            this.resourceId = resourceId;
+        }
+
+        private void CancelDeleteResource()
+        {
+            isDeleteResourcePopupVisible = false;
+            resourceId = null;
         }
 
         public void Dispose()

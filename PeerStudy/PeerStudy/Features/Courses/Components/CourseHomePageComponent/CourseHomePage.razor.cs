@@ -78,6 +78,15 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private const string unlockCourseUnitDialogTitle = "Unlock course unit";
         private int numberOfPoints;
 
+        private bool isDeleteCourseUnitPopupVisible;
+        private const string deleteCourseUnitPopupTitle = "Delete Course Unit";
+        private const string deleteCourseUnitMessage = "Are you sure you want to delete this course unit?";
+
+        private bool isDeleteResourcePopupVisible;
+        private const string deleteResourcePopupTitle = "Delete Course Unit Resource";
+        private const string deleteResourceMessage = "Are you sure you want to delete this file?";
+        private DeleteCourseUnitResourceModel? deleteResourceModel;
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -196,15 +205,16 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             showUploadFileDialog = false;
         }
 
-        private async Task DeleteResource(DeleteCourseUnitResourceModel courseUnitIdResourceId)
+        private async Task DeleteResource()
         {
+            isDeleteResourcePopupVisible = false;
             ToastService.ShowToast(ToastLevel.Info, "Deleting resource...", false);
 
             try
             {
-                await CourseResourceService.DeleteAsync(courseUnitIdResourceId.ResourceId);
-                var courseUnit = courseUnits.FirstOrDefault(x => x.Id == courseUnitIdResourceId.CourseUnitId);
-                var resourceToBeDeleted = courseUnit.Resources.FirstOrDefault(x => x.Id == courseUnitIdResourceId.ResourceId);    
+                await CourseResourceService.DeleteAsync(deleteResourceModel.ResourceId);
+                var courseUnit = courseUnits.FirstOrDefault(x => x.Id == deleteResourceModel.CourseUnitId);
+                var resourceToBeDeleted = courseUnit.Resources.FirstOrDefault(x => x.Id == deleteResourceModel.ResourceId);    
                 courseUnit.Resources.Remove(resourceToBeDeleted);
                 
                 ToastService.ShowToast(ToastLevel.Success, "The resource was successfully deleted.");
@@ -214,16 +224,20 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             {
                 ToastService.ShowToast(ToastLevel.Error, deleteResourceErrorMessage);
             }
+
+            deleteResourceModel = null;
         }
 
-        private async Task DeleteCourseUnit(Guid id)
+        private async Task DeleteCourseUnit()
         {
+            isDeleteCourseUnitPopupVisible = false;
+
             try
             {
                 ToastService.ShowToast(ToastLevel.Info, "Deleting course unit...", false);
-                var courseUnitToBeDeleted = courseUnits.FirstOrDefault(x => x.Id == id);
+                var courseUnitToBeDeleted = courseUnits.FirstOrDefault(x => x.Id == selectedCourseUnitId.Value);
 
-                await CourseUnitService.DeleteAsync(id);
+                await CourseUnitService.DeleteAsync(selectedCourseUnitId.Value);
                 courseUnits.Remove(courseUnitToBeDeleted);
                 ToastService.ClearAll(ToastLevel.Info);
             }
@@ -231,6 +245,8 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             {
                 ToastService.ShowToast(ToastLevel.Error, ex.Message, clearAll: true);
             }
+
+            selectedCourseUnitId = null;
         }
 
         private void ShowEditCourseUnitDialog(Guid id)
@@ -423,6 +439,30 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             }
             selectedCourseUnitId = null;
             unlockCourseUnitMessage = null;
+        }
+
+        private void ShowCourseUnitDeleteConfirmationPopup(Guid courseUnitId)
+        {
+            selectedCourseUnitId = courseUnitId;
+            isDeleteCourseUnitPopupVisible = true;
+        }
+
+        private void CancelDeleteCourseUnit()
+        {
+            selectedCourseUnitId = null;
+            isDeleteCourseUnitPopupVisible = false;
+        }
+
+        private void CancelDeleteResource()
+        {
+            isDeleteResourcePopupVisible = false;
+            deleteResourceModel = null;
+        }
+
+        private void ShowDeleteResourcePopup(DeleteCourseUnitResourceModel model)
+        {
+            isDeleteResourcePopupVisible = true;
+            deleteResourceModel = model;
         }
     }
 }

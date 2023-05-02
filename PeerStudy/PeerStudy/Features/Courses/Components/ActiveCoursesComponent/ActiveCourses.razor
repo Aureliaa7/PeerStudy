@@ -38,9 +38,17 @@
                  IsLoading="isLoading"
                  CoursesNotFoundMessage="@noCoursesMessage"
                  OnEditCourse="EditCourseHandler"
-                 OnArchiveCourse="ArchiveCourseHandler"
+                 OnArchiveCourse="DisplayArchiveCnfirmationPopup"
                  OnCourseClicked="CourseClickedHandler">
     </CoursesList>
+
+
+    <ConfirmationPopup IsOpen="isArchiveConfirmationPopupVisible"
+                       Message="@archiveCourseMessage"
+                       Title="@archiveDialogTitle"
+                       OnCancel="CancelArchiveCourse"
+                       OnConfirm="ArchiveCourseHandler">
+    </ConfirmationPopup>
 </AuthorizeView>
 
 <AuthorizeView Roles="Student">

@@ -24,8 +24,6 @@
                  OnCancel="@(() => showUploadFileDialog = false)"
                  OnUpload="UploadFiles">
     </UploadFiles>
-
-
 </AuthorizeView>
 
 
@@ -33,5 +31,12 @@
                IsLoading="isLoading"
                IsReadOnly="isReadOnly"
                CurrentUserId="currentUserId"
-               OnDeleteResource="DeleteResource">
+               OnDeleteResource="ShowDeleteResourceConfirmationPopup">
 </ResourcesList>
+
+<ConfirmationPopup IsOpen="isDeleteResourcePopupVisible"
+                   Message="@deleteResourceMessage"
+                   Title="@deleteResourceTitle"
+                   OnCancel="CancelDeleteResource"
+                   OnConfirm="DeleteResource">
+</ConfirmationPopup>

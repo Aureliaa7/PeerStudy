@@ -12,14 +12,18 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
     {
         private const string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
         private const string courseCreationMessage = "Course creation is in progress...";
+        private const string archiveDialogTitle = "Archive Course";
+        private const string archiveCourseMessage = "Are you sure you want to archive this course?";
 
         private bool displayCourseDialog = false;
         private string noCoursesMessage;
         private bool isEditCourseModeEnabled;
         private bool courseHasStudyGroups;
+        private bool isArchiveConfirmationPopupVisible;
         private CourseModel CourseModel = new();
         private List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
-
+        private Guid? courseIdToBeArchived;
+     
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -127,18 +131,34 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
             courseHasStudyGroups = false;
         }
 
-        private void ArchiveCourseHandler(Guid courseId)
+        private void DisplayArchiveCnfirmationPopup(Guid courseId)
         {
+            courseIdToBeArchived = courseId;
+            isArchiveConfirmationPopupVisible = true;
+        }
+
+        private void ArchiveCourseHandler()
+        {
+            isArchiveConfirmationPopupVisible = false;
+
             try
             {
-                CourseService.ArchiveCourseAsync(currentUserId, courseId);
-                var archivedCourse = courses.First(x => x.Id == courseId);
+                CourseService.ArchiveCourseAsync(currentUserId, courseIdToBeArchived.Value);
+                var archivedCourse = courses.First(x => x.Id == courseIdToBeArchived.Value);
                 courses.Remove(archivedCourse);
             }
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, "Could not archive the course...");
             }
+
+            courseIdToBeArchived = null;
+        }
+
+        private void CancelArchiveCourse()
+        {
+            isArchiveConfirmationPopupVisible = false;
+            courseIdToBeArchived = null;
         }
     }
 }
