@@ -75,16 +75,16 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private bool showUnlockCourseUnitDialog;
         private bool isConfirmUnlockUnitButtonDisabled;
         private string unlockCourseUnitMessage;
-        private const string unlockCourseUnitDialogTitle = "Unlock course unit";
+        private const string unlockCourseUnitPopupTitle = "Unlock course unit";
         private int numberOfPoints;
 
         private bool isDeleteCourseUnitPopupVisible;
         private const string deleteCourseUnitPopupTitle = "Delete Course Unit";
-        private const string deleteCourseUnitMessage = "Are you sure you want to delete this course unit?";
+        private const string deleteCourseUnitPopupMessage = "Are you sure you want to delete this course unit?";
 
         private bool isDeleteResourcePopupVisible;
         private const string deleteResourcePopupTitle = "Delete Course Unit Resource";
-        private const string deleteResourceMessage = "Are you sure you want to delete this file?";
+        private const string deleteResourcePopupMessage = "Are you sure you want to delete this file?";
         private DeleteCourseUnitResourceModel? deleteResourceModel;
 
         protected override async Task OnInitializedAsync()

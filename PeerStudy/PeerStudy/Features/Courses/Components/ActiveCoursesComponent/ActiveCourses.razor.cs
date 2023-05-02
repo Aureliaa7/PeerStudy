@@ -12,8 +12,8 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
     {
         private const string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
         private const string courseCreationMessage = "Course creation is in progress...";
-        private const string archiveDialogTitle = "Archive Course";
-        private const string archiveCourseMessage = "Are you sure you want to archive this course?";
+        private const string archivePopupTitle = "Archive Course";
+        private const string archiveCoursePopupMessage = "Are you sure you want to archive this course?";
 
         private bool displayCourseDialog = false;
         private string noCoursesMessage;
@@ -131,7 +131,7 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
             courseHasStudyGroups = false;
         }
 
-        private void DisplayArchiveCnfirmationPopup(Guid courseId)
+        private void DisplayArchiveConfirmationPopup(Guid courseId)
         {
             courseIdToBeArchived = courseId;
             isArchiveConfirmationPopupVisible = true;

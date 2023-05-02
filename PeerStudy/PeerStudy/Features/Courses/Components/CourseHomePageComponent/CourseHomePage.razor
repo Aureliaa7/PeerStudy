@@ -85,14 +85,14 @@
     </CourseUnitsList>
 
     <ConfirmationPopup IsOpen="isDeleteCourseUnitPopupVisible"
-                       Message="@deleteCourseUnitMessage"
+                       Message="@deleteCourseUnitPopupMessage"
                        Title="@deleteCourseUnitPopupTitle"
                        OnCancel="CancelDeleteCourseUnit"
                        OnConfirm="DeleteCourseUnit">
     </ConfirmationPopup>
 
     <ConfirmationPopup IsOpen="isDeleteResourcePopupVisible"
-                       Message="@deleteResourceMessage"
+                       Message="@deleteResourcePopupMessage"
                        Title="@deleteResourcePopupTitle"
                        OnCancel="CancelDeleteResource"
                        OnConfirm="DeleteResource">
@@ -112,7 +112,7 @@
     <ConfirmationPopup
         IsOpen="showUnlockCourseUnitDialog" 
         Message="@unlockCourseUnitMessage"
-        Title="@unlockCourseUnitDialogTitle"
+        Title="@unlockCourseUnitPopupTitle"
         IsConfirmButtonDisabled="isConfirmUnlockUnitButtonDisabled"
         OnCancel="CancelUnlockCourseUnit" 
         OnConfirm="UnlockCourseUnit">

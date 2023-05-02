@@ -38,14 +38,14 @@
                  IsLoading="isLoading"
                  CoursesNotFoundMessage="@noCoursesMessage"
                  OnEditCourse="EditCourseHandler"
-                 OnArchiveCourse="DisplayArchiveCnfirmationPopup"
+                 OnArchiveCourse="DisplayArchiveConfirmationPopup"
                  OnCourseClicked="CourseClickedHandler">
     </CoursesList>
 
 
     <ConfirmationPopup IsOpen="isArchiveConfirmationPopupVisible"
-                       Message="@archiveCourseMessage"
-                       Title="@archiveDialogTitle"
+                       Message="@archiveCoursePopupMessage"
+                       Title="@archivePopupTitle"
                        OnCancel="CancelArchiveCourse"
                        OnConfirm="ArchiveCourseHandler">
     </ConfirmationPopup>

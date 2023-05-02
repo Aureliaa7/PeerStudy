@@ -33,8 +33,8 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
 
         private bool isDeleteResourcePopupVisible;
         private Guid? resourceId;
-        private const string deleteResourceTitle = "Delete Resource";
-        private const string deleteResourceMessage = "Are you sure you want to delete this resource?";
+        private const string deleteResourcePopupTitle = "Delete Resource";
+        private const string deleteResourcePopupMessage = "Are you sure you want to delete this resource?";
 
         protected override async Task OnInitializedAsync()
         {
