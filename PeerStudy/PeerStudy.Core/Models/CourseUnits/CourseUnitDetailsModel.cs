@@ -10,6 +10,8 @@ namespace PeerStudy.Core.Models.CourseUnits
 
         public bool IsActive { get; set; }
 
+        public int Order { get; set; }
+
         public List<CourseResourceDetailsModel> Resources { get; set; }
     }
 }

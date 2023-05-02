@@ -23,6 +23,8 @@ namespace PeerStudy.Core.DomainEntities
 
         public int NoPointsToUnlock { get; set; }
 
+        public int Order { get; set; }
+
         public ICollection<CourseResource> Resources { get; set; }
 
         public ICollection<Assignment> Assignments { get; set; }

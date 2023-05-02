@@ -1,18 +1,22 @@
 ﻿@using PeerStudy.Features.CourseUnits.Components.CourseUnitComponent
 
 <div>
-    @foreach (var unit in CourseUnits)
-    {
-        <CourseUnitDetails CourseUnit="unit"
-                       CurrentUserId="CurrentUserId"
-                       IsMenuIconVisible="!IsReadOnly"
-                       OnDelete="Delete"
-                       OnRename="Rename"
-                       OnUploadFiles="UploadFiles"
-                       OnDeleteResource="DeleteResource"
-                       OnAddAssignment="AddAssignment"
-                       OnViewAssignments="ViewAssignments"
-                       OnClickedLockIcon="HandleClickedLockIcon">
-        </CourseUnitDetails>
-    }
+    <Loading IsLoading="IsLoading"
+             HasData="@(CourseUnits != null && CourseUnits.Any())"
+             NotFoundMessage="@noCoursesUnitsMessage">
+        @foreach (var unit in CourseUnits)
+        {
+            <CourseUnitDetails CourseUnit="unit"
+                           CurrentUserId="CurrentUserId"
+                           IsMenuIconVisible="!IsReadOnly"
+                           OnDelete="Delete"
+                           OnRename="Rename"
+                           OnUploadFiles="UploadFiles"
+                           OnDeleteResource="DeleteResource"
+                           OnAddAssignment="AddAssignment"
+                           OnViewAssignments="ViewAssignments"
+                           OnClickedLockIcon="HandleClickedLockIcon">
+            </CourseUnitDetails>
+        }
+    </Loading>
 </div>

@@ -59,6 +59,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         private static void ConfigureEntities(ModelBuilder modelBuilder)
         {
+            CreateCourseUnitSequence(modelBuilder);
+
             new UserConfiguration().Configure(modelBuilder.Entity<User>());
             new CourseConfiguration().Configure(modelBuilder.Entity<Course>());
             new StudentStudyGroupConfiguration().Configure(modelBuilder.Entity<StudentStudyGroup>());
@@ -73,6 +75,13 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new QuestionVoteConfiguration().Configure(modelBuilder.Entity<QuestionVote>());
             new BadgeConfiguration().Configure(modelBuilder.Entity<Badge>());
             new StudentBadgeConfiguration().Configure(modelBuilder.Entity<StudentBadge>());
+        }
+
+        private static void CreateCourseUnitSequence(ModelBuilder modelBuilder)
+        {
+            modelBuilder.HasSequence<int>("CourseUnitSequence")
+                        .StartsAt(1)
+                        .IncrementsBy(1);
         }
     }
 }

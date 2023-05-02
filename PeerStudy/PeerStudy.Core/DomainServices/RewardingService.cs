@@ -1,5 +1,4 @@
-﻿using PeerStudy.Core.DomainEntities;
-using PeerStudy.Core.Enums;
+﻿using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;

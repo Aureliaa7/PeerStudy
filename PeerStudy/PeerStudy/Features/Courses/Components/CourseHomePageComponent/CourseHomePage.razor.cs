@@ -374,11 +374,19 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         private void DisplayUnlockCourseUnitDialog(Guid courseUnitId)
         {
+            string message;
+
             showUnlockCourseUnitDialog = true;
             selectedCourseUnitId = courseUnitId;
             var courseUnitToBeUnlocked = courseUnits.First(x => x.Id == selectedCourseUnitId);
+            var previousCourseUnit = courseUnits.FirstOrDefault(x => x.Order == courseUnitToBeUnlocked.Order - 1);
 
-            string message;
+            if (previousCourseUnit == null || !previousCourseUnit.IsAvailable)
+            {
+                unlockCourseUnitMessage = $"You cannot skip course units. To unlock this course unit, you need to unlock the previous one.";
+                isConfirmUnlockUnitButtonDisabled = true;
+                return;
+            }
 
             if (numberOfPoints >= courseUnitToBeUnlocked.NoPointsToUnlock)
             {

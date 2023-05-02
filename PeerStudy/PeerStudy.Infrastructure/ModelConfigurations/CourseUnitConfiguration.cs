@@ -9,8 +9,11 @@ namespace PeerStudy.Infrastructure.ModelConfigurations
         public void Configure(EntityTypeBuilder<CourseUnit> builder)
         {
             builder.HasOne(x => x.Course)
-                .WithMany(x => x.CourseUnits)
-                .OnDelete(DeleteBehavior.NoAction);
+                   .WithMany(x => x.CourseUnits)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Property(p => p.Order)
+                   .HasDefaultValueSql("NEXT VALUE FOR CourseUnitSequence");
         }
     }
 }
