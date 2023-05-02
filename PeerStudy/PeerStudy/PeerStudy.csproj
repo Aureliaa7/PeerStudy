@@ -8,9 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
     <Compile Remove="Features\Teachers\**" />
+    <Content Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
     <Content Remove="Features\Teachers\**" />
+    <EmbeddedResource Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
     <EmbeddedResource Remove="Features\Teachers\**" />
+    <None Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
     <None Remove="Features\Teachers\**" />
   </ItemGroup>
 
@@ -45,10 +49,6 @@
   <ItemGroup>
     <ProjectReference Include="..\PeerStudy.Core\PeerStudy.Core.csproj" />
     <ProjectReference Include="..\PeerStudy.Infrastructure\PeerStudy.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Q&amp;A\Components\QuestionDescriptionComponent\" />
   </ItemGroup>
 
 </Project>

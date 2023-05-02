@@ -15,12 +15,6 @@ namespace PeerStudy.Shared.PaginationComponent
         public int CurrentPage { get; set; } = 1;
 
         [Parameter]
-        public EventCallback<int> OnNavigateToPreviousPage { get; set; }
-
-        [Parameter]
-        public EventCallback<int> OnNavigateToNextPage { get; set; }
-
-        [Parameter]
         public EventCallback<int> OnSetActivePage { get; set; }
 
 
@@ -56,7 +50,7 @@ namespace PeerStudy.Shared.PaginationComponent
             if (CurrentPage > 1)
             {
                 UpdatePageIntervals(CurrentPage - 1);
-                await OnNavigateToPreviousPage.InvokeAsync(CurrentPage - 1);
+                await OnSetActivePage.InvokeAsync(CurrentPage - 1);
             }
         }
 
@@ -65,7 +59,7 @@ namespace PeerStudy.Shared.PaginationComponent
             if (CurrentPage < NoTotalPages)
             {
                 UpdatePageIntervals(CurrentPage + 1);
-                await OnNavigateToNextPage.InvokeAsync(CurrentPage + 1);
+                await OnSetActivePage.InvokeAsync(CurrentPage + 1);
             }
         }
 

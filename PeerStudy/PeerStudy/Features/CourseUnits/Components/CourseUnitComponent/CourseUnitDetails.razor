@@ -77,7 +77,7 @@
             {
                 @foreach (var resource in CourseUnit.Resources)
                 {
-                    <div class="resource">
+                    <div>
                         <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
                                 OnDeleteResource="DeleteResource"
                                 CurrentUserId="CurrentUserId"
@@ -97,7 +97,7 @@
                 {
                     @foreach (var resource in CourseUnit.Resources)
                     {
-                        <div class="resource">
+                        <div>
                             <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
                                 OnDeleteResource="DeleteResource"
                                 CurrentUserId="CurrentUserId"

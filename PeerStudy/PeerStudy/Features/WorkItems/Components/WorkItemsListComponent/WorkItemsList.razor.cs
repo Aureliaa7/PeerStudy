@@ -33,6 +33,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private CreateUpdateWorkItemModel workItemModel = new CreateUpdateWorkItemModel();
         private List<WorkItemDetailsModel> allWorkItems = new List<WorkItemDetailsModel>();
         private List<WorkItemDetailsModel> filteredWorkItems = new List<WorkItemDetailsModel>();
+        private List<WorkItemDetailsModel> currentWorkItems = new List<WorkItemDetailsModel>();
 
         private WorkItemDetailsModel selectedRow;
         private bool showSelectedTaskDetails;
@@ -43,6 +44,11 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private string? selectedStudentIdFilter;
         private WorkItemStatus? selectedWorkItemStatusFilter;
         private DropDownItem? selectedStudent; // used for edit 
+
+        private int noTotalPages;
+        private int currentPageNumber;
+
+        private const int pageSize = 10;
 
         private const string noWorkItemsMessage = "There are no work items yet..";
         private const string dropdownStyles = "width: 90%;";
@@ -60,6 +66,8 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 await SetWorkItemDropItemsAsync();
                 allWorkItems = await WorkItemService.GetByStudyGroupAsync(StudyGroupId);
                 filteredWorkItems = allWorkItems;
+                ResetPagination();
+
                 isReadOnly = !await StudyGroupService.IsActiveAsync(StudyGroupId);
             } 
             catch (Exception ex)
@@ -220,6 +228,15 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             {
                 filteredWorkItems = allWorkItems;
             }
+
+            ResetPagination();
+        }
+
+        private void ResetPagination()
+        {
+            currentPageNumber = 1;
+            noTotalPages = Convert.ToInt32(Math.Ceiling((double)filteredWorkItems.Count / pageSize));
+            SetDataForPageNumber(currentPageNumber);
         }
 
         private Func<WorkItemDetailsModel, bool> GetFilter()
@@ -247,6 +264,15 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             selectedWorkItemStatusFilter = null;
             selectedStudentIdFilter = null;
             filteredWorkItems = allWorkItems;
+            ResetPagination();
+        }
+
+        private void SetDataForPageNumber(int pageNumber)
+        {
+            currentPageNumber = pageNumber;
+            currentWorkItems = filteredWorkItems.Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
         }
 
         public void Dispose()

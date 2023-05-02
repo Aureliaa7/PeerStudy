@@ -14,15 +14,11 @@
     }
 
     <DataGrid TItem="CourseEnrollmentRequestDetailsModel"
-              Data="@Requests"
+              Data="@currentRequests"
               @bind-SelectedRow="@selectedRequest"
               SelectionMode="selectionMode"
               @bind-SelectedRows="selectedRequests"
-              Responsive
-              ShowPager
-              ShowPageSizes
-              PagerPosition="DataGridPagerPosition.Bottom"
-              PagerOptions="new(){ ButtonSize=Size.Small }">
+              Responsive>
         <DataGridColumns>
             @if (allowSelection)
             {
@@ -32,35 +28,10 @@
             <DataGridColumn Field="@nameof(CourseEnrollmentRequestDetailsModel.StudentName)" Caption="Student" />
             <DataGridColumn Field="@nameof(CourseEnrollmentRequestDetailsModel.CreatedAt)" Caption="Created At" />
         </DataGridColumns>
+    </DataGrid>
 
-        <PageButtonTemplate>
-            <Span TextColor="TextColor.Success">
-                @context.PageNumber
-            </Span>
-        </PageButtonTemplate>
-        <NextPageButtonTemplate><Icon Name="IconName.StepForward" TextColor="TextColor.Success" /></NextPageButtonTemplate>
-        <PreviousPageButtonTemplate><Icon Name="IconName.StepBackward" TextColor="TextColor.Success" /></PreviousPageButtonTemplate>
-        <LastPageButtonTemplate><Icon Name="IconName.Forward" TextColor="TextColor.Success" /></LastPageButtonTemplate>
-        <FirstPageButtonTemplate><Icon Name="IconName.Backward" TextColor="TextColor.Success" /></FirstPageButtonTemplate>
-        <TotalItemsTemplate><Badge Color="Color.Success">@context.TotalItems total items</Badge></TotalItemsTemplate>
-        <TotalItemsShortTemplate><Badge Color="Color.Success">@context.TotalItems</Badge></TotalItemsShortTemplate>
-        <ItemsPerPageTemplate></ItemsPerPageTemplate>
-        <PageSelectorTemplate>
-            <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPage" Size="Size.Small">
-                @for (int i = context.FirstVisiblePage; i <= context.LastVisiblePage; ++i)
-                    {
-                        var pageNumber = i;
-                        <SelectItem Value="@pageNumber">@pageNumber</SelectItem>
-                    }
-                </Select>
-            </PageSelectorTemplate>
-            <PageSizesTemplate>
-                <Select TextColor="TextColor.Success" @bind-SelectedValue="@context.CurrentPageSize" Size="Size.Small">
-                    @foreach (var pageSize in context.PageSizes)
-                    {
-                        <SelectItem Value="@pageSize">@pageSize</SelectItem>
-                    }
-                </Select>
-            </PageSizesTemplate>
-        </DataGrid>
-    </Loading>
+    <PeerStudyPagination NoTotalPages="noTotalPages"
+                         CurrentPage="currentPageNumber"
+                         OnSetActivePage="SetDataForPageNumber">
+    </PeerStudyPagination>
+</Loading>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models.CourseEnrollments;
 using PeerStudy.Core.Models.Courses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,10 +51,22 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmen
 
 
         private List<CourseEnrollmentRequestDetailsModel> selectedRequests;
+        private List<CourseEnrollmentRequestDetailsModel> currentRequests;
         private CourseEnrollmentRequestDetailsModel selectedRequest;
         private bool allowSelection;
         private DataGridSelectionMode selectionMode;
+        private int noTotalPages;
+        private int currentPageNumber;
 
+        private const int pageSize = 10;
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            noTotalPages = Convert.ToInt32(Math.Ceiling((double)Requests.Count / pageSize));
+            currentPageNumber = 1;
+            SetDataForPageNumber(currentPageNumber);
+        }
 
         private async Task ApproveRequests()
         {
@@ -82,6 +95,16 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmen
         private bool IsApproveButtonDisabled()
         {
             return selectedRequests?.Count() > EnrolledStudentsStatus?.NoMaxStudents - EnrolledStudentsStatus?.NoEnrolledStudents;
+        }
+
+        private void SetDataForPageNumber(int pageNumber)
+        {
+            currentPageNumber = pageNumber;
+            currentRequests = Requests.Skip((pageNumber -1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            selectedRequests = null;
         }
     }
 }
