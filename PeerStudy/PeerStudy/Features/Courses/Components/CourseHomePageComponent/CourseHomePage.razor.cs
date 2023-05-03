@@ -421,7 +421,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             selectedCourseUnitId = null;
         }
 
-        private async void UnlockCourseUnit()
+        private async Task UnlockCourseUnit()
         {
             showUnlockCourseUnitDialog = false;
             try

@@ -1,0 +1,17 @@
+﻿@using PeerStudy.Features.QAndA.Components.TagsListComponent
+
+<div class="question-details-container" @onclick="ClickHandler">
+    <div class="title">
+        <h5>
+            @Question?.Title
+        </h5>
+    </div>
+    <div class="no-answers">
+        @Question?.NoAnswers answers
+    </div>
+
+    <TagsList Tags="@Question.Tags"></TagsList>
+    <div class="posted-at">
+        Posted at: @Question?.CreatedAt by @Question.AuthorName
+    </div>
+</div>

@@ -7,10 +7,13 @@
 @{
     base.BuildRenderTree(__builder);
 
-    ChildContent =
-    @<div>
-        <b>My Tasks</b><div style="width: 100%;">
-            <StudyGroupWorkItemsOverview Data="@myWorkItemsChartData"></StudyGroupWorkItemsOverview>
-        </div>
-    </div>;
+    if (StudyGroupModel.MyWorkItemsStatus != null && StudyGroupModel.MyWorkItemsStatus.Any())
+    {
+        ChildContent =
+        @<div>
+            <b>My Tasks</b><div class="my-work-items">
+                <StudyGroupWorkItemsOverview Data="@myWorkItemsChartData"></StudyGroupWorkItemsOverview>
+            </div>
+        </div>;
+    }
 }

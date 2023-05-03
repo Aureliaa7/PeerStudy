@@ -63,15 +63,23 @@
                     @if (!isReadOnly)
                     {
                         <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Edit" OnClick="EditWorkItem"></MatButton>
-                        <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Delete" OnClick="DeleteWorkItem"></MatButton>
+                        <MatButton Disabled="AreButtonsDisabled()" Icon="@MatIconNames.Delete" OnClick="@(() => isDeleteConfirmationPopupVisible = true)"></MatButton>
                     }
+
+                    <ConfirmationPopup IsOpen="isDeleteConfirmationPopupVisible"
+                                       Message="@deleteWorkItemMessage"
+                                       Title="@deletePopupTitle"
+                                       OnCancel="CancelDeleteWorkItem"
+                                       OnConfirm="DeleteWorkItem">
+                    </ConfirmationPopup>
                 </AuthorizeView>
             </div>
 
             <DataGrid TItem="WorkItemDetailsModel"
                       Data="currentWorkItems"
-                      @bind-SelectedRow="@selectedRow"
-                            Responsive>
+                      SelectedRow="selectedRow"
+                      RowClicked="@(new EventCallback<DataGridRowMouseEventArgs<WorkItemDetailsModel>>(this, HandleClickedRow))"
+                      Responsive>
                 <DataGridColumns>
                     <DataGridCommandColumn />
                     <DataGridColumn Field="@nameof(WorkItemDetailsModel.Title)" Caption="Title">

@@ -108,7 +108,7 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
             };
         }
 
-        private async void EditCourse()
+        private async Task EditCourse()
         {
             displayCourseDialog = false;
             isEditCourseModeEnabled = false;

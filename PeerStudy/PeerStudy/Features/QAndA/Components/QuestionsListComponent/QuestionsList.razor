@@ -1,0 +1,17 @@
+﻿@using PeerStudy.Features.QAndA.Components.FlatQuestionComponent
+
+
+<Loading IsLoading="IsLoading"
+         HasData="@(!IsLoading && Questions != null && Questions.Any())"
+         NotFoundMessage="@NoQuestionsMessage">
+
+    @foreach (var question in Questions)
+    {
+        <div class="question">
+            <FlatQuestion Question="question" OnClick="HandleClickedQuestion"></FlatQuestion>
+        </div>
+    }
+
+    @ChildContent
+
+</Loading>

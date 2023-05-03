@@ -8,24 +8,24 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
+    <Compile Remove="Features\QAndA\Components\QuestionDescriptionComponent\**" />
     <Compile Remove="Features\Teachers\**" />
-    <Content Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
+    <Content Remove="Features\QAndA\Components\QuestionDescriptionComponent\**" />
     <Content Remove="Features\Teachers\**" />
-    <EmbeddedResource Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
+    <EmbeddedResource Remove="Features\QAndA\Components\QuestionDescriptionComponent\**" />
     <EmbeddedResource Remove="Features\Teachers\**" />
-    <None Remove="Features\Q&amp;A\Components\QuestionDescriptionComponent\**" />
+    <None Remove="Features\QAndA\Components\QuestionDescriptionComponent\**" />
     <None Remove="Features\Teachers\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Features\Q&amp;A\Components\AnswerComponent\AnswerDetails.razor.css" />
+    <None Remove="Features\QAndA\Components\AnswerComponent\AnswerDetails.razor.css" />
     <None Remove="Pages\Index.razor.css" />
     <None Remove="Resources.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Features\Q&amp;A\Components\AnswerComponent\AnswerDetails.razor.css" />
+    <Content Include="Features\QAndA\Components\AnswerComponent\AnswerDetails.razor.css" />
     <Content Include="Pages\Index.razor.css" />
     <Content Include="Resources.txt" />
   </ItemGroup>

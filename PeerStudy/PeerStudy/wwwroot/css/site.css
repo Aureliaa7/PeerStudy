@@ -76,6 +76,10 @@ body {
     overflow-y: scroll !important;
     overflow-x: hidden !important;
     width: 100vw;
+    min-height: 100vh;
+    background: linear-gradient(#c7e6f7, #d7b8e1);
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 body::-webkit-scrollbar {
@@ -88,12 +92,7 @@ body::-webkit-scrollbar {
     color: #6699cc;
 }
 
-.app-background-image {
-    /*    background-image: url("/images/background-image2.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;*/
-    background-color: #E8E8E8;
-}
+
 
 /*study groups list components styles*/
 .study-groups-container {

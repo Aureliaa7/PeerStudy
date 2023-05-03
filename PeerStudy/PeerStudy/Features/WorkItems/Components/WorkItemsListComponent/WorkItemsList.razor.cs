@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
@@ -53,6 +54,10 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private const string noWorkItemsMessage = "There are no work items yet..";
         private const string dropdownStyles = "width: 90%;";
 
+        private bool isDeleteConfirmationPopupVisible;
+        private const string deletePopupTitle = "Delete Task";
+        private const string deleteWorkItemMessage = "Are you sure you want to delete this task?";
+
         protected override async Task OnInitializedAsync()
         {
            await base.OnInitializedAsync();
@@ -66,7 +71,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 await SetWorkItemDropItemsAsync();
                 allWorkItems = await WorkItemService.GetByStudyGroupAsync(StudyGroupId);
                 filteredWorkItems = allWorkItems;
-                ResetPagination();
+                ResetCurrentDataSource();
 
                 isReadOnly = !await StudyGroupService.IsActiveAsync(StudyGroupId);
             } 
@@ -110,13 +115,22 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             showSelectedTaskDetails = true;
         }
 
+        private void CancelDeleteWorkItem()
+        {
+            isDeleteConfirmationPopupVisible = false;
+            selectedRow = null;
+        }
+
         private async Task DeleteWorkItem()
         {
+            isDeleteConfirmationPopupVisible = false;
+
             try
             {
                 var workItemToBeRemoved = allWorkItems.First(x => x.Id == selectedRow.Id);
                 await WorkItemService.DeleteAsync(selectedRow.Id);
                 allWorkItems.Remove(workItemToBeRemoved);
+                ResetCurrentDataSource(currentPageNumber);
             }
             catch (Exception ex)
             {
@@ -135,6 +149,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 savedWorkItem.StudyGroupName = StudyGroupName;
                 savedWorkItem.AssignedToFullName = studentDropDownItems.FirstOrDefault(x => x.Key == savedWorkItem.AssignedTo.ToString())?.Value;
                 allWorkItems.Add(savedWorkItem);
+                ResetCurrentDataSource(currentPageNumber);
             }
             catch (Exception ex)
             {
@@ -155,6 +170,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             showAddWorkItemDialog = false;
             workItemModel = new CreateUpdateWorkItemModel();
         }
+
         private void CancelEditWorkItem()
         {
             showEditWorkItemDialog = false;
@@ -229,12 +245,11 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 filteredWorkItems = allWorkItems;
             }
 
-            ResetPagination();
+            ResetCurrentDataSource();
         }
 
-        private void ResetPagination()
+        private void ResetCurrentDataSource(int currentPageNumber = 1)
         {
-            currentPageNumber = 1;
             noTotalPages = Convert.ToInt32(Math.Ceiling((double)filteredWorkItems.Count / pageSize));
             SetDataForPageNumber(currentPageNumber);
         }
@@ -264,7 +279,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             selectedWorkItemStatusFilter = null;
             selectedStudentIdFilter = null;
             filteredWorkItems = allWorkItems;
-            ResetPagination();
+            ResetCurrentDataSource();
         }
 
         private void SetDataForPageNumber(int pageNumber)
@@ -273,6 +288,18 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             currentWorkItems = filteredWorkItems.Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
+        }
+
+        private void HandleClickedRow(DataGridRowMouseEventArgs<WorkItemDetailsModel> clickedRow)
+        {
+            if (selectedRow == clickedRow.Item)
+            {
+                selectedRow = null;
+            }
+            else
+            {
+                selectedRow = clickedRow.Item;
+            }
         }
 
         public void Dispose()
