@@ -2,6 +2,7 @@
     background-color: white;
     border-radius: 10px;
     padding: 20px;
+    position: relative;
 }
 
 .tab-content {
@@ -15,4 +16,25 @@
 
 .earned-points {
     color: green;
+}
+
+.unlock-date, .completed-at {
+    font-size: 14px;
+}
+
+.course-unit {
+    cursor: default;
+}
+
+.course-unit-title {
+    display: block;
+}
+
+.my-progress {
+    margin-top: 25px;
+}
+.course-status {
+    position: absolute;
+    top: 65px;
+    right: 25px;
 }

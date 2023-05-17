@@ -1,5 +1,7 @@
-﻿@page "/my-progress"
+﻿@using PeerStudy.Core.Enums;
 @using PeerStudy.Features.Badges.Components.BadgeCardComponent
+
+@page "/my-progress"
 @inherits PeerStudyComponentBase
 @attribute [Authorize(Roles = "Student")]
 
@@ -21,7 +23,14 @@
                 </span>
             </div>
         </div>
-        <div>
+            <div class="course-status">
+                <MatSelectItem Label="Course status"
+                               Value="@courseStatus"
+                               ValueChanged="@(async (CourseStatus? value) => await HandleSelectedStatusChanged(value))"
+                               Items="@courseStatuses">
+                </MatSelectItem>
+            </div>
+        <div class="my-progress">
             <MatTabGroup>
                 <MatTab Label="Earned Badges">
                     <div class="tab-content">
@@ -42,7 +51,7 @@
                                     {
                                         <MatExpansionPanel>
                                             <MatExpansionPanelSummary>
-                                                <MatExpansionPanelHeader>@courseProgress.CourseTitle</MatExpansionPanelHeader>
+                                                <MatExpansionPanelHeader><b>@courseProgress.CourseTitle</b></MatExpansionPanelHeader>
                                             </MatExpansionPanelSummary>
                                             <MatExpansionPanelDetails>
 
@@ -50,12 +59,12 @@
                                                 {
                                                     <div class="course-unit">
                                                         <span class="course-unit-title">
-                                                            @courseUnit.CourseUnitTitle
+                                                            <b>@courseUnit.CourseUnitTitle</b>
                                                         </span>
                                                         <div class="left">
                                                             @courseUnit.NoPaidPoints paid points
                                                         </div>
-                                                        <span class="right">Unlocked at: @courseUnit.UnlockedAt</span>
+                                                        <span class="right unlock-date">Unlocked at: @courseUnit.UnlockedAt</span>
                                                     </div>
                                                 }
 
@@ -82,7 +91,7 @@
                                     {
                                         <MatExpansionPanel>
                                             <MatExpansionPanelSummary>
-                                                <MatExpansionPanelHeader>@courseProgress.CourseTitle</MatExpansionPanelHeader>
+                                                <MatExpansionPanelHeader><b>@courseProgress.CourseTitle</b></MatExpansionPanelHeader>
                                             </MatExpansionPanelSummary>
                                             <MatExpansionPanelDetails>
 
@@ -91,8 +100,8 @@
                                                     if (courseUnitProgress.StudentAssignments.Any())
                                                     {
                                                         <div class="course-unit">
-                                                            <span class="course-unit-title">
-                                                                @courseUnitProgress.CourseUnitTitle
+                                                            <span>
+                                                                <b>@courseUnitProgress.CourseUnitTitle</b>
                                                             </span>
                                                             <div>
                                                                 @foreach (var assignment in courseUnitProgress.StudentAssignments)
@@ -102,7 +111,7 @@
                                                                     </div>
                                                                     <div>
                                                                         <div class="left earned-points">@assignment.NoEarnedPoints points</div>
-                                                                        <div class="right">Completed at: @assignment.CompletedAt</div>
+                                                                        <div class="right completed-at">Completed at: @assignment.CompletedAt</div>
                                                                     </div>
                                                                 }
                                                             </div>
