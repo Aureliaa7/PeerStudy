@@ -1,0 +1,28 @@
+﻿@using PeerStudy.Core.Enums;
+@using PeerStudy.Features.Assignments.Components.FlatAssignmentComponent
+
+@page "/my-assignments"
+@attribute [Authorize(Roles = "Student")]
+@inherits PeerStudyComponentBase
+
+<h3 class="page-title">My assignments</h3>
+
+@if (!isLoading)
+{
+    <MatSelectItem Label="Status"
+               Value="@assignmentStatus"
+               ValueChanged="@(async (AssignmentStatus? value) => await HandleSelectedStatusChanged(value))"
+               Items="@assignmentStatuses">
+    </MatSelectItem>
+}
+
+<Loading IsLoading="isLoading" HasData="@(!isLoading && assignments.Any())" NotFoundMessage="@noFoundAssignmentsMessage">
+    <div class="my-assignments">
+        @foreach (var assignment in assignments)
+        {
+           <FlatAssignment Assignment="assignment" OnClick="HandleClickedAssignment"></FlatAssignment>
+        }
+    </div>
+
+</Loading>
+

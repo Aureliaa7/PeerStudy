@@ -1,6 +1,7 @@
 ﻿using PeerStudy.Core.DomainEntities;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
+using PeerStudy.Core.Extensions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Assignments;
@@ -72,9 +73,9 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<List<AssignmentDetailsModel>> GetAsync(Guid courseId, Guid studentId, AssignmentStatus status)
+        public async Task<List<AssignmentDetailsModel>> GetByCourseAndStudentAsync(Guid courseId, Guid studentId, AssignmentStatus status)
         {
-            Expression<Func<StudentAssignment, bool>> filter = GetAssignmentsFilter(courseId, studentId, status);
+            Expression<Func<StudentAssignment, bool>> filter = GetFilterByAssignmentStatus(x => x.StudentId == studentId && x.Assignment.CourseUnit.CourseId == courseId, status);
 
             var assignments = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(filter, trackChanges: false))
             .Select(x => new AssignmentDetailsModel
@@ -91,19 +92,25 @@ namespace PeerStudy.Core.DomainServices
             return assignments;
         }
 
-        private Expression<Func<StudentAssignment, bool>> GetAssignmentsFilter(Guid courseId, Guid studentId, AssignmentStatus status)
+        private static Expression<Func<StudentAssignment, bool>> GetFilterByAssignmentStatus(Expression<Func<StudentAssignment, bool>> filter, AssignmentStatus status)
         {
             if (status == AssignmentStatus.Done)
             {
-                return x => x.Assignment.CourseUnit.CourseId == courseId && x.StudentId == studentId && x.Assignment.CompletedAt != null;
+                return filter.And(x => x.Assignment.CompletedAt != null);
             }
-            else if (status == AssignmentStatus.ToDo)
+            else if (status == AssignmentStatus.Upcoming)
             {
-                return x => x.Assignment.CourseUnit.CourseId == courseId && x.StudentId == studentId && x.Assignment.CompletedAt == null;
+                return filter.And(x => x.Assignment.CompletedAt == null &&
+                    x.Assignment.Deadline > DateTime.UtcNow);
+            }
+            else if (status == AssignmentStatus.Missing)
+            {
+                return filter.And(x => x.Assignment.CompletedAt == null &&
+                   x.Assignment.Deadline < DateTime.UtcNow);
             }
             else
             {
-                return x => x.Assignment.CourseUnit.CourseId == courseId && x.StudentId == studentId;
+                return filter;
             }
         }
 
@@ -177,6 +184,25 @@ namespace PeerStudy.Core.DomainServices
             assignment.CompletedAt = null;
             await unitOfWork.AssignmentsRepository.UpdateAsync(assignment);
             await unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<List<FlatAssignmentModel>> GetByStudentAsync(Guid studentId, AssignmentStatus status)
+        {
+            Expression<Func<StudentAssignment, bool>> filter = GetFilterByAssignmentStatus(x => x.StudentId == studentId, status);
+
+            var assignments = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(filter, trackChanges: false))
+            .Select(x => new FlatAssignmentModel
+            {
+                Id = x.Assignment.Id,
+                Title = x.Assignment.Title,
+                CourseTitle = x.Assignment.CourseUnit.Course.Title,
+                Deadline = x.Assignment.Deadline,
+                CourseId = x.Assignment.CourseUnit.CourseId,
+                StudyGroupId = x.Assignment.StudyGroupId
+            })
+            .ToList();
+
+            return assignments;
         }
     }
 }

@@ -1,0 +1,21 @@
+﻿.student-progress-details-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.tab-content {
+    padding: 15px;
+}
+
+.general-details {
+    padding: 15px;
+    height: 80px;
+}
+
+.my-progress {
+}
+
+.earned-points {
+    color: green;
+}

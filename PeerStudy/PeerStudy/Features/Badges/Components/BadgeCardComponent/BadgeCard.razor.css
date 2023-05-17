@@ -1,0 +1,40 @@
+﻿.badge-container {
+    width: 90%;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: default;
+}
+
+.badge-container:hover {
+    background-color: whitesmoke;
+}
+
+.badge-image, .badge-details {
+    display: inline-block;
+}
+
+img {
+    width: 80px;
+    height: 95px;
+}
+
+.badge-title {
+    font-size: 16px;
+    display: block;
+}
+
+.badge-details {
+    padding: 15px;
+    margin-left: 15px;
+    vertical-align: middle;
+    width: 80%;
+}
+
+.points {
+    text-align: right;
+    color: green;
+}
+
+.earn-date {
+    font-size: 12px;
+}

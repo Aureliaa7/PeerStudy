@@ -180,3 +180,12 @@ body::-webkit-scrollbar {
     overflow-y: auto;
     margin: 10px;
 }
+
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}

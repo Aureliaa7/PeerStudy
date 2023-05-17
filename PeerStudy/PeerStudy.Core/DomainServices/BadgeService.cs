@@ -22,32 +22,23 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task AddAsync(Guid studentId, BadgeType badgeType)
         {
-            var studentBadge = await unitOfWork.StudentBadgesRepository.GetFirstOrDefaultAsync(x => x.StudentId == studentId
-            && x.Badge.Type == badgeType);
             var badge = await unitOfWork.BadgesRepository.GetFirstOrDefaultAsync(x => x.Type == badgeType) 
                 ?? throw new EntityNotFoundException($"Badge {badgeType.ToString()} was not found!");
 
-            if (studentBadge == null)
+            await unitOfWork.StudentBadgesRepository.AddAsync(new StudentBadge
             {
-                await unitOfWork.StudentBadgesRepository.AddAsync(new StudentBadge
-                {
-                    StudentId = studentId,
-                    Badge = badge,
-                    NumberOfBadges = 1
-                });                
-            }
-            else
-            {
-                studentBadge.NumberOfBadges++;
-                await unitOfWork.StudentBadgesRepository.UpdateAsync(studentBadge);
-            }
-
-            await unitOfWork.SaveChangesAsync();
+                StudentId = studentId,
+                Badge = badge,
+                EarnedAt = DateTime.UtcNow
+            });          
+            
             await studentPointsService.AddAsync(new SaveStudentPointsModel
             {
                 StudentId = studentId,
                 NoPoints = badge.Points
             });
+
+            await unitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -9,6 +9,13 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
+        <AuthorizeView Roles="Student">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/my-progress">
+                    <span class="oi oi-bar-chart" aria-hidden="true"></span> My progress
+                </NavLink>
+            </div>
+        </AuthorizeView>
         <AuthorizeView>
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/active-courses">
@@ -36,6 +43,11 @@
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/archived-study-groups">
                     <span class="oi oi-people" aria-hidden="true"></span> Archived study groups
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/my-assignments">
+                    <span class="oi oi-dashboard" aria-hidden="true"></span> My assignments
                 </NavLink>
             </div>
             <div class="nav-item px-3">

@@ -1,0 +1,130 @@
+﻿@page "/my-progress"
+@using PeerStudy.Features.Badges.Components.BadgeCardComponent
+@inherits PeerStudyComponentBase
+@attribute [Authorize(Roles = "Student")]
+
+<Loading IsLoading="isLoading" HasData="@(!isLoading && studentProgress != null)" NotFoundMessage="@noProgressMessage">
+
+    <div class="student-progress-details-container">
+        <div class="general-details">
+            <div class="left">
+                <div>
+                    @studentProgress.Name
+                </div>
+                <div>
+                    @studentProgress.Email
+                </div>
+            </div>
+            <div class="right">
+                <span class="earned-points">
+                    @studentProgress.NoTotalPoints points
+                </span>
+            </div>
+        </div>
+        <div class="my-progress">
+            <MatTabGroup>
+                <MatTab Label="Earned Badges">
+                    <div class="tab-content">
+                        @foreach (var badge in studentProgress.EarnedBadges)
+                        {
+                            <BadgeCard Badge="badge"></BadgeCard>
+                        }
+                    </div>
+                </MatTab>
+                <MatTab Label="Unlocked Course Units">
+                    <div class="tab-content">
+                        <MatAccordion Multi="true">
+                            @if (studentProgress.CoursesProgress.Any(x => x.UnlockedCourseUnits.Any()))
+                            {
+                                @foreach (var courseProgress in studentProgress.CoursesProgress)
+                                {
+                                    @if (courseProgress.UnlockedCourseUnits.Any())
+                                    {
+                                        <MatExpansionPanel>
+                                            <MatExpansionPanelSummary>
+                                                <MatExpansionPanelHeader>@courseProgress.CourseTitle</MatExpansionPanelHeader>
+                                            </MatExpansionPanelSummary>
+                                            <MatExpansionPanelDetails>
+
+                                                @foreach (var courseUnit in courseProgress.UnlockedCourseUnits)
+                                                {
+                                                    <div class="course-unit">
+                                                        <span class="course-unit-title">
+                                                            @courseUnit.CourseUnitTitle
+                                                        </span>
+                                                        <div class="left">
+                                                            @courseUnit.NoPaidPoints paid points
+                                                        </div>
+                                                        <span class="right">Unlocked at: @courseUnit.UnlockedAt</span>
+                                                    </div>
+                                                }
+
+                                            </MatExpansionPanelDetails>
+                                        </MatExpansionPanel>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                @noUnlockedCourseUnits
+                            }
+                        </MatAccordion>
+                    </div>
+                </MatTab>
+                <MatTab Label="Assignments Progress">
+                    <div class="tab-content">
+                        <MatAccordion Multi="true">
+                            @if (HasCompletedAssignments())
+                            {
+                                @foreach (var courseProgress in studentProgress.CoursesProgress)
+                                {
+                                    @if (courseProgress.CourseUnitsAssignmentsProgress.Any(x => x.StudentAssignments.Count() > 0))
+                                    {
+                                        <MatExpansionPanel>
+                                            <MatExpansionPanelSummary>
+                                                <MatExpansionPanelHeader>@courseProgress.CourseTitle</MatExpansionPanelHeader>
+                                            </MatExpansionPanelSummary>
+                                            <MatExpansionPanelDetails>
+
+                                                @foreach (var courseUnitProgress in courseProgress.CourseUnitsAssignmentsProgress)
+                                                {
+                                                    if (courseUnitProgress.StudentAssignments.Any())
+                                                    {
+                                                        <div class="course-unit">
+                                                            <span class="course-unit-title">
+                                                                @courseUnitProgress.CourseUnitTitle
+                                                            </span>
+                                                            <div>
+                                                                @foreach (var assignment in courseUnitProgress.StudentAssignments)
+                                                                {
+                                                                    <div class="assignment-title">
+                                                                        @assignment.AssignmentTitle
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="left earned-points">@assignment.NoEarnedPoints points</div>
+                                                                        <div class="right">Completed at: @assignment.CompletedAt</div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+
+                                            </MatExpansionPanelDetails>
+                                        </MatExpansionPanel>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                @noCompletedAssignmentsMessage
+                            }
+                        </MatAccordion>
+                    </div>
+                </MatTab>
+
+            </MatTabGroup>
+        </div>
+    </div>
+
+</Loading>

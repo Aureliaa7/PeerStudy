@@ -10,6 +10,8 @@ namespace PeerStudy.Core.DomainEntities
 
         public Guid CourseUnitId { get; set; }
 
+        public DateTime UnlockedAt { get; set; }
+
         public Student Student { get; set; }
 
         public CourseUnit CourseUnit { get; set; }

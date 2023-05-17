@@ -1,0 +1,23 @@
+﻿.deadline {
+    color: darkred;
+    font-size: 14px;
+}
+
+.assignment {
+    padding: 15px;
+    height: 55px;
+    border-radius: 10px;
+}
+
+.assignment:hover {
+    background-color: whitesmoke;
+    cursor: pointer;
+}
+
+.assignment-title {
+    font-size: 14px;
+}
+
+.course-title {
+    font-size: 12px;
+}

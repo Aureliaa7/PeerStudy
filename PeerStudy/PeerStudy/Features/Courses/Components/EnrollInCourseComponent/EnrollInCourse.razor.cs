@@ -18,7 +18,7 @@ namespace PeerStudy.Features.Courses.Components.EnrollInCourseComponent
         private ICourseEnrollmentService CourseEnrollmentService { get; set; }
 
 
-        private const string noCoursesMessage = "There are no active courses...";
+        private const string noCoursesMessage = "There are no courses...";
         private List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
 
         protected override async Task OnInitializedAsync()

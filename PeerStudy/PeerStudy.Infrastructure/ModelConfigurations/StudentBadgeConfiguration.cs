@@ -8,8 +8,6 @@ namespace PeerStudy.Infrastructure.ModelConfigurations
     {
         public void Configure(EntityTypeBuilder<StudentBadge> builder)
         {
-            builder.HasKey(x => new { x.StudentId, x.BadgeId });
-
             builder.HasOne(x => x.Student)
                 .WithMany(x => x.StudentBadges)
                 .OnDelete(DeleteBehavior.NoAction);

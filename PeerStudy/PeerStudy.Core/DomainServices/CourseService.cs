@@ -113,7 +113,8 @@ namespace PeerStudy.Core.DomainServices
                     Status = x.Status,
                     TeacherId = x.TeacherId,
                     HasStudyGroups = x.HasStudyGroups,
-                    NoEnrolledStudents = x.CourseEnrollments.Count
+                    NoEnrolledStudents = x.CourseEnrollments.Count,
+                    NoCourseUnits = x.CourseUnits.Count
                 })
             .ToList();
 
@@ -213,7 +214,8 @@ namespace PeerStudy.Core.DomainServices
                         Status = x.Course.Status,
                         TeacherId = x.Course.TeacherId,
                         HasStudyGroups = x.Course.HasStudyGroups,
-                        NoEnrolledStudents = x.Course.CourseEnrollments.Count
+                        NoEnrolledStudents = x.Course.CourseEnrollments.Count,
+                        NoCourseUnits = x.Course.CourseUnits.Count
                     })
                 .ToList();
 

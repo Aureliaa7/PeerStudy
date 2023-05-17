@@ -42,8 +42,8 @@ namespace PeerStudy.Features.Assignments.Components.StudentCourseAssignmentsComp
         {
             try
             {
-                doneAssignments = await AssignmentService.GetAsync(CourseId, StudentId, AssignmentStatus.Done);
-                toDoAssignments = await AssignmentService.GetAsync(CourseId, StudentId, AssignmentStatus.ToDo);
+                doneAssignments = await AssignmentService.GetByCourseAndStudentAsync(CourseId, StudentId, AssignmentStatus.Done);
+                toDoAssignments = await AssignmentService.GetByCourseAndStudentAsync(CourseId, StudentId, AssignmentStatus.Upcoming);
             }
             catch (Exception ex)
             {

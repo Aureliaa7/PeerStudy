@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 {
-    public partial class CourseHomePage : PeerStudyComponentBase
+    public partial class CourseHomePage : PeerStudyComponentBase, IDisposable
     {
         [Inject]
         private ICourseResourceService CourseResourceService { get; set; }
@@ -40,6 +40,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         [Inject]
         private IPeerStudyToastService ToastService { get; set; }
+
+        [Inject]
+        private INavigationMenuService NavigationMenuService { get; set; }
 
 
         [Parameter]
@@ -464,5 +467,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             isDeleteResourcePopupVisible = true;
             deleteResourceModel = model;
         }
+
+        public void Dispose() => NavigationMenuService.Reset();
     }
 }

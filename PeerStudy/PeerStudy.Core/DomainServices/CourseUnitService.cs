@@ -176,7 +176,8 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.UnlockedCourseUnitsRepository.AddAsync(new UnlockedCourseUnit
             {
                 CourseUnitId = courseUnitId,
-                StudentId = studentId
+                StudentId = studentId,
+                UnlockedAt = DateTime.UtcNow
             });
 
             await unitOfWork.SaveChangesAsync();

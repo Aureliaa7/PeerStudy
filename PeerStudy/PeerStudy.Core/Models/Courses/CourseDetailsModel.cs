@@ -23,5 +23,7 @@ namespace PeerStudy.Core.Models.Courses
         public Guid TeacherId { get; set; }
 
         public bool HasStudyGroups { get; set; }
+
+        public int NoCourseUnits { get; set; }
     }
 }

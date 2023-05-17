@@ -12,7 +12,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
 
         Task<List<ExtendedAssignmentDetailsModel>> GetByCourseUnitIdAsync(Guid courseUnitId);
 
-        Task<List<AssignmentDetailsModel>> GetAsync(Guid courseId, Guid studentId, AssignmentStatus status);
+        Task<List<AssignmentDetailsModel>> GetByCourseAndStudentAsync(Guid courseId, Guid studentId, AssignmentStatus status);
 
         Task DeleteAsync(Guid assignmentId);
 
@@ -25,5 +25,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         /// <param name="assignmentId">The AssignmentId</param>
         /// <returns></returns>
         Task ResetSubmitDateAsync(Guid assignmentId);
+
+        Task<List<FlatAssignmentModel>> GetByStudentAsync(Guid studentId, AssignmentStatus status);
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PeerStudy.Infrastructure.AppDbContext;
 
@@ -11,9 +12,10 @@ using PeerStudy.Infrastructure.AppDbContext;
 namespace PeerStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230515202454_Add_UnlockedAt_Column_UnlockedCourseUnits_Table")]
+    partial class Add_UnlockedAt_Column_UnlockedCourseUnits_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -402,24 +404,18 @@ namespace PeerStudy.Infrastructure.Migrations
 
             modelBuilder.Entity("PeerStudy.Core.DomainEntities.StudentBadge", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BadgeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("EarnedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("NumberOfBadges")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
+                    b.HasKey("StudentId", "BadgeId");
 
                     b.HasIndex("BadgeId");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("StudentBadges");
                 });
