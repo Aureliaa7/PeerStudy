@@ -18,7 +18,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionsListComponent
         public bool IsLoading { get; set; }
 
         [Parameter]
-        public string NoQuestionsMessage { get; set; } = "There are no questions yet...";
+        public string NoQuestionsMessage { get; set; } = UIMessages.NoQuestionsMessage;
 
         [Parameter]
         public RenderFragment ChildContent { get; set; }

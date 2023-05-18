@@ -9,7 +9,7 @@
 
 <Loading IsLoading="isLoading"
          HasData="@(assignments != null && assignments.Any())"
-         NotFoundMessage="@noAssignmentsMessage">
+         NotFoundMessage="@UIMessages.NoFoundAssignmentsMessage">
     <div class="assignments">
         @foreach (var assignment in assignments)
         {

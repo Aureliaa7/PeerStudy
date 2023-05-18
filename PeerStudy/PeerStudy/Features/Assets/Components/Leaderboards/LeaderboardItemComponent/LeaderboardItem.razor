@@ -1,0 +1,19 @@
+﻿<div class="ranking-item-container">
+    <div class="rank">@Rank</div>
+    <div class="profile-photo">
+        @if (string.IsNullOrWhiteSpace(ProfilePhotoName))
+        {
+            <div class="no-profile-photo">
+                <span>
+                    @StudentName.ToUpper().First()
+                </span>
+            </div>
+        }
+        else
+        {
+            <img src=@($"~/profile-photos/{ProfilePhotoName}") />
+        }
+       </div>
+    <div class="student-name"><b>@StudentName</b></div>
+    <div class="earned-points">@EarnedPoints earned points</div>
+</div>

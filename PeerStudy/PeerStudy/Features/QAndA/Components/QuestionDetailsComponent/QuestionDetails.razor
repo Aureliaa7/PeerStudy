@@ -73,14 +73,14 @@
     </div>
 
     <ConfirmationPopup Title="Delete Question"
-                       Message="@deleteQuestionConfirmationMessage"
+                       Message="@UIMessages.DeleteQuestionConfirmationMessage"
                        IsOpen="showDeleteQuestionConfirmationPopup"
                        OnCancel="@(() => showDeleteQuestionConfirmationPopup = false)"
                        OnConfirm="DeleteQuestion">
     </ConfirmationPopup>
 
     <ConfirmationPopup Title="Delete Answer"
-                       Message="@deleteAnswerConfirmationMessage"
+                       Message="@UIMessages.DeleteAnswerConfirmationMessage"
                        IsOpen="showDeleteAnswerConfirmationPopup"
                        OnCancel="@(() => showDeleteAnswerConfirmationPopup = false)"
                        OnConfirm="DeleteAnswer">

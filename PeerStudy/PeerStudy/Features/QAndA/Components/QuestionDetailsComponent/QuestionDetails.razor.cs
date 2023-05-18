@@ -30,8 +30,6 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
         private QuestionDetailsModel questionDetails;
         private bool showDeleteQuestionConfirmationPopup;
         private bool showDeleteAnswerConfirmationPopup;
-        private const string deleteQuestionConfirmationMessage = "Are you sure you want to delete this question?";
-        private const string deleteAnswerConfirmationMessage = "Are you sure you want to delete this answer?";
 
         private bool showAddAnswerEditor;
         private bool isEditQuestionDisabled = true;
@@ -65,7 +63,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the question...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.UpdateQuestionErrorMessage);
             }
         }
 
@@ -90,7 +88,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while deleting the question...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.DeleteQuestionErrorMessage);
             }
         }
 
@@ -111,7 +109,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while posting your answer...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.AddAnswerErrorMessage);
             }
         }
 
@@ -137,7 +135,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while deleting the answer...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.DeleteAnswerErrorMessage);
             }
 
             answerId = null;
@@ -165,7 +163,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the answer...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.UpdateAnswerErrorMessage);
             }
         }
 
@@ -203,7 +201,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the answer...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.UpdateAnswerErrorMessage);
             }
         }
 
@@ -283,7 +281,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the answer...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.UpdateQuestionErrorMessage);
             }
         }
 

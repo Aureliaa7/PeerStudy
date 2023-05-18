@@ -71,7 +71,6 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private bool isEditCourseUnitEnabled;
 
         private const string menuButtonsStyles = "color: white;";
-        private const string deleteResourceErrorMessage = "The resource could not be deleted. Please try again later...";
 
         private List<DropDownItem> studyGroupsDropdownItems = new List<DropDownItem>();
 
@@ -83,11 +82,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         private bool isDeleteCourseUnitPopupVisible;
         private const string deleteCourseUnitPopupTitle = "Delete Course Unit";
-        private const string deleteCourseUnitPopupMessage = "Are you sure you want to delete this course unit?";
 
         private bool isDeleteResourcePopupVisible;
         private const string deleteResourcePopupTitle = "Delete Course Unit Resource";
-        private const string deleteResourcePopupMessage = "Are you sure you want to delete this file?";
         private DeleteCourseUnitResourceModel? deleteResourceModel;
 
         protected override async Task OnInitializedAsync()
@@ -220,12 +217,12 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
                 var resourceToBeDeleted = courseUnit.Resources.FirstOrDefault(x => x.Id == deleteResourceModel.ResourceId);    
                 courseUnit.Resources.Remove(resourceToBeDeleted);
                 
-                ToastService.ShowToast(ToastLevel.Success, "The resource was successfully deleted.");
+                ToastService.ShowToast(ToastLevel.Success, UIMessages.DeleteResourceSuccessMessage);
                 StateHasChanged();
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, deleteResourceErrorMessage);
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.DeleteResourceErrorMessage);
             }
 
             deleteResourceModel = null;
@@ -237,7 +234,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
             try
             {
-                ToastService.ShowToast(ToastLevel.Info, "Deleting course unit...", false);
+                ToastService.ShowToast(ToastLevel.Info, UIMessages.DeleteCourseUnitMessage, false);
                 var courseUnitToBeDeleted = courseUnits.FirstOrDefault(x => x.Id == selectedCourseUnitId.Value);
 
                 await CourseUnitService.DeleteAsync(selectedCourseUnitId.Value);
@@ -283,7 +280,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.UpdateCourseUnitErrorMessage);
             }
             finally
             {
@@ -300,12 +297,12 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private async Task CreateGroups(string noStudentsPerGroup)
         {
             showCreateStudyGroupsDialog = false;
-            ToastService.ShowToast(ToastLevel.Info, "Creating study groups...", false);
+            ToastService.ShowToast(ToastLevel.Info, UIMessages.CreateStudyGroupsMessage, false);
 
             try
             {
                 await StudyGroupService.CreateStudyGroupsAsync(currentUserId, CourseId, Convert.ToInt16(noStudentsPerGroup));
-                ToastService.ShowToast(ToastLevel.Success, "Study groups were successfully created.");
+                ToastService.ShowToast(ToastLevel.Success, UIMessages.CreateStudyGroupsSuccessMessage);
             }
             catch (Exception ex)
             {
@@ -322,7 +319,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private async Task SaveAssignment()
         {
             showAddAssigmentDialog = false;
-            ToastService.ShowToast(ToastLevel.Info, "Adding assignment...", false);
+            ToastService.ShowToast(ToastLevel.Info, UIMessages.AddAssignmentMessage, false);
             assignmentModel.CourseUnitId = selectedCourseUnitId.Value;
             assignmentModel.TeacherId = currentUserId;
             assignmentModel.DueDate = assignmentModel.DueDate.AddDays(1); // fix for MatDatePicker
@@ -333,11 +330,11 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
                 {
                     await AssignmentService.CreateAsync(assignmentModel);
                 });
-                ToastService.ShowToast(ToastLevel.Success, "Assignment was successfully added.");
+                ToastService.ShowToast(ToastLevel.Success, UIMessages.AddAssignmentSuccessMessage);
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred. Please try again later.");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.AddAssignmentErrorMessage);
                 selectedCourseUnitId = null;
             }
 
@@ -406,7 +403,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
             if (numberOfPoints >= courseUnitToBeUnlocked.NoPointsToUnlock)
             {
-                message = "Are you sure you want to unlock this course unit?";
+                message = UIMessages.UnlockCourseUnitConfirmationMessage;
                 isConfirmUnlockUnitButtonDisabled = false;
             }
             else
@@ -438,7 +435,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while unlocking the course...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.UnlockCourseUnitErrorMessage);
             }
             selectedCourseUnitId = null;
             unlockCourseUnitMessage = null;

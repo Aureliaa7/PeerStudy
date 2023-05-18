@@ -16,7 +16,6 @@ namespace PeerStudy.Features.QAndA.Components.QuestionsComponent
 
 
         private List<FlatQuestionModel> questionsModels = new List<FlatQuestionModel>();
-        private const string noQuestionsMessage = "There are no questions yet...";
 
         protected override async Task InitializeAsync()
         {

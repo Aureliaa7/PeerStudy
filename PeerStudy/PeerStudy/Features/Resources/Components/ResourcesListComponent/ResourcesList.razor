@@ -3,7 +3,7 @@
 
 <Loading IsLoading="IsLoading"
          HasData="@(Resources != null && Resources.Any())"
-         NotFoundMessage="@coursesNotFoundMessage">
+         NotFoundMessage="@UIMessages.NoResourcesFoundMessage">
     <div class="resources-container">
         @foreach (var resource in Resources)
         {

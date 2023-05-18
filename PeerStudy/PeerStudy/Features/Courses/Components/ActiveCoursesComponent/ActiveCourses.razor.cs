@@ -11,9 +11,7 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
     public partial class ActiveCourses : CoursesBase
     {
         private const string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
-        private const string courseCreationMessage = "Course creation is in progress...";
         private const string archivePopupTitle = "Archive Course";
-        private const string archiveCoursePopupMessage = "Are you sure you want to archive this course?";
 
         private bool displayCourseDialog = false;
         private string noCoursesMessage;
@@ -37,12 +35,12 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
             if (currentUserRole == Role.Teacher)
             {
                 courses = await CourseService.GetAsync(currentUserId, CourseStatus.Active);
-                noCoursesMessage = "There are no active courses. You can create one by clicking on the plus button.";
+                noCoursesMessage = UIMessages.NoActiveCoursesForTeacherMessage;
             }
             else if (currentUserRole == Role.Student)
             {
                 courses = await CourseService.GetCoursesForStudentAsync(currentUserId, CourseStatus.Active);
-                noCoursesMessage = "There are no active courses...";
+                noCoursesMessage = UIMessages.NoActiveCoursesForStudentMessage;
             }
         }
 
@@ -57,7 +55,7 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
           
             if (isValidData)
             {
-                ToastService.ShowToast(ToastLevel.Info, courseCreationMessage, false);
+                ToastService.ShowToast(ToastLevel.Info, UIMessages.CourseCreationMessage, false);
                 displayCourseDialog = false;
 
                 // fix for MatDatePicker
@@ -69,11 +67,11 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
                 {
                     var savedCourse = await CourseService.AddAsync(CourseModel);
                     courses.Add(savedCourse);
-                    ToastService.ShowToast(ToastLevel.Success, "Course was successfully saved.");
+                    ToastService.ShowToast(ToastLevel.Success, UIMessages.AddCourseSuccessMessage);
                 }
                 catch (Exception ex)
                 {
-                    ToastService.ShowToast(ToastLevel.Error, "An error occurred while saving the course...");
+                    ToastService.ShowToast(ToastLevel.Error, UIMessages.AddCourseErrorMessage);
                 }
                 CourseModel = new CourseModel();
             }
@@ -124,7 +122,7 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while updating the course details...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.UpdateCourseErrorMessage);
             }
 
             CourseModel = new CourseModel();
@@ -149,7 +147,7 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "Could not archive the course...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.ArchiveCourseErrorMessage);
             }
 
             courseIdToBeArchived = null;

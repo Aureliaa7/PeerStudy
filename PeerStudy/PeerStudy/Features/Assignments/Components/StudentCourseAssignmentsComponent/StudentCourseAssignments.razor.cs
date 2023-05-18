@@ -29,7 +29,6 @@ namespace PeerStudy.Features.Assignments.Components.StudentCourseAssignmentsComp
 
         private List<AssignmentDetailsModel> doneAssignments = new List<AssignmentDetailsModel>();
         private List<AssignmentDetailsModel> toDoAssignments = new List<AssignmentDetailsModel>();
-        private const string noAssignmentsMessage = "There are no assignments yet...";
         private const string doneAssignmentsTitle = "Done";
         private const string toDoAssignmentsTitle = "To do";
 

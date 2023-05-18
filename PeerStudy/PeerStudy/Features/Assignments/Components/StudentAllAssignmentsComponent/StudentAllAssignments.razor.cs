@@ -27,8 +27,6 @@ namespace PeerStudy.Features.Assignments.Components.StudentAllAssignmentsCompone
         private List<AssignmentStatus?> assignmentStatuses = new List<AssignmentStatus?>();
         private AssignmentStatus? assignmentStatus = AssignmentStatus.Upcoming;
 
-        private const string noFoundAssignmentsMessage = "No assignments were found...";
-
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();

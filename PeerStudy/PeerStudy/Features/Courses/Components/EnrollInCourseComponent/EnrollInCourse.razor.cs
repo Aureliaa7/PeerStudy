@@ -18,7 +18,6 @@ namespace PeerStudy.Features.Courses.Components.EnrollInCourseComponent
         private ICourseEnrollmentService CourseEnrollmentService { get; set; }
 
 
-        private const string noCoursesMessage = "There are no courses...";
         private List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
 
         protected override async Task OnInitializedAsync()
@@ -35,7 +34,7 @@ namespace PeerStudy.Features.Courses.Components.EnrollInCourseComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error,"An error occurred while fetching courses...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.GetCoursesErrorMessage);
             }
         }
 
@@ -45,11 +44,11 @@ namespace PeerStudy.Features.Courses.Components.EnrollInCourseComponent
             {
                 await CourseEnrollmentService.CreateEnrollmentRequestAsync(currentUserId, courseDetails.Id);
                 courses = courses.Except(new List<CourseDetailsModel> { courseDetails }).ToList();
-                ToastService.ShowToast(ToastLevel.Success,"The enrollment request was successfully created.");
+                ToastService.ShowToast(ToastLevel.Success, UIMessages.CreateCourseEnrollmentRequestSuccessMessage);
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error,"The enrollment request could not be created...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.CreateCourseEnrollmentRequestErrorMessage);
             }
         }
     }

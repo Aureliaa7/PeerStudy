@@ -42,7 +42,6 @@ namespace PeerStudy.Features.CourseUnits.Components.CourseUnitsListComponent
         [Parameter]
         public EventCallback<Guid> OnClickedLockIcon { get; set; }
 
-        private const string noCoursesUnitsMessage = "There are no course units yet...";
 
         private async Task Delete(Guid courseUnitId)
         {

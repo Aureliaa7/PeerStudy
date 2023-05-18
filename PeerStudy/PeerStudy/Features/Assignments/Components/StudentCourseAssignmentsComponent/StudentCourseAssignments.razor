@@ -9,7 +9,7 @@
 
 <Loading IsLoading="isLoading"
          HasData="@((doneAssignments != null && doneAssignments.Any() || toDoAssignments != null && toDoAssignments.Any()))"
-         NotFoundMessage="@noAssignmentsMessage">
+         NotFoundMessage="@UIMessages.NoFoundAssignmentsMessage">
     <div class="center-elements">
         <div class="assignments">
             @if (doneAssignments.Any())

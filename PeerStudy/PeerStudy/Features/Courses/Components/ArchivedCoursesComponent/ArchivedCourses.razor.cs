@@ -7,8 +7,6 @@ namespace PeerStudy.Features.Courses.Components.ArchivedCoursesComponent
 {
     public partial class ArchivedCourses : CoursesBase
     {
-        private const string noCoursesMessage = "There are no archived courses yet...";
-
         private List<CourseDetailsModel> courses = new List<CourseDetailsModel>();
        
         protected override async Task InitializeAsync()

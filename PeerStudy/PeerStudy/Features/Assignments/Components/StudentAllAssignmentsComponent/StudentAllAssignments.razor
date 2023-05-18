@@ -16,7 +16,7 @@
     </MatSelectItem>
 }
 
-<Loading IsLoading="isLoading" HasData="@(!isLoading && assignments.Any())" NotFoundMessage="@noFoundAssignmentsMessage">
+<Loading IsLoading="isLoading" HasData="@(!isLoading && assignments.Any())" NotFoundMessage="@UIMessages.NoFoundAssignmentsMessage">
     <div class="my-assignments">
         @foreach (var assignment in assignments)
         {

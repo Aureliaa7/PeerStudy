@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models.StudentAssets;
 
-namespace PeerStudy.Features.Badges.Components.BadgeCardComponent
+namespace PeerStudy.Features.Assets.Components.Badges.BadgeCardComponent
 {
     public partial class BadgeCard
     {

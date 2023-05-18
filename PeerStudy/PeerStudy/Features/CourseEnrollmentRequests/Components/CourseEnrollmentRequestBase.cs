@@ -41,7 +41,7 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while fetching the requests...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.FetchRequestsFailedMessage);
             }
         }
     }

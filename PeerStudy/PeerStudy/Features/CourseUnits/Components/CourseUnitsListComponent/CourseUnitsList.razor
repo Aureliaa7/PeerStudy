@@ -3,7 +3,7 @@
 <div>
     <Loading IsLoading="IsLoading"
              HasData="@(CourseUnits != null && CourseUnits.Any())"
-             NotFoundMessage="@noCoursesUnitsMessage">
+             NotFoundMessage="@UIMessages.NoCourseUnitsMessage">
         @foreach (var unit in CourseUnits)
         {
             <CourseUnitDetails CourseUnit="unit"

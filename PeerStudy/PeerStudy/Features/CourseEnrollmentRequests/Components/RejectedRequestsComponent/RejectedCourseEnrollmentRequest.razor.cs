@@ -8,8 +8,6 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.RejectedRequest
 {
     public partial class RejectedCourseEnrollmentRequest : CourseEnrollmentRequestBase
     {
-        private const string noRequestsMessage = "There are no rejected requests...";
-
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();

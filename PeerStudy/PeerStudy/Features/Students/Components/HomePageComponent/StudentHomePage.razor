@@ -1,11 +1,12 @@
 ﻿@using PeerStudy.Core.Enums;
-@using PeerStudy.Features.Badges.Components.BadgeCardComponent
+@using PeerStudy.Features.Assets.Components.Badges.BadgeCardComponent
+@using PeerStudy.Features.Assets.Components.Leaderboards.LeaderboardItemComponent
 
 @page "/my-progress"
 @inherits PeerStudyComponentBase
 @attribute [Authorize(Roles = "Student")]
 
-<Loading IsLoading="isLoading" HasData="@(!isLoading && studentProgress != null)" NotFoundMessage="@noProgressMessage">
+<Loading IsLoading="isLoading" HasData="@(!isLoading && studentProgress != null)" NotFoundMessage="@UIMessages.NoStudentProgressMessage">
 
     <div class="student-progress-details-container">
         <div class="general-details">
@@ -23,20 +24,27 @@
                 </span>
             </div>
         </div>
-            <div class="course-status">
-                <MatSelectItem Label="Course status"
-                               Value="@courseStatus"
-                               ValueChanged="@(async (CourseStatus? value) => await HandleSelectedStatusChanged(value))"
-                               Items="@courseStatuses">
-                </MatSelectItem>
-            </div>
+        <div class="course-status">
+            <MatSelectItem Label="Course status"
+                           Value="@courseStatus"
+                           ValueChanged="@(async (CourseStatus? value) => await HandleSelectedStatusChanged(value))"
+                           Items="@courseStatuses">
+            </MatSelectItem>
+        </div>
         <div class="my-progress">
             <MatTabGroup>
                 <MatTab Label="Earned Badges">
                     <div class="tab-content">
-                        @foreach (var badge in studentProgress.EarnedBadges)
+                        @if (studentProgress.EarnedBadges.Any())
                         {
-                            <BadgeCard Badge="badge"></BadgeCard>
+                            @foreach (var badge in studentProgress.EarnedBadges)
+                            {
+                                <BadgeCard Badge="badge"></BadgeCard>
+                            }
+                        }
+                        else
+                        {
+                            @UIMessages.NoBadgesMessage
                         }
                     </div>
                 </MatTab>
@@ -75,7 +83,7 @@
                             }
                             else
                             {
-                                @noUnlockedCourseUnits
+                                @UIMessages.NoUnlockedCourseUnitsMessage
                             }
                         </MatAccordion>
                     </div>
@@ -126,12 +134,39 @@
                             }
                             else
                             {
-                                @noCompletedAssignmentsMessage
+                                @UIMessages.NoCompletedAssignmentsMessage
                             }
                         </MatAccordion>
                     </div>
                 </MatTab>
-
+                <MatTab Label="Ranking">
+                    <div class="tab-content">
+                        @if (studentProgress.CourseRankings.Any())
+                        {
+                            <MatAccordion Multi="true">
+                                @foreach (var ranking in studentProgress.CourseRankings)
+                                {
+                                    <MatExpansionPanel>
+                                        <MatExpansionPanelSummary>
+                                            <MatExpansionPanelHeader><b>@ranking.CourseTitle</b></MatExpansionPanelHeader>
+                                        </MatExpansionPanelSummary>
+                                        <MatExpansionPanelDetails>
+                                            <LeaderboardItem Rank="ranking.Rank"
+                                                     EarnedPoints="ranking.EarnedPoints"
+                                                     ProfilePhotoName="@ranking.ProfilePhotoName"
+                                                     StudentName="@ranking.StudentName">
+                                            </LeaderboardItem>
+                                        </MatExpansionPanelDetails>
+                                    </MatExpansionPanel>
+                                }
+                            </MatAccordion>
+                        }
+                        else
+                        {
+                            @UIMessages.NoCoursesRankingMessage
+                        }
+                    </div>
+                </MatTab>
             </MatTabGroup>
         </div>
     </div>

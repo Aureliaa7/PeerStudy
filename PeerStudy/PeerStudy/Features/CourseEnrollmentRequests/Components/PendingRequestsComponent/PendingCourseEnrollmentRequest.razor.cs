@@ -11,7 +11,6 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.PendingRequests
 {
     public partial class PendingCourseEnrollmentRequest : CourseEnrollmentRequestBase
     {
-        private const string noPendingRequestsMessage = "There are no pending requests...";
         private CourseNoStudentsDetailsModel enrolledStudentsStatus;
 
         protected override async Task OnInitializedAsync()

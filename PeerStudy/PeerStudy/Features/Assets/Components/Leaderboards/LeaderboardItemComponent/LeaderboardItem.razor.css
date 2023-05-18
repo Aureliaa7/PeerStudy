@@ -1,0 +1,41 @@
+﻿.ranking-item-container {
+    cursor: default;
+}
+
+.rank, .profile-photo, .student-name, .earned-points {
+    display: inline-block;
+    text-align: center;
+    height: 50px;
+}
+
+.rank {
+    width: 10%;
+}
+
+.profile-photo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.student-name {
+    width: 30%;
+}
+
+.earned-points {
+    width: 20%;
+    color: green;
+}
+
+.no-profile-photo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: #555;
+}

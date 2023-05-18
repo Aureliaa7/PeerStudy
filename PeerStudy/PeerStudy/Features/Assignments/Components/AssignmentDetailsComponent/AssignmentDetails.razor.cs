@@ -54,7 +54,6 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         private List<UploadFileModel> newlyAddedFiles = new List<UploadFileModel>();
         private Guid currentUserId;
 
-        private const string noFilesMessage = "There are no files yet...";
         private const string buttonStyles = "margin: 10px;";
 
         protected override async Task OnInitializedAsync()

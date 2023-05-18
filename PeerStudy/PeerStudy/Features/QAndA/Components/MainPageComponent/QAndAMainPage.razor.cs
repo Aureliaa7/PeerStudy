@@ -23,7 +23,6 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
         private const int pageSize = 20;
         private const int firstPage = 1;
         private const int noPreviousNextPagesDisplayed = 2;
-        private const string noQuestionsMessage = "No questions were found...";
         private static List<FlatQuestionModel> emptyDataSource = new List<FlatQuestionModel>();
 
         private readonly Dictionary<int, List<FlatQuestionModel>> savedQuestions = new Dictionary<int, List<FlatQuestionModel>>();
@@ -98,7 +97,7 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while fetching the questions...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.GetQuestionsErrorMessage);
             }
         }
 

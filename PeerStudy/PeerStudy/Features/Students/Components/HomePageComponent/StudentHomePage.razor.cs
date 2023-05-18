@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Users;
@@ -23,10 +24,6 @@ namespace PeerStudy.Features.Students.Components.HomePageComponent
         private List<CourseStatus?> courseStatuses = Enum.GetValues(typeof(CourseStatus)).Cast<CourseStatus?>().ToList();
         private CourseStatus? courseStatus = CourseStatus.Active;
 
-        private const string noCompletedAssignmentsMessage = "There are no completed assignments yet...";
-        private const string noUnlockedCourseUnits = "There are no unlocked course units yet...";
-        private const string noProgressMessage = "No progress yet...";
-
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -44,6 +41,7 @@ namespace PeerStudy.Features.Students.Components.HomePageComponent
                 .Any(x => x.CourseUnitsAssignmentsProgress.Any(y => y.StudentAssignments.Any()));
         }
 
+        //TODO: avoid making a DB call every time the user switches the tab and/or changes the course status
         private async Task HandleSelectedStatusChanged(CourseStatus? courseStatus)
         {
             this.courseStatus = courseStatus;
@@ -53,7 +51,7 @@ namespace PeerStudy.Features.Students.Components.HomePageComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(Blazored.Toast.Services.ToastLevel.Error, "");
+                ToastService.ShowToast(ToastLevel.Error, "");
             }
         }
     }

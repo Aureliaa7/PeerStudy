@@ -86,7 +86,7 @@ namespace PeerStudy.Features.QAndA.Components.CreateQuestionComponent
             }
             catch (Exception ex)
             {
-                ToastService.ShowToast(ToastLevel.Error, "An error occurred while saving the question...");
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.SaveQuestionErrorMessage);
             }
         }
 

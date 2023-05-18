@@ -33,7 +33,6 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
 
 
         private List<ExtendedAssignmentDetailsModel> assignments = new List<ExtendedAssignmentDetailsModel>();
-        private const string noAssignmentsMessage = "There are no assignments yet...";
         private bool isReadOnly;
 
         protected override async Task OnInitializedAsync()

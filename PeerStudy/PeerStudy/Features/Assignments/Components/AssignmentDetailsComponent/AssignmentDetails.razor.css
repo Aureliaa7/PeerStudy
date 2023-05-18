@@ -33,3 +33,8 @@
 h3 {
     color: #6699cc;
 }
+
+.completed-at {
+    text-align: right;
+    font-size: 14px;
+}

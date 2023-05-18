@@ -5,7 +5,7 @@
 
 <Loading IsLoading="isLoading"
          HasData="@(assignmentDetails != null)"
-         NotFoundMessage="@noFilesMessage">
+         NotFoundMessage="@UIMessages.NoFilesMessage">
 
     <div class="assignment-details">
         <h3>@assignmentDetails?.Title</h3>
@@ -13,6 +13,12 @@
         <div class="deadline">
             @assignmentDetails?.Deadline
         </div>
+        @if (assignmentDetails.CompletedAt != null)
+        {
+            <div class="completed-at">
+                Completed at: @assignmentDetails?.CompletedAt
+            </div>
+        }
         <div>
             @assignmentDetails?.Description
         </div>
