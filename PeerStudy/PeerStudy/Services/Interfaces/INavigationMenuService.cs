@@ -13,7 +13,7 @@ namespace PeerStudy.Services.Interfaces
 
         void AddCourseNavigationMenuItems(Guid userId, Guid courseId, string courseTitle, Role? userRole);
 
-        void AddStudyGroupNavigationMenuItems(Guid studyGroupId, string studyGroupTitle);
+        void AddStudyGroupNavigationMenuItems(Guid studyGroupId, string studyGroupTitle, Role userRole);
 
         void Reset();
 

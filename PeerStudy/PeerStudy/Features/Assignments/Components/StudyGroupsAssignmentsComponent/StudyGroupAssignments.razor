@@ -1,0 +1,19 @@
+﻿@using PeerStudy.Features.Assignments.Components.FlatAssignmentComponent
+
+@page "/{studyGroupId:guid}/{studyGroupName}/assignments"
+@attribute [Authorize(Roles = "Teacher")]
+@inherits PeerStudyComponentBase
+
+<Header Title="@StudyGroupName"></Header>
+
+<Loading IsLoading="isLoading"
+         HasData="@(!isLoading && assignments.Any())"
+         NotFoundMessage="@UIMessages.NoFoundAssignmentsMessage">
+    <div>
+        @foreach (var assignment in assignments)
+        {
+            <FlatAssignment Assignment="assignment" OnClick="RedirectToAssignmentDetailsPage"></FlatAssignment>
+        }
+    </div>
+
+</Loading>

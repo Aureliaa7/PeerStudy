@@ -45,8 +45,9 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
         {
             NavigationMenuService.Reset();
             await SetStudyGroupDetailsAsync();
-            NavigationMenuService.AddStudyGroupNavigationMenuItems(StudyGroupId, studyGroup.Title);
             await SetCurrentUserDataAsync();
+
+            NavigationMenuService.AddStudyGroupNavigationMenuItems(StudyGroupId, studyGroup.Title, currentUserRole.Value);
             resources = await StudyGroupResourceService.GetByStudyGroupIdAsync(StudyGroupId);
         }
 

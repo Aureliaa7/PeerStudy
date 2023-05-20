@@ -32,13 +32,12 @@ namespace PeerStudy.Services
             if (userRole == Role.Teacher)
             {
                 AddMenuItems(GetCourseMenuItemsForTeacher(userId, courseId, courseTitle));
-                NotifyChanged();
             }
             else if (userRole == Role.Student)
             {
                 AddMenuItems(GetCourseMenuItemsForStudent(userId, courseId, courseTitle));
-                NotifyChanged();
             }
+            NotifyChanged();
         }
 
         private List<MenuItem> GetCourseMenuItemsForStudent(Guid userId, Guid courseId, string courseTitle)
@@ -99,7 +98,7 @@ namespace PeerStudy.Services
             NotifyChanged();
         }
 
-        public void AddStudyGroupNavigationMenuItems(Guid studyGroupId, string studyGroupTitle)
+        public void AddStudyGroupNavigationMenuItems(Guid studyGroupId, string studyGroupTitle, Role userRole)
         {
             AddMenuItems(new List<MenuItem>
             {
@@ -114,6 +113,18 @@ namespace PeerStudy.Services
                     Name = "Tasks"
                 }
             });
+
+            if (userRole == Role.Teacher)
+            {
+                AddMenuItems(new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        Name = "Assignments",
+                        Href = $"/{studyGroupId}/{studyGroupTitle}/assignments"
+                    }
+                });
+            }
 
             NotifyChanged();
         }

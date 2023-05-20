@@ -204,5 +204,23 @@ namespace PeerStudy.Core.DomainServices
 
             return assignments;
         }
+
+        public async Task<List<FlatAssignmentModel>> GetByStudyGroupAsync(Guid studyGroupId)
+        {
+            var assignments = (await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.StudyGroupId == studyGroupId, trackChanges: false))
+            .Select(x => new FlatAssignmentModel
+            {
+                Id = x.Id,
+                Title = x.Title,
+                CourseTitle = x.CourseUnit.Course.Title,
+                Deadline = x.Deadline,
+                CourseId = x.CourseUnit.CourseId,
+                StudyGroupId = x.StudyGroupId,
+                CompletedAt = x.CompletedAt
+            })
+            .ToList();
+
+            return assignments;
+        }
     }
 }

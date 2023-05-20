@@ -27,5 +27,12 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task ResetSubmitDateAsync(Guid assignmentId);
 
         Task<List<FlatAssignmentModel>> GetByStudentAsync(Guid studentId, AssignmentStatus status);
+
+        /// <summary>
+        /// Returns a list of assignments for a study group
+        /// </summary>
+        /// <param name="studyGroupId"></param>
+        /// <returns></returns>
+        Task<List<FlatAssignmentModel>> GetByStudyGroupAsync(Guid studyGroupId);
     }
 }

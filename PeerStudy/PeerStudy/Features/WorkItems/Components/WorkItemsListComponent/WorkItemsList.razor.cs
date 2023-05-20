@@ -67,7 +67,6 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         {
             try
             {
-                await SetCurrentUserDataAsync();
                 await SetWorkItemDropItemsAsync();
                 allWorkItems = await WorkItemService.GetByStudyGroupAsync(StudyGroupId);
                 filteredWorkItems = allWorkItems;
@@ -81,11 +80,12 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
             }
         }
 
-        protected override void OnAfterRender(bool firstRender)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                NavigationMenuService.AddStudyGroupNavigationMenuItems(StudyGroupId, StudyGroupName);
+                await SetCurrentUserDataAsync();
+                NavigationMenuService.AddStudyGroupNavigationMenuItems(StudyGroupId, StudyGroupName, currentUserRole.Value);
             }
         }
 
