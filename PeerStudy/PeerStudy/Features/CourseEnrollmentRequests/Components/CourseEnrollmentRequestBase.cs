@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.CourseEnrollmentRequests.Components
 {
-    public abstract class CourseEnrollmentRequestBase : PeerStudyComponentBase
+    public abstract class CourseEnrollmentRequestBase : PeerStudyComponentBase, IDisposable
     {
         [Inject]
         protected ICourseEnrollmentService CourseEnrollmentService { get; set; } 
@@ -38,11 +38,27 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components
             try
             {
                 requests = await GetRequestsAsync();
+                await SetCurrentUserDataAsync();
+                UpdateNavigationBar();
             }
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, UIMessages.FetchRequestsFailedMessage);
             }
+        }
+
+        protected void UpdateNavigationBar()
+        {
+            NavigationMenuService.AddCourseNavigationMenuItems(
+                currentUserId,
+                CourseId,
+                CourseTitle,
+                currentUserRole);
+        }
+
+        public void Dispose()
+        {
+            NavigationMenuService.Reset();
         }
     }
 }

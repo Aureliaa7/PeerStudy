@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Assignments.Components.StudentCourseAssignmentsComponent
 {
-    public partial class StudentCourseAssignments : PeerStudyComponentBase
+    public partial class StudentCourseAssignments : PeerStudyComponentBase, IDisposable
     {
         [Inject]
         private IAssignmentService AssignmentService { get; set; }
@@ -43,6 +43,13 @@ namespace PeerStudy.Features.Assignments.Components.StudentCourseAssignmentsComp
             {
                 doneAssignments = await AssignmentService.GetByCourseAndStudentAsync(CourseId, StudentId, AssignmentStatus.Done);
                 toDoAssignments = await AssignmentService.GetByCourseAndStudentAsync(CourseId, StudentId, AssignmentStatus.Upcoming);
+
+                await SetCurrentUserDataAsync();
+                NavigationMenuService.AddCourseNavigationMenuItems(
+                currentUserId,
+                CourseId,
+                CourseTitle,
+                currentUserRole);
             }
             catch (Exception ex)
             {
@@ -53,6 +60,11 @@ namespace PeerStudy.Features.Assignments.Components.StudentCourseAssignmentsComp
         private void HandleClickedAssignment(AssignmentDetailsModel assignment)
         {
             NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{assignment.StudentGroupId}/{assignment.Id}/assignment-details");
+        }
+
+        public void Dispose()
+        {
+            NavigationMenuService.Reset();
         }
     }
 }

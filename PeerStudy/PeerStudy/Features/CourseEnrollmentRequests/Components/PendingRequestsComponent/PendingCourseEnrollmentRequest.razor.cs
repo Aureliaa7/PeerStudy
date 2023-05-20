@@ -2,7 +2,6 @@
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Models.CourseEnrollments;
 using PeerStudy.Core.Models.Courses;
-using PeerStudy.Core.Models.Users;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

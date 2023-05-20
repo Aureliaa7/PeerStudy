@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Students.Components.StudentsListComponent
 {
-    public partial class StudentsList : PeerStudyComponentBase
+    public partial class StudentsList : PeerStudyComponentBase, IDisposable
     {
         [Inject]
         private ICourseService CourseService { get; set; }
+
+        [Inject]
+        private NavigationManager NavigationManager { get; set; }
 
 
         [Parameter]
@@ -33,12 +36,23 @@ namespace PeerStudy.Features.Students.Components.StudentsListComponent
         {
             try
             {
+                await SetCurrentUserDataAsync();
+                NavigationMenuService.AddCourseNavigationMenuItems(
+                currentUserId,
+                CourseId,
+                CourseTitle,
+                currentUserRole);
                 students = await CourseService.GetStudentsAsync(CourseId);
             }
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, "The students list could not be loaded...");
             }
+        }
+
+        public void Dispose()
+        {
+            NavigationMenuService.Reset();
         }
     }
 }

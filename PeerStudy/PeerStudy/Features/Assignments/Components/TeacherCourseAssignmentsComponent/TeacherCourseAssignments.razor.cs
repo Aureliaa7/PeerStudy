@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComponent
 {
-    public partial class TeacherCourseAssignments: PeerStudyComponentBase
+    public partial class TeacherCourseAssignments: PeerStudyComponentBase, IDisposable
     {
         [Inject]
         private IAssignmentService AssignmentService { get; set; }
@@ -35,18 +35,18 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
         private List<ExtendedAssignmentDetailsModel> assignments = new List<ExtendedAssignmentDetailsModel>();
         private bool isReadOnly;
 
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-        }
-
         protected override async Task InitializeAsync()
         {
             try
             {
-                CheckIfIsReadOnlyMode();
-
+                await CheckIfIsReadOnlyMode();
                 await SetCurrentUserDataAsync();
+
+                NavigationMenuService.AddCourseNavigationMenuItems(
+                currentUserId,
+                CourseId,
+                CourseTitle,
+                currentUserRole);
                 assignments = await AssignmentService.GetByCourseUnitIdAsync(CourseUnitId);
             }
             catch (Exception ex)
@@ -94,6 +94,11 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
         private void ViewSubmittedWork((Guid assignmentId, Guid studyGroupId) data)
         {
             NavigationManager.NavigateTo($"/{CourseTitle}/{CourseId}/{data.studyGroupId}/{data.assignmentId}/assignment-details");
+        }
+
+        public void Dispose()
+        {
+            NavigationMenuService.Reset();
         }
     }
 }
