@@ -7,7 +7,6 @@
 @attribute [Authorize(Roles = "Student")]
 
 <Loading IsLoading="isLoading" HasData="@(!isLoading && studentProgress != null)" NotFoundMessage="@UIMessages.NoStudentProgressMessage">
-
     <div class="student-progress-details-container">
         <div class="general-details">
             <div class="left">

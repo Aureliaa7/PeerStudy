@@ -64,5 +64,7 @@
         public const string NoStudentProgressMessage = "No progress yet...";
 
         public const string NoDataMessage = "No data yet...";
+
+        public const string GenericErrorMessage = "An error occurred while loading the data...";
     }
 }
