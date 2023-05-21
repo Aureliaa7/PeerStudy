@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace PeerStudy.Features.Assets.Components.Leaderboards.LeaderboardItemComponent
+namespace PeerStudy.Features.Progress.Components.Leaderboards.LeaderboardItemComponent
 {
     public partial class LeaderboardItem
     {

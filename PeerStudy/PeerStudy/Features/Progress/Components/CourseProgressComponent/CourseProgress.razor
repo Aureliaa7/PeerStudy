@@ -1,0 +1,67 @@
+﻿@using PeerStudy.Features.Progress.Components.Leaderboards.LeaderboardComponent
+
+@page "/{courseTitle}/{courseId:guid}/students-progress"
+@inherits PeerStudyComponentBase
+@attribute [Authorize(Roles = "Teacher")]
+
+<Header Title="@CourseTitle"></Header>
+
+<Loading IsLoading="isLoading" HasData="@(!isLoading && studyGroupsProgress.Any())" NotFoundMessage="@UIMessages.NoStudentProgressMessage">
+    <div class="progress-details-container">
+        <div>
+            <MatTabGroup ActiveIndexChanged="HandleTabChangedEvent">
+                <MatTab Label="Study Groups Progress">
+                    <div class="tab-content">
+                        @if (studyGroupsProgress.Any())
+                        {
+                            @foreach (var studyGroupProgress in studyGroupsProgress)
+                            {
+                                <div class="study-group-leaderboard-container">
+                                    <h4>@studyGroupProgress.StudyGroupName</h4>
+                                    <Leaderboard StudentsProgress="studyGroupProgress.StudentsProgress">
+                                    </Leaderboard>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            @UIMessages.NoDataMessage
+                        }
+                    </div>
+                </MatTab>
+                <MatTab Label="Overall Progress">
+                    <div class="tab-content">
+                        @if (studentsCourseProgress.Any())
+                        {
+                            <Leaderboard StudentsProgress="studentsCourseProgress">
+                            </Leaderboard>
+                        }
+                        else
+                        {
+                            @UIMessages.NoDataMessage
+                        }
+                    </div>
+
+                </MatTab>
+                <MatTab Label="Course Unit Progress">
+                    <div class="tab-content">
+                        @if (courseUnitsProgress.Any())
+                        {
+                            @foreach (var courseUnitProgress in courseUnitsProgress)
+                            {
+                                <h4>@courseUnitProgress.CourseUnitTitle</h4>
+
+                                <Leaderboard StudentsProgress="courseUnitProgress.StudentProgressModels">
+                                </Leaderboard>
+                            }
+                        }
+                        else
+                        {
+                            @UIMessages.NoDataMessage
+                        }
+                    </div>
+                </MatTab>
+            </MatTabGroup>
+        </div>
+    </div>
+</Loading>

@@ -62,5 +62,7 @@
 
         public const string NoBadgesMessage = "There are no badges yet...";
         public const string NoStudentProgressMessage = "No progress yet...";
+
+        public const string NoDataMessage = "No data yet...";
     }
 }

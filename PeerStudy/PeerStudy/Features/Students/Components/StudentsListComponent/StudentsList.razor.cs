@@ -13,9 +13,6 @@ namespace PeerStudy.Features.Students.Components.StudentsListComponent
         [Inject]
         private ICourseService CourseService { get; set; }
 
-        [Inject]
-        private NavigationManager NavigationManager { get; set; }
-
 
         [Parameter]
         public Guid CourseId { get; set; }

@@ -1,0 +1,12 @@
+﻿@using PeerStudy.Features.Progress.Components.Leaderboards.LeaderboardItemComponent
+
+<div>
+    @foreach (var progress in StudentsProgress)
+    {
+        <LeaderboardItem StudentName="@progress.Name"
+                     ProfilePhotoName="@progress.ProfilePhotoName"
+                     EarnedPoints="progress.NoPoints"
+                     Rank="progress.Rank">
+        </LeaderboardItem>
+    }
+</div>

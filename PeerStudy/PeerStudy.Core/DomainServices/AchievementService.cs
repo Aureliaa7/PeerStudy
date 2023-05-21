@@ -6,6 +6,7 @@ using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.CourseUnits;
+using PeerStudy.Core.Models.ProgressModels;
 using PeerStudy.Core.Models.StudentAssets;
 using PeerStudy.Core.Models.Users;
 using System;
@@ -161,6 +162,179 @@ namespace PeerStudy.Core.DomainServices
                                 .ToList();
 
             return courseRankingGroups;
+        }
+
+        public async Task<List<StudyGroupLeaderboardModel>> GetLeaderboardDataForStudyGroupsAsync(Guid courseId, Guid teacherId)
+        {
+            await CheckIfCourseExistsAsync(courseId, teacherId);
+
+            var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.CourseId == courseId);
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+            var studentAssignments = await unitOfWork.StudentAssignmentsRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+
+            var result = from studyGroup in studyGroups
+                                     join assignment in assignments on studyGroup.Id equals assignment.StudyGroupId
+                                     join studentStudyGroup in studentStudyGroups on studyGroup.Id equals studentStudyGroup.StudyGroupId
+                                     join studentAssignment in studentAssignments on new { AssignmentID = assignment.Id, StudentID = studentStudyGroup.StudentId } equals new { AssignmentID = studentAssignment.AssignmentId, StudentID = studentAssignment.StudentId }
+                                     group studentAssignment by new { studyGroup.Id, studyGroup.Name, studentStudyGroup.StudentId, studentStudyGroup.Student.FirstName, studentStudyGroup.Student.LastName, studentAssignment.Student.ProfilePhotoName } into g
+                                     select new 
+                                     {
+                                         StudyGroupName = g.Key.Name,
+                                         StudyGroupId = g.Key.Id,
+                                         g.Key.StudentId,
+                                         StudentName = g.Key.FirstName + " " + g.Key.LastName,
+                                         g.Key.ProfilePhotoName,
+                                         TotalPoints = g.Sum(sa => sa.Points)
+                                     };
+
+            var studyGroupsProgress = result
+                .ToList()
+                .GroupBy(r => new { r.StudyGroupId, r.StudyGroupName })
+                .Select(g => new StudyGroupLeaderboardModel
+                {
+                    StudyGroupName = g.Key.StudyGroupName,
+                    StudentsProgress = g.OrderByDescending(r => r.TotalPoints)
+                                .Select((r, rank) => new StudentProgressModel
+                                {
+                                    StudentId = r.StudentId,
+                                    Name = r.StudentName,
+                                    NoPoints = r.TotalPoints ?? 0,
+                                    ProfilePhotoName = r.ProfilePhotoName
+                                })
+                                .ToList()
+                })
+                .OrderBy(x => x.StudyGroupName)
+                .ToList();
+
+            foreach (var studyGroupProgress in  studyGroupsProgress)
+            {
+                SetRank(studyGroupProgress.StudentsProgress);
+            }
+
+            return studyGroupsProgress;
+        }
+
+        public async Task<List<StudentProgressModel>> GetLeaderboardDataByCourseAsync(Guid courseId, Guid teacherId)
+        {
+            await CheckIfCourseExistsAsync(courseId, teacherId);
+
+            var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.CourseId == courseId);
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+            var studentAssignments = await unitOfWork.StudentAssignmentsRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+
+            var result = from studyGroup in studyGroups
+                         join assignment in assignments on studyGroup.Id equals assignment.StudyGroupId
+                         join studentStudyGroup in studentStudyGroups on studyGroup.Id equals studentStudyGroup.StudyGroupId
+                         join studentAssignment in studentAssignments on new { AssignmentID = assignment.Id, StudentID = studentStudyGroup.StudentId } equals new { AssignmentID = studentAssignment.AssignmentId, StudentID = studentAssignment.StudentId }
+                         group studentAssignment by new { studyGroup.Id, studyGroup.Name, studentStudyGroup.StudentId, studentStudyGroup.Student.FirstName, studentStudyGroup.Student.LastName, studentAssignment.Student.ProfilePhotoName } into g
+                         select new
+                         {
+                             StudyGroupName = g.Key.Name,
+                             StudyGroupId = g.Key.Id,
+                             g.Key.StudentId,
+                             StudentName = g.Key.FirstName + " " + g.Key.LastName,
+                             g.Key.ProfilePhotoName,
+                             TotalPoints = g.Sum(sa => sa.Points)
+                         };
+
+            var studentsProgress = result
+                .ToList()
+                .OrderByDescending(x => x.TotalPoints)
+                .Select((x, rank) => new StudentProgressModel
+                {    
+                    StudentId = x.StudentId,
+                    Name = x.StudentName,
+                    NoPoints = x.TotalPoints ?? 0,
+                    ProfilePhotoName = x.ProfilePhotoName                
+                })
+                .ToList();
+
+            SetRank(studentsProgress);
+
+            return studentsProgress;
+        }
+
+        private static void SetRank(List<StudentProgressModel> studentsProgress)
+        {
+            int rank = 1;
+            int previousPoints = studentsProgress.First().NoPoints;
+
+            foreach (var progress in studentsProgress)
+            {
+                if (progress.NoPoints < previousPoints)
+                {
+                    rank++;
+                    progress.Rank = rank;
+                    previousPoints = progress.NoPoints;
+                }
+                else
+                {
+                    progress.Rank = rank;
+                }
+            }
+        }
+
+        private async Task CheckIfCourseExistsAsync(Guid courseId, Guid teacherId)
+        {
+            bool courseExists = await unitOfWork.CoursesRepository.ExistsAsync(x => x.Id == courseId && x.TeacherId == teacherId);
+            if (!courseExists)
+            {
+                throw new EntityNotFoundException($"Course with id {courseId} does not exist!");
+            }
+        }
+
+        public async Task<List<CourseUnitLeaderboardModel>> GetCourseUnitsLeaderboardDataAsync(Guid courseId, Guid teacherId)
+        {
+            await CheckIfCourseExistsAsync(courseId, teacherId);
+
+            var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync(x => x.CourseId == courseId);
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+            var studentAssignments = await unitOfWork.StudentAssignmentsRepository.GetAllAsync(x => x.StudyGroup.CourseId == courseId);
+            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.CourseId == courseId);
+
+            var result = from studyGroup in studyGroups
+                         join assignment in assignments on studyGroup.Id equals assignment.StudyGroupId
+                         join courseUnit in courseUnits on assignment.CourseUnitId equals courseUnit.Id
+                         join studentStudyGroup in studentStudyGroups on studyGroup.Id equals studentStudyGroup.StudyGroupId
+                         join studentAssignment in studentAssignments on new { AssignmentID = assignment.Id, StudentID = studentStudyGroup.StudentId } equals new { AssignmentID = studentAssignment.AssignmentId, StudentID = studentAssignment.StudentId }
+                         group studentAssignment by new { courseUnit.Id, courseUnit.Title, studentStudyGroup.Student.FirstName, studentStudyGroup.Student.LastName, studentAssignment.Student.ProfilePhotoName, studentStudyGroup.StudentId } into g
+                         select new
+                         {
+                             CourseUnitTitle = g.Key.Title,
+                             StudentId = g.Key.StudentId,
+                             StudentName = g.Key.FirstName + " " + g.Key.LastName,
+                             g.Key.ProfilePhotoName,
+                             TotalPoints = g.Sum(sa => sa.Points)
+                         };
+
+            var courseUnitsProgress = result
+                .ToList()
+                .GroupBy(r => new { r.CourseUnitTitle})
+                .Select(g => new CourseUnitLeaderboardModel
+                {
+                    CourseUnitTitle = g.Key.CourseUnitTitle,
+                    StudentProgressModels = g.OrderByDescending(r => r.TotalPoints)
+                                .Select((r, rank) => new StudentProgressModel
+                                {
+                                    StudentId = r.StudentId,
+                                    Name = r.StudentName,
+                                    NoPoints = r.TotalPoints ?? 0,
+                                    ProfilePhotoName = r.ProfilePhotoName
+                                })
+                                .ToList()
+                })
+                .OrderBy(x => x.CourseUnitTitle)
+                .ToList();
+
+            foreach (var courseUnit in courseUnitsProgress)
+            {
+                SetRank(courseUnit.StudentProgressModels);
+            }
+
+            return courseUnitsProgress;
         }
     }
 }
