@@ -52,7 +52,8 @@ namespace PeerStudy.Core.DomainServices
                 CourseId = courseUnit.CourseId,
                 Resources = new List<CourseResourceDetailsModel>(),
                 IsAvailable = courseUnit.IsAvailable,
-                NoPointsToUnlock = courseUnit.NoPointsToUnlock
+                NoPointsToUnlock = courseUnit.NoPointsToUnlock,
+                IsActive = true
             };
         }
 

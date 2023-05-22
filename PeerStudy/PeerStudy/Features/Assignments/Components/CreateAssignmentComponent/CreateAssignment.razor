@@ -52,9 +52,9 @@
 
         </MatDialogContent>
         <MatDialogActions>
+            <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
             <MatButton Class="submit-button" Raised="true" OnClick="SaveAssignment" Disabled=@(!context.IsModified() || !context.Validate() ||
             selectedStudyGroup == null)>Confirm</MatButton>
-            <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
         </MatDialogActions>
     </MatDialog>
 </EditForm>

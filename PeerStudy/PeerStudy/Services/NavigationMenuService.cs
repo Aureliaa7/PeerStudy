@@ -4,7 +4,6 @@ using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace PeerStudy.Services
 {
@@ -128,11 +127,6 @@ namespace PeerStudy.Services
                     {
                         Name = "Assignments",
                         Href = $"/{studyGroupId}/{studyGroupTitle}/assignments"
-                    },
-                    new MenuItem
-                    {
-                        Name = "Progress & statistics",
-                        Href = $"{studyGroupId}/{studyGroupTitle}/progress"
                     }
                 });
             }

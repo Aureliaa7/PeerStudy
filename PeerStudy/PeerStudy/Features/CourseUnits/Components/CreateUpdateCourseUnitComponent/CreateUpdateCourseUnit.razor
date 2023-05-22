@@ -37,9 +37,9 @@
             </div>
         </MatDialogContent>
         <MatDialogActions>
+            <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
             <MatButton Class="submit-button" Raised="true" OnClick="Save" Disabled=@(!context.IsModified() || !context.Validate()
                        || (!CourseUnitModel.IsAvailable && CourseUnitModel.NoPointsToUnlock == null))>Confirm</MatButton>
-            <MatButton Class="submit-button" OnClick="Cancel">Cancel</MatButton>
         </MatDialogActions>
     </MatDialog>
 </EditForm>
