@@ -23,6 +23,13 @@
                 }
             </div>
 
+            <div class="done-assignments">
+                <b>Assignments status</b>
+                <div>
+                    @StudyGroupModel.NoDoneAssignments / @StudyGroupModel.NoTotalAssignments done assignments
+                </div>
+            </div>
+
             <div class="work-items-status">
                 <div class="all-work-items-status">
                     @if (StudyGroupModel.AllWorkItemsStatus != null && StudyGroupModel.AllWorkItemsStatus.Any())

@@ -1,5 +1,5 @@
 ﻿@using PeerStudy.Core.Enums;
-@using PeerStudy.Features.Assets.Components.Badges.BadgeCardComponent
+@using PeerStudy.Features.Assets.Components.Badges.StudentBadgesComponent
 @using PeerStudy.Features.Progress.Components.Leaderboards.LeaderboardItemComponent
 
 @page "/my-progress"
@@ -34,17 +34,8 @@
             <MatTabGroup>
                 <MatTab Label="Earned Badges">
                     <div class="tab-content">
-                        @if (studentProgress.EarnedBadges.Any())
-                        {
-                            @foreach (var badge in studentProgress.EarnedBadges)
-                            {
-                                <BadgeCard Badge="badge"></BadgeCard>
-                            }
-                        }
-                        else
-                        {
-                            @UIMessages.NoBadgesMessage
-                        }
+                        <StudentBadges Badges="studentProgress.EarnedBadges">
+                        </StudentBadges>
                     </div>
                 </MatTab>
                 <MatTab Label="Unlocked Course Units">
@@ -61,11 +52,10 @@
                                                 <MatExpansionPanelHeader><b>@courseProgress.CourseTitle</b></MatExpansionPanelHeader>
                                             </MatExpansionPanelSummary>
                                             <MatExpansionPanelDetails>
-
                                                 @foreach (var courseUnit in courseProgress.UnlockedCourseUnits)
                                                 {
-                                                    <div class="course-unit">
-                                                        <span class="course-unit-title">
+                                                    <div class="progress-course-unit">
+                                                        <span class="progress-course-unit-title">
                                                             <b>@courseUnit.CourseUnitTitle</b>
                                                         </span>
                                                         <div class="left">
@@ -74,7 +64,6 @@
                                                         <span class="right unlock-date">Unlocked at: @courseUnit.UnlockedAt</span>
                                                     </div>
                                                 }
-
                                             </MatExpansionPanelDetails>
                                         </MatExpansionPanel>
                                     }
@@ -106,19 +95,19 @@
                                                 {
                                                     if (courseUnitProgress.StudentAssignments.Any())
                                                     {
-                                                        <div class="course-unit">
+                                                        <div class="progress-course-unit">
                                                             <span>
                                                                 <b>@courseUnitProgress.CourseUnitTitle</b>
                                                             </span>
                                                             <div>
                                                                 @foreach (var assignment in courseUnitProgress.StudentAssignments)
                                                                 {
-                                                                    <div class="assignment-title">
+                                                                    <div>
                                                                         @assignment.AssignmentTitle
                                                                     </div>
                                                                     <div>
                                                                         <div class="left earned-points">@assignment.NoEarnedPoints points</div>
-                                                                        <div class="right completed-at">Completed at: @assignment.CompletedAt</div>
+                                                                        <div class="right progress-completed-at">Completed at: @assignment.CompletedAt</div>
                                                                     </div>
                                                                 }
                                                             </div>
@@ -153,7 +142,8 @@
                                             <LeaderboardItem Rank="ranking.Rank"
                                                      EarnedPoints="ranking.EarnedPoints"
                                                      ProfilePhotoName="@ranking.ProfilePhotoName"
-                                                     StudentName="@ranking.StudentName">
+                                                     StudentName="@ranking.StudentName"
+                                                     CanBeClicked="false">
                                             </LeaderboardItem>
                                         </MatExpansionPanelDetails>
                                     </MatExpansionPanel>

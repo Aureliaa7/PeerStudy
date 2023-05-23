@@ -1,36 +1,4 @@
-﻿.student-progress-details-container {
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    position: relative;
-}
-
-.tab-content {
-    padding: 15px;
-}
-
-.general-details {
-    padding: 15px;
-    height: 80px;
-}
-
-.earned-points {
-    color: green;
-}
-
-.unlock-date, .completed-at {
-    font-size: 14px;
-}
-
-.course-unit {
-    cursor: default;
-}
-
-.course-unit-title {
-    display: block;
-}
-
-.my-progress {
+﻿.my-progress {
     margin-top: 25px;
 }
 .course-status {

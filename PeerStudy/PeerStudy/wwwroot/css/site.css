@@ -187,3 +187,36 @@ body::-webkit-scrollbar {
 .right {
     float: right;
 }
+
+/*CSS style rules for students leaderboards/progress per course*/
+.student-progress-details-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+}
+
+.tab-content {
+    padding: 15px;
+}
+
+.general-details {
+    padding: 15px;
+    height: 80px;
+}
+
+.earned-points {
+    color: green;
+}
+
+.unlock-date, .progress-completed-at {
+    font-size: 14px;
+}
+
+.progress-course-unit {
+    cursor: default;
+}
+
+.progress-course-unit-title {
+    display: block;
+}

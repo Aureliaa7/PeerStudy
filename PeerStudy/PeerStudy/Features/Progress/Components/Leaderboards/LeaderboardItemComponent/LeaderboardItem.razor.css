@@ -1,11 +1,15 @@
 ﻿.ranking-item-container {
     cursor: default;
+    border-radius: 8px;
+    padding: 15px;
 }
 
 .rank, .profile-photo, .student-name, .earned-points {
     display: inline-block;
     text-align: center;
     height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
 }
 
 .rank {
@@ -38,4 +42,12 @@
     align-items: center;
     font-size: 20px;
     color: #555;
+}
+
+.can-be-clicked {
+    cursor: pointer;
+}
+
+.can-be-clicked:hover {
+    background-color: whitesmoke;
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System;
+using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Progress.Components.Leaderboards.LeaderboardItemComponent
 {
@@ -15,5 +17,23 @@ namespace PeerStudy.Features.Progress.Components.Leaderboards.LeaderboardItemCom
 
         [Parameter]
         public int EarnedPoints { get; set; }
+
+        [Parameter]
+        public Guid StudentId { get; set; }
+
+        [Parameter]
+        public bool CanBeClicked { get; set; }
+
+        [Parameter]
+        public EventCallback<Guid> OnClick { get; set; }
+
+
+        private async Task HandleClickEvent()
+        {
+            if (CanBeClicked)
+            {
+                await OnClick.InvokeAsync(StudentId);
+            }
+        }
     }
 }

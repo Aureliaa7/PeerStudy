@@ -1,0 +1,90 @@
+﻿@using PeerStudy.Features.Assets.Components.Badges.StudentBadgesComponent
+
+@page "/{courseId:guid}/{studentId:guid}/progress"
+@inherits PeerStudyComponentBase
+@attribute [Authorize(Roles = "Teacher")]
+
+<Loading IsLoading="isLoading" HasData="@(!isLoading && studentCourseProgress != null)" NotFoundMessage="@UIMessages.NoStudentProgressMessage">
+    <h3 class="page-title">Course Progress</h3>
+
+    <div class="student-progress-details-container">
+        <div class="general-details">
+            <div class="left">
+                <div>
+                    @studentCourseProgress.Name
+                </div>
+                <div>
+                    @studentCourseProgress.Email
+                </div>
+            </div>
+        </div>
+        <div>
+            <MatTabGroup>
+                <MatTab Label="Earned Badges">
+                    <div class="tab-content">
+                        <StudentBadges Badges="studentCourseProgress.AllBadges">
+                        </StudentBadges>
+                    </div>
+                </MatTab>
+                <MatTab Label="Unlocked Course Units">
+                    <div class="tab-content">
+                            @*    Extract this to a component*@
+                        @if (studentCourseProgress.UnlockedCourseUnits.Any())
+                        {  
+                            @foreach (var courseUnit in studentCourseProgress.UnlockedCourseUnits)
+                            {
+                                <div class="progress-course-unit">
+                                    <span class="progress-course-unit-title">
+                                        <b>@courseUnit.CourseUnitTitle</b>
+                                    </span>
+                                    <div class="left">
+                                        @courseUnit.NoPaidPoints paid points
+                                    </div>
+                                    <span class="right unlock-date">Unlocked at: @courseUnit.UnlockedAt</span>
+                                </div>
+                            }                      
+                        }
+                        else
+                        {
+                            @UIMessages.NoUnlockedCourseUnitsMessage
+                        }
+                    </div>
+                </MatTab>
+                <MatTab Label="Assignments Progress">
+                    <div class="tab-content">
+                        @if (studentCourseProgress.CourseUnitsAssignmentsProgress.Any(x => x.StudentAssignments.Count() > 0))
+                        {
+                            @foreach (var courseUnitProgress in studentCourseProgress.CourseUnitsAssignmentsProgress)
+                            {
+                                if (courseUnitProgress.StudentAssignments.Any())
+                                {
+                                    <div class="progress-course-unit">
+                                        <span>
+                                            <b>@courseUnitProgress.CourseUnitTitle</b>
+                                        </span>
+                                        <div>
+                                            @foreach (var assignment in courseUnitProgress.StudentAssignments)
+                                            {
+                                                <div class="assignment-title">
+                                                    @assignment.AssignmentTitle
+                                                </div>
+                                                <div>
+                                                    <div class="left earned-points">@assignment.NoEarnedPoints points</div>
+                                                    <div class="right progress-completed-at">Completed at: @assignment.CompletedAt</div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            @UIMessages.NoCompletedAssignmentsMessage
+                        }
+                    </div>
+                </MatTab>
+            </MatTabGroup>
+        </div>
+    </div>
+</Loading>

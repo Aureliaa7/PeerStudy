@@ -123,7 +123,9 @@ namespace PeerStudy.Core.DomainServices
                     {
                         Status = x.Key,
                         Count = x.Count()
-                    })
+                    }),
+                    NoTotalAssignments = x.Assignments.Count(),
+                    NoDoneAssignments = x.Assignments.Count(x => x.CompletedAt != null)
                 })
                 .ToList();
 
@@ -135,8 +137,9 @@ namespace PeerStudy.Core.DomainServices
                    CourseTitle = x.CourseTitle,
                    IsActive = x.IsActive,
                    Title = x.Title,
-                   AllWorkItemsStatus = x.WorkItemsStatus.ToDictionary(x => x.Status, x => x.Count)
-
+                   AllWorkItemsStatus = x.WorkItemsStatus.ToDictionary(x => x.Status, x => x.Count),
+                   NoTotalAssignments = x.NoTotalAssignments,
+                   NoDoneAssignments = x.NoDoneAssignments
                })
                .ToList();
 
@@ -169,7 +172,9 @@ namespace PeerStudy.Core.DomainServices
                     {
                         Status = x.Key,
                         Count = x.Count()
-                    })
+                    }),
+                    NoTotalAssignments = x.StudyGroup.Assignments.Count(),
+                    NoDoneAssignments = x.StudyGroup.Assignments.Count(x => x.CompletedAt != null)
                 })
                 .ToList();
 
@@ -183,7 +188,9 @@ namespace PeerStudy.Core.DomainServices
                     IsActive = x.IsActive,
                     Title = x.Title,
                     AllWorkItemsStatus = x.WorkItemsStatus.ToDictionary(x => x.Status, x => x.Count),
-                    MyWorkItemsStatus = x.MyWorkItems.ToDictionary(x => x.Status, x => x.Count)
+                    MyWorkItemsStatus = x.MyWorkItems.ToDictionary(x => x.Status, x => x.Count),
+                    NoTotalAssignments = x.NoTotalAssignments,
+                    NoDoneAssignments = x.NoDoneAssignments
                 })
                 .ToList();
 

@@ -21,6 +21,9 @@ namespace PeerStudy.Features.Progress.Components.CourseProgressComponent
         [Inject]
         private IAchievementService AchievementService { get; set; }
 
+        [Inject]
+        private NavigationManager NavigationManager { get; set; }
+
         private const int studyGroupsLeaderboardsTabIndex = 0;
         private const int courseLeaderboardTabIndex = 1;
         private const int courseUnitsLeaderboardsTabIndex = 2;
@@ -86,6 +89,11 @@ namespace PeerStudy.Features.Progress.Components.CourseProgressComponent
             {
                 return false;
             }
+        }
+
+        private void HandleClickedLeaderboardItem(Guid studentId)
+        {
+            NavigationManager.NavigateTo($"/{CourseId}/{studentId}/progress");
         }
 
         public void Dispose()

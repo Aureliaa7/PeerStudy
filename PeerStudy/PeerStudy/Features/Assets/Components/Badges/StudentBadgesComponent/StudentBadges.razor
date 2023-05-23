@@ -1,0 +1,13 @@
+﻿@using PeerStudy.Features.Assets.Components.Badges.BadgeCardComponent
+
+@if (Badges.Any())
+{
+    @foreach (var badge in Badges)
+    {
+        <BadgeCard Badge="badge"></BadgeCard>
+    }
+}
+else
+{
+    @UIMessages.NoBadgesMessage
+}

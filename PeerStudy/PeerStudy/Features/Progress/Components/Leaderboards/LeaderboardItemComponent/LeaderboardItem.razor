@@ -1,4 +1,4 @@
-﻿<div class="ranking-item-container">
+﻿<div class="ranking-item-container @(CanBeClicked ? "can-be-clicked" : "")" @onclick="HandleClickEvent">
     <div class="rank">@Rank</div>
     <div class="profile-photo">
         @if (string.IsNullOrWhiteSpace(ProfilePhotoName))

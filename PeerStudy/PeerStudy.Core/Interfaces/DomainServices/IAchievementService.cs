@@ -32,5 +32,14 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         /// <param name="teacherId"></param>
         /// <returns></returns>
         Task<List<CourseUnitLeaderboardModel>> GetCourseUnitsLeaderboardDataAsync(Guid courseId, Guid teacherId);
+
+        /// <summary>
+        /// Returns the progress of a student for a given course id
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="studentId"></param>
+        /// <param name="teacherId"></param>
+        /// <returns></returns>
+        Task<ExtendedStudentCourseProgressModel> GetProgressByCourseAndStudentAsync(Guid courseId, Guid studentId, Guid teacherId);
     }
 }

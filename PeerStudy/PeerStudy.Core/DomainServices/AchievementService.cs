@@ -336,5 +336,68 @@ namespace PeerStudy.Core.DomainServices
 
             return courseUnitsProgress;
         }
+
+        public async Task<ExtendedStudentCourseProgressModel> GetProgressByCourseAndStudentAsync(Guid courseId, Guid studentId, Guid teacherId)
+        {
+            await CheckIfCourseExistsAsync(courseId, teacherId);
+            var student = await unitOfWork.UsersRepository.GetFirstOrDefaultAsync(x => x.Id == studentId) ??
+                throw new EntityNotFoundException($"The student with id {studentId} was not found!");
+
+            var courseProgress = await GetCourseProgressByStudentAsync(studentId, courseId);
+            var progressModel = new ExtendedStudentCourseProgressModel
+            {
+                CourseUnitsAssignmentsProgress = courseProgress.CourseUnitsAssignmentsProgress,
+                UnlockedCourseUnits = courseProgress.UnlockedCourseUnits,
+                CourseId = courseId,
+                CourseTitle = courseProgress.CourseTitle,
+                TeacherName = courseProgress.TeacherName,
+                Name = $"{student.FirstName} {student.LastName}",
+                Email = student.Email,
+                AllBadges = await GetBadgesByStudentAsync(studentId)
+            };
+
+            return progressModel;
+        }
+
+        private async Task<StudentCourseProgressModel> GetCourseProgressByStudentAsync(Guid studentId, Guid courseId)
+        {
+            var courseProgress = (await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.StudentId == studentId && x.Course.Id == courseId))
+                .Select(x => new StudentCourseProgressModel
+                {
+                    CourseId = x.CourseId,
+                    CourseTitle = x.Course.Title,
+                    TeacherName = $"{x.Course.Teacher.FirstName} {x.Course.Teacher.LastName}",
+                    UnlockedCourseUnits = x.Student.UnlockedCourseUnits.Where(y => y.CourseUnit.CourseId == x.CourseId)
+                    .Select(z => new UnlockedCourseUnitModel
+                    {
+                        CourseUnitTitle = z.CourseUnit.Title,
+                        NoPaidPoints = z.CourseUnit.NoPointsToUnlock,
+                        UnlockedAt = z.UnlockedAt
+                    })
+                    .ToList(),
+                    CourseUnitsAssignmentsProgress = x.Student.Assignments
+                    .GroupBy(y => y.Assignment.CourseUnit.Id)
+                    .Where(g => g.Count() > 0 && g.Any(
+                        s => s.Assignment.CompletedAt != null && s.Assignment.CourseUnit.CourseId == courseId))
+                    .Select(b => new StudentCourseUnitAssignmentsModel
+                    {
+                        CourseUnitTitle = b.First().Assignment.CourseUnit.Title,
+                        StudentAssignments = b.Where(z => z.Assignment.CompletedAt != null &&
+                        z.Points != null).Select(c => new StudentAssignmentDetailsModel
+                        {
+                            AssignmentId = c.AssignmentId,
+                            AssignmentTitle = c.Assignment.Title,
+                            CompletedAt = c.Assignment.CompletedAt.Value,
+                            NoEarnedPoints = c.Points.Value
+                        })
+                        .ToList()
+                    })
+                    .OrderBy(x => x.CourseUnitTitle)
+                    .ToList()
+                })
+                .FirstOrDefault();
+
+            return courseProgress;
+        }
     }
 }

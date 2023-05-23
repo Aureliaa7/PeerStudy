@@ -17,7 +17,9 @@
                         {
                             <div class="study-group-leaderboard-container">
                                 <h4>@studyGroupProgress.StudyGroupName</h4>
-                                <Leaderboard StudentsProgress="studyGroupProgress.StudentsProgress">
+                                <Leaderboard StudentsProgress="studyGroupProgress.StudentsProgress"
+                                     ItemsCanBeClicked="true"
+                                     OnClick="HandleClickedLeaderboardItem">
                                 </Leaderboard>
                             </div>
                         }
@@ -32,7 +34,9 @@
                 <div class="tab-content">
                     @if (studentsCourseProgress.Any())
                     {
-                        <Leaderboard StudentsProgress="studentsCourseProgress">
+                        <Leaderboard StudentsProgress="studentsCourseProgress"
+                                 ItemsCanBeClicked="true"
+                                 OnClick="HandleClickedLeaderboardItem">
                         </Leaderboard>
                     }
                     else
@@ -49,7 +53,9 @@
                         {
                             <h4>@courseUnitProgress.CourseUnitTitle</h4>
 
-                            <Leaderboard StudentsProgress="courseUnitProgress.StudentProgressModels">
+                            <Leaderboard StudentsProgress="courseUnitProgress.StudentProgressModels"
+                                 ItemsCanBeClicked="true"
+                                 OnClick="HandleClickedLeaderboardItem">
                             </Leaderboard>
                         }
                     }
