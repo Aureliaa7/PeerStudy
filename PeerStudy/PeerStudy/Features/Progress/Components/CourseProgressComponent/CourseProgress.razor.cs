@@ -53,14 +53,17 @@ namespace PeerStudy.Features.Progress.Components.CourseProgressComponent
             {
                 if (activeTabIndex == studyGroupsLeaderboardsTabIndex)
                 {
+                    studyGroupsProgress = null;
                     studyGroupsProgress = await AchievementService.GetLeaderboardDataForStudyGroupsAsync(CourseId, currentUserId);
                 }
                 else if (activeTabIndex == courseLeaderboardTabIndex)
                 {
+                    studyGroupsProgress = null;
                     studentsCourseProgress = await AchievementService.GetLeaderboardDataByCourseAsync(CourseId, currentUserId);
                 }
                 else if (activeTabIndex == courseUnitsLeaderboardsTabIndex)
                 {
+                    courseUnitsProgress = null;
                     courseUnitsProgress = await AchievementService.GetCourseUnitsLeaderboardDataAsync(CourseId, currentUserId);
                 }
             }

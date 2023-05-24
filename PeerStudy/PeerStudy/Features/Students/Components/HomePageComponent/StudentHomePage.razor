@@ -54,14 +54,16 @@
                                             <MatExpansionPanelDetails>
                                                 @foreach (var courseUnit in courseProgress.UnlockedCourseUnits)
                                                 {
-                                                    <div class="progress-course-unit">
+                                                    <div class="progress-course-unit-container">
                                                         <span class="progress-course-unit-title">
                                                             <b>@courseUnit.CourseUnitTitle</b>
                                                         </span>
-                                                        <div class="left">
-                                                            @courseUnit.NoPaidPoints paid points
+                                                        <div class="progress-course-unit">
+                                                            <div>
+                                                                @courseUnit.NoPaidPoints paid points
+                                                            </div>
+                                                            <span class="unlock-date">Unlocked at: @courseUnit.UnlockedAt</span>
                                                         </div>
-                                                        <span class="right unlock-date">Unlocked at: @courseUnit.UnlockedAt</span>
                                                     </div>
                                                 }
                                             </MatExpansionPanelDetails>
@@ -95,26 +97,27 @@
                                                 {
                                                     if (courseUnitProgress.StudentAssignments.Any())
                                                     {
-                                                        <div class="progress-course-unit">
+                                                        <div class="progress-course-unit-assignments">
                                                             <span>
                                                                 <b>@courseUnitProgress.CourseUnitTitle</b>
                                                             </span>
                                                             <div>
                                                                 @foreach (var assignment in courseUnitProgress.StudentAssignments)
                                                                 {
-                                                                    <div>
-                                                                        @assignment.AssignmentTitle
-                                                                    </div>
-                                                                    <div>
-                                                                        <div class="left earned-points">@assignment.NoEarnedPoints points</div>
-                                                                        <div class="right progress-completed-at">Completed at: @assignment.CompletedAt</div>
+                                                                    <div class="progress-assignment-details">
+                                                                        <div>
+                                                                            @assignment.AssignmentTitle
+                                                                        </div>
+                                                                        <div>
+                                                                            <div class="left earned-points">@assignment.NoEarnedPoints points</div>
+                                                                            <div class="right progress-completed-at">Completed at: @assignment.CompletedAt</div>
+                                                                        </div>
                                                                     </div>
                                                                 }
                                                             </div>
                                                         </div>
                                                     }
                                                 }
-
                                             </MatExpansionPanelDetails>
                                         </MatExpansionPanel>
                                     }

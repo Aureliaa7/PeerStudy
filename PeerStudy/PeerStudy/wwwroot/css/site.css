@@ -214,9 +214,28 @@ body::-webkit-scrollbar {
 }
 
 .progress-course-unit {
-    cursor: default;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .progress-course-unit-title {
     display: block;
+}
+
+.unlock-date {
+    text-align: right;
+}
+
+.progress-course-unit-container {
+    cursor: default;
+    padding: 15px;
+}
+
+.progress-course-unit-assignments {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.progress-assignment-details {
+    padding-top: 7px;
 }
