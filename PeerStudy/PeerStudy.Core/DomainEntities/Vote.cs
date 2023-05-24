@@ -11,6 +11,6 @@ namespace PeerStudy.Core.DomainEntities
 
         public VoteType VoteType { get; set; }
 
-        public Student Author { get; set; }
+        public User Author { get; set; }
     }
 }

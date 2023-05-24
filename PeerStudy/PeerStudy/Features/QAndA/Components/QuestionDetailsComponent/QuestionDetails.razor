@@ -4,7 +4,7 @@
 
 @page "/questions/{questionId:guid}"
 @inherits PeerStudyComponentBase
-@attribute [Authorize(Roles = "Student")]
+@attribute [Authorize]
 
 <Loading IsLoading="isLoading" HasData="@(!isLoading && questionDetails != null)">
     <div class="header">
@@ -37,15 +37,16 @@
             {
                 <MatButton Class="submit-button" Raised=true OnClick="@(() => showAddAnswerEditor = true)">Reply</MatButton>
             }
-
-            <Voting NoDownvotes="questionDetails.NoDownvotes"
-                    NoUpvotes="questionDetails.NoUpvotes"
-                    Votes="questionDetails.Votes"
-                    CurrentUserId="currentUserId"
-                    OnUpvote="UpvoteQuestion"
-                    OnDownvote="DownvoteQuestion">
-            </Voting>
         }
+
+        <Voting NoDownvotes="questionDetails.NoDownvotes"
+                NoUpvotes="questionDetails.NoUpvotes"
+                Votes="questionDetails.Votes"
+                CurrentUserId="currentUserId"
+                CanVote="@(questionDetails.AuthorId != currentUserId)"
+                OnUpvote="UpvoteQuestion"
+                OnDownvote="DownvoteQuestion">
+        </Voting>
 
         @if (showAddAnswerEditor)
         {

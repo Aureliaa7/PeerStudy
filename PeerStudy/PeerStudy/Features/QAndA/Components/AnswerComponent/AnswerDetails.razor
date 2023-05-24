@@ -13,28 +13,29 @@
     @if (Answer.IsReadOnly)
     {
         <div class="answer-details">
-            @if (Answer.AuthorId == CurrentUserId)
-            {
-                <div class="buttons">
-                    <MatButton Icon="@MatIconNames.Edit" OnClick="Edit"></MatButton>
-                    <MatButton Icon="@MatIconNames.Delete" OnClick="Delete"></MatButton>
-                </div>
-            }
-            else
-            {
-                <div class="buttons">
-                    <Voting NoDownvotes="Answer.NoDownvotes"
-                            NoUpvotes="Answer.NoUpvotes"
-                            Votes="Answer.Votes"
-                            CurrentUserId="CurrentUserId"
-                            OnUpvote="Upvote"
-                            OnDownvote="Downvote">
-                    </Voting>
-                </div>
-            }
             <div class="author-and-date">
                 @Answer.AuthorName replied @Answer.CreatedAt
             </div>
+            <div class="buttons">
+                <div class="left">
+                    <Voting NoDownvotes="Answer.NoDownvotes"
+                        NoUpvotes="Answer.NoUpvotes"
+                        Votes="Answer.Votes"
+                        CurrentUserId="CurrentUserId"
+                        CanVote="@(Answer.AuthorId != CurrentUserId)"
+                        OnUpvote="Upvote"
+                        OnDownvote="Downvote">
+                    </Voting>
+                </div>
+                <div class="right">
+                    @if (Answer.AuthorId == CurrentUserId)
+                    {
+                        <MatButton Icon="@MatIconNames.Edit" OnClick="Edit"></MatButton>
+                        <MatButton Icon="@MatIconNames.Delete" OnClick="Delete"></MatButton>
+                    }
+                </div>
+            </div>
+
         </div>
     }
 </div>

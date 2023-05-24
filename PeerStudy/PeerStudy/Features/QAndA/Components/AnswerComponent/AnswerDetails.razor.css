@@ -11,11 +11,11 @@
     display: inline-block;
 }
 
-.buttons {
-    display: inline-block;
-    float: left;
-}
-
 .answer-details {
     text-align: end;
+}
+
+.buttons {
+    margin-bottom: 10px;
+    height: 30px;
 }

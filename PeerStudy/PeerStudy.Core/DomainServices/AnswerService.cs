@@ -38,7 +38,10 @@ namespace PeerStudy.Core.DomainServices
             });
             await unitOfWork.SaveChangesAsync();
 
-            await rewardingService.UpdateBadgesForAnswersAsync(answerModel.AuthorId);
+            if (await IsStudent(answerModel.AuthorId))
+            {
+                await rewardingService.UpdateBadgesForAnswersAsync(answerModel.AuthorId);
+            }
 
             return new AnswerDetailsModel
             {
@@ -47,6 +50,14 @@ namespace PeerStudy.Core.DomainServices
                 AuthorId = answerModel.AuthorId,
                 HtmlContent = savedAnswer.Content
             };
+        }
+
+        private async Task<bool> IsStudent(Guid userId)
+        {
+            var author = await unitOfWork.UsersRepository.GetByIdAsync(userId) ??
+              throw new EntityNotFoundException($"User with id {userId} was not found!");
+
+            return author.Role == Role.Student;
         }
 
         public async Task DeleteAsync(Guid id, Guid authorId)
@@ -70,8 +81,15 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task VoteAsync(VoteModel voteModel)
         {
+            var answer = await unitOfWork.AnswersRepository.GetByIdAsync(voteModel.EntityId)
+                ?? throw new EntityNotFoundException($"Answer with id {voteModel.EntityId} was not found!");
+
             await VoteEntityAsync(voteModel);
-            await rewardingService.UpdateBadgesForUpvotedAnswerAsync(voteModel.EntityId);
+
+            if (await IsStudent(answer.AuthorId))
+            {
+                await rewardingService.UpdateBadgesForUpvotedAnswerAsync(voteModel.EntityId);
+            }
         }
 
         private async Task CheckIfAnswerExistsAsync(Guid id, Guid authorId)

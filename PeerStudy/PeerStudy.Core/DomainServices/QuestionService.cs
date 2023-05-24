@@ -55,7 +55,10 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.QuestionTagsRepository.AddRangeAsync(questionTags);
             await unitOfWork.SaveChangesAsync();
 
-            await rewardingService.UpdateBadgesForQuestionsAsync(createQuestionModel.AuthorId);
+            if (await IsStudentAsync(createQuestionModel.AuthorId))
+            {
+                await rewardingService.UpdateBadgesForQuestionsAsync(createQuestionModel.AuthorId);
+            }
 
             return new QuestionDetailsModel
             {
@@ -212,8 +215,23 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task VoteAsync(VoteModel voteModel)
         {
+            var question = await unitOfWork.QuestionsRepository.GetByIdAsync(voteModel.EntityId)
+                ?? throw new EntityNotFoundException($"Question with id {voteModel.EntityId} was not found!");
+
             await VoteEntityAsync(voteModel);
-            await rewardingService.UpdateBadgesForUpvotedQuestionAsync(voteModel.EntityId);
+
+            if (await IsStudentAsync(question.AuthorId))
+            {
+                await rewardingService.UpdateBadgesForUpvotedQuestionAsync(voteModel.EntityId);
+            }
+        }
+
+        private async Task<bool> IsStudentAsync(Guid userId)
+        {
+            var user = await unitOfWork.UsersRepository.GetByIdAsync(userId)
+               ?? throw new EntityNotFoundException($"User with id {userId} was not found!");
+
+            return user.Role == Role.Student;
         }
 
         protected override async Task<bool> DeleteVoteIfExistsAsync(Guid questionId, Guid authorId, VoteType voteType)

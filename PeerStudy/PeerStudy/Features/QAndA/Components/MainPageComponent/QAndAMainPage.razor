@@ -3,7 +3,7 @@
 
 @page "/q-and-a"
 @inherits PeerStudyComponentBase
-@attribute [Authorize(Roles = "Student")]
+@attribute [Authorize]
 
 
 <div>
@@ -28,9 +28,16 @@
     }
     <div @onclick="@(() => showSearchQuestionsInstructions = false)">
         <div>
-            <MatButton Class="submit-button" Raised=true OnClick="HandleAddQuestion">Ask a question</MatButton>
-            <MatButton Style="float:right;" OnClick="DisplayRecentQuestions">View recent questions</MatButton>
+            <AuthorizeView Roles="Student">
+                <MatButton Class="submit-button" Raised=true OnClick="HandleAddQuestion">Ask a question</MatButton>
+                <MatButton Style="float:right;" OnClick="DisplayRecentQuestions">View recent questions</MatButton>
+            </AuthorizeView>
 
+            <AuthorizeView Roles="Teacher">
+                <div class="recent-questions-button-container">
+                    <MatButton Style="float:right;" OnClick="DisplayRecentQuestions">View recent questions</MatButton>
+                </div>
+            </AuthorizeView>
         </div>
         <div class="recent-questions">
             <QuestionsList IsLoading="isLoading"

@@ -22,7 +22,7 @@ namespace PeerStudy.Core.DomainEntities
 
         public DateTime CreatedAt { get; set; }
 
-        public Student Author { get; set; }
+        public User Author { get; set; }
 
         public ICollection<Answer> Answers { get; set; }
 

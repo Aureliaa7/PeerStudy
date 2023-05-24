@@ -22,6 +22,9 @@ namespace PeerStudy.Features.QAndA.Components.VotingComponent
         public Guid CurrentUserId { get; set; }
 
         [Parameter]
+        public bool CanVote { get; set; } = true;
+
+        [Parameter]
         public EventCallback OnUpvote { get; set; }
 
         [Parameter]
