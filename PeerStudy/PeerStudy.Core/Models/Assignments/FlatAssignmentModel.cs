@@ -17,5 +17,7 @@ namespace PeerStudy.Core.Models.Assignments
         public Guid StudyGroupId { get; set; }
 
         public DateTime? CompletedAt { get; set; }
+
+        public string CourseUnitTitle { get; set; }
     }
 }

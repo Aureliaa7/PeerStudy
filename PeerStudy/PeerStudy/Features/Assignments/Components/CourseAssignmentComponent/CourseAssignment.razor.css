@@ -18,3 +18,14 @@
 .align-to-left, .deadline {
     float: left;
 }
+
+.course-unit-title, .study-group-name {
+    display: block;
+    font-size: 12px;
+}
+
+.course-unit-study-group {
+    margin-top: 50px;
+    padding: 15px;
+    text-align: left;
+}

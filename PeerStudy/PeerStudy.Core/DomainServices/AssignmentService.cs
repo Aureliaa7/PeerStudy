@@ -83,7 +83,7 @@ namespace PeerStudy.Core.DomainServices
                 x.StudentId == studentId && x.Assignment.CourseUnit.CourseId == courseId, trackChanges: false))
                     .Select(x => new AssignmentDetailsModel
                     {
-                        Id = x.Id,
+                        Id = x.Assignment.Id,
                         Title = x.Assignment.Title,
                         Deadline = x.Assignment.Deadline,
                         CompletedAt = x.Assignment.CompletedAt,
@@ -176,7 +176,9 @@ namespace PeerStudy.Core.DomainServices
                         Points = y.Points ?? 0,
                         HasBeenGraded = y.Points != null
                     })
-                    .ToList()
+                    .ToList(),
+                    StudyGroupName = x.StudyGroup.Name,
+                    CourseUnitTitle = x.CourseUnit.Title
                 })
                 .ToList();
 
@@ -234,12 +236,13 @@ namespace PeerStudy.Core.DomainServices
                     .OrderBy(x => x.Assignment.CreatedAt)
                     .Select(x => new FlatAssignmentModel
                     {
-                        Id = x.Id,
+                        Id = x.Assignment.Id,
                         Title = x.Assignment.Title,
                         CourseTitle = x.Assignment.CourseUnit.Course.Title,
                         Deadline = x.Assignment.Deadline,
                         CourseId = x.Assignment.CourseUnit.CourseId,
-                        StudyGroupId = x.StudyGroupId
+                        StudyGroupId = x.StudyGroupId,
+                        CourseUnitTitle = x.Assignment.CourseUnit.Title
                     })
                     .ToList();
 
@@ -277,7 +280,8 @@ namespace PeerStudy.Core.DomainServices
                     CourseTitle = x.CourseUnit.Course.Title,
                     Deadline = x.Deadline,
                     CourseId = x.CourseUnit.CourseId,
-                    StudyGroupId = x.StudyGroupId
+                    StudyGroupId = x.StudyGroupId,
+                    CourseUnitTitle = x.CourseUnit.Title
                 })
                 .ToList();
 
@@ -295,7 +299,8 @@ namespace PeerStudy.Core.DomainServices
                 Deadline = x.Deadline,
                 CourseId = x.CourseUnit.CourseId,
                 StudyGroupId = x.StudyGroupId,
-                CompletedAt = x.CompletedAt
+                CompletedAt = x.CompletedAt,
+                CourseUnitTitle = x.CourseUnit.Title
             })
             .ToList();
 

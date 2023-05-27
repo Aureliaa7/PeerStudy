@@ -33,7 +33,8 @@ namespace PeerStudy.Core.DomainServices
         public async Task<AssignmentFilesModel> GetUploadedFilesByStudyGroupAsync(Guid assignmentId, Guid studyGroupId)
         {
             var assignment = await unitOfWork.AssignmentsRepository.GetFirstOrDefaultAsync(x =>
-            x.Id == assignmentId && x.StudyGroupId == studyGroupId) ?? throw new EntityNotFoundException($"StudentAssignment with assignmentId {assignmentId} and studyGroupId {studyGroupId} was not found!");
+            x.Id == assignmentId && x.StudyGroupId == studyGroupId, 
+            includeProperties: $"{nameof(StudyGroup)},{nameof(CourseUnit)}") ?? throw new EntityNotFoundException($"StudentAssignment with assignmentId {assignmentId} and studyGroupId {studyGroupId} was not found!");
 
             var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.AssignmentId ==
             assignmentId && x.StudyGroupId == studyGroupId);
@@ -46,7 +47,9 @@ namespace PeerStudy.Core.DomainServices
                 Title = assignment.Title,
                 Points = studentAssignment?.Points ?? null,
                 CompletedAt = assignment.CompletedAt,
-                StudentGroupId = assignment.StudyGroupId
+                StudentGroupId = assignment.StudyGroupId,
+                StudyGroupName = assignment.StudyGroup.Name,
+                CourseUnitTitle = assignment.CourseUnit.Title
             };
 
             var studyGroupAssignmentFiles = (await unitOfWork.StudyGroupAssignmentFilesRepository.GetAllAsync(x =>

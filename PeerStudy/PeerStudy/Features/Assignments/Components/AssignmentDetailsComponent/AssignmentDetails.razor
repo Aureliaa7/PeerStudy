@@ -9,6 +9,10 @@
 
     <div class="assignment-details">
         <h3>@assignmentDetails?.Title</h3>
+        <div class="course-details">
+            <span class="course-unit-title">Course Unit: @assignmentDetails.CourseUnitTitle</span>
+            <span class="study-group-name">Study Group: @assignmentDetails.StudyGroupName</span>
+        </div>
         <hr />
         <div class="deadline">
             @assignmentDetails?.Deadline
