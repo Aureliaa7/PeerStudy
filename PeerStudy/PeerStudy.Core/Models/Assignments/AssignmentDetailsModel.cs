@@ -17,5 +17,7 @@ namespace PeerStudy.Core.Models.Assignments
         public int? Points { get; set; }
 
         public DateTime? CompletedAt { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -5,7 +5,7 @@
         public const string NoFilesMessage = "There are no files yet...";
         public const string DeleteResourceConfirmationMessage = "Are you sure you want to delete this file?";
 
-        public const string NoFoundAssignmentsMessage = "There are no assignments yet...";
+        public const string NoFoundAssignmentsMessage = "There are no assignments available yet...";
         public const string AddAssignmentMessage = "Adding assignment...";
         public const string AddAssignmentSuccessMessage = "Assignment was successfully added.";
         public const string AddAssignmentErrorMessage = "An error occurred. Please try again later.";

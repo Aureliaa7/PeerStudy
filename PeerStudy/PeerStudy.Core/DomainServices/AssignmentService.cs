@@ -75,38 +75,80 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task<List<AssignmentDetailsModel>> GetByCourseAndStudentAsync(Guid courseId, Guid studentId, AssignmentStatus status)
         {
-            Expression<Func<StudentAssignment, bool>> filter = GetFilterByAssignmentStatus(x => x.StudentId == studentId && x.Assignment.CourseUnit.CourseId == courseId, status);
+            Expression<Func<Assignment, bool>> filter = GetFilterByAssignmentStatus(x => true, status);
 
-            var assignments = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(filter, trackChanges: false))
+            if (status == AssignmentStatus.Done)
+            {
+                var result = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(x => x.Assignment.CompletedAt != null && 
+                x.StudentId == studentId && x.Assignment.CourseUnit.CourseId == courseId, trackChanges: false))
+                    .Select(x => new AssignmentDetailsModel
+                    {
+                        Id = x.Id,
+                        Title = x.Assignment.Title,
+                        Deadline = x.Assignment.Deadline,
+                        CompletedAt = x.Assignment.CompletedAt,
+                        CreatedAt = x.Assignment.CreatedAt,
+                        Description = x.Assignment.Description,
+                        Points = x.Assignment.Points,
+                        StudentGroupId = x.Assignment.StudyGroupId
+                    })
+                    .OrderBy(x => x.CreatedAt)
+                    .ToList();
+
+                return result;
+            }
+
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync();
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter);
+            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync();
+            var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync();
+            var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync();
+
+            var availableAssignments = from a in assignments
+                                       join cu in courseUnits on a.CourseUnitId equals cu.Id
+                                       join sg in studyGroups on cu.CourseId equals sg.CourseId
+                                       where sg.Id == a.StudyGroupId &&
+                                             cu.CourseId == courseId && (cu.IsAvailable || 
+                                             studentStudyGroups.Any(ssg =>
+                                                ssg.StudentId == studentId &&
+                                                ssg.StudyGroupId == a.StudyGroupId &&
+                                                unlockedCourseUnits.Any(ucu =>
+                                                    ucu.StudentId == ssg.StudentId &&
+                                                    ucu.CourseUnitId == cu.Id)))
+                                       select a;
+
+            var foundAssignments = availableAssignments
             .Select(x => new AssignmentDetailsModel
             {
-                StudentGroupId = x.Assignment.StudyGroupId,
-                Deadline = x.Assignment.Deadline,
-                Description = x.Assignment.Description,
-                Id = x.Assignment.Id,
-                Title = x.Assignment.Title,
-                Points = x.Points
+                StudentGroupId = x.StudyGroupId,
+                Deadline = x.Deadline,
+                Description = x.Description,
+                Id = x.Id,
+                Title = x.Title,
+                Points = x.Points,
+                CreatedAt = x.CreatedAt
             })
+            .OrderBy(x => x.CreatedAt)
             .ToList();
 
-            return assignments;
+            return foundAssignments;
         }
 
-        private static Expression<Func<StudentAssignment, bool>> GetFilterByAssignmentStatus(Expression<Func<StudentAssignment, bool>> filter, AssignmentStatus status)
+        private static Expression<Func<Assignment, bool>> GetFilterByAssignmentStatus(Expression<Func<Assignment, bool>> filter, AssignmentStatus status)
         {
             if (status == AssignmentStatus.Done)
             {
-                return filter.And(x => x.Assignment.CompletedAt != null);
+                return filter.And(x => x.CompletedAt != null);
             }
             else if (status == AssignmentStatus.Upcoming)
             {
-                return filter.And(x => x.Assignment.CompletedAt == null &&
-                    x.Assignment.Deadline > DateTime.UtcNow);
+                return filter.And(x => x.CompletedAt == null &&
+                    x.Deadline > DateTime.UtcNow);
             }
             else if (status == AssignmentStatus.Missing)
             {
-                return filter.And(x => x.Assignment.CompletedAt == null &&
-                   x.Assignment.Deadline < DateTime.UtcNow);
+                return filter.And(x => x.CompletedAt == null &&
+                   x.Deadline < DateTime.UtcNow);
             }
             else
             {
@@ -175,12 +217,8 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task ResetSubmitDateAsync(Guid assignmentId)
         {
-            var assignment = await unitOfWork.AssignmentsRepository.GetFirstOrDefaultAsync(x => x.Id == assignmentId);
-            if (assignment == null)
-            {
-                throw new EntityNotFoundException($"Assignment with id {assignmentId} was not found!");
-            }
-
+            var assignment = await unitOfWork.AssignmentsRepository.GetFirstOrDefaultAsync(x => x.Id == assignmentId) ?? throw new EntityNotFoundException($"Assignment with id {assignmentId} was not found!");
+            
             assignment.CompletedAt = null;
             await unitOfWork.AssignmentsRepository.UpdateAsync(assignment);
             await unitOfWork.SaveChangesAsync();
@@ -188,21 +226,62 @@ namespace PeerStudy.Core.DomainServices
 
         public async Task<List<FlatAssignmentModel>> GetByStudentAsync(Guid studentId, AssignmentStatus status)
         {
-            Expression<Func<StudentAssignment, bool>> filter = GetFilterByAssignmentStatus(x => x.StudentId == studentId, status);
+            Expression<Func<Assignment, bool>> filter = GetFilterByAssignmentStatus(x => true, status);
 
-            var assignments = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(filter, trackChanges: false))
-            .Select(x => new FlatAssignmentModel
+            if (status == AssignmentStatus.Done)
             {
-                Id = x.Assignment.Id,
-                Title = x.Assignment.Title,
-                CourseTitle = x.Assignment.CourseUnit.Course.Title,
-                Deadline = x.Assignment.Deadline,
-                CourseId = x.Assignment.CourseUnit.CourseId,
-                StudyGroupId = x.Assignment.StudyGroupId
-            })
-            .ToList();
+                var result = (await unitOfWork.StudentAssignmentsRepository.GetAllAsync(x => x.Assignment.CompletedAt != null && x.StudentId == studentId, trackChanges: false))
+                    .OrderBy(x => x.Assignment.CreatedAt)
+                    .Select(x => new FlatAssignmentModel
+                    {
+                        Id = x.Id,
+                        Title = x.Assignment.Title,
+                        CourseTitle = x.Assignment.CourseUnit.Course.Title,
+                        Deadline = x.Assignment.Deadline,
+                        CourseId = x.Assignment.CourseUnit.CourseId,
+                        StudyGroupId = x.StudyGroupId
+                    })
+                    .ToList();
 
-            return assignments;
+                return result;
+            }
+
+            var studentCourses = await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.StudentId == studentId);
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync();
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter);
+            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync();
+            var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync();
+            var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync();
+
+            var availableAssignments =
+                from sc in studentCourses
+                join cu in courseUnits on sc.CourseId equals cu.CourseId
+                join sg in studyGroups on cu.CourseId equals sg.CourseId
+                join a in assignments on cu.Id equals a.CourseUnitId
+                where sg.Id == a.StudyGroupId && (cu.IsAvailable ||
+                  studentStudyGroups.Any(ssg =>
+                     ssg.StudentId == studentId &&
+                     ssg.StudyGroupId == a.StudyGroupId &&
+                     unlockedCourseUnits.Any(ucu =>
+                         ucu.StudentId == ssg.StudentId &&
+                         ucu.CourseUnitId == cu.Id)))
+                select a;
+
+
+            var foundAssignments = availableAssignments
+                .OrderBy(x => x.CreatedAt)
+                .Select(x => new FlatAssignmentModel
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    CourseTitle = x.CourseUnit.Course.Title,
+                    Deadline = x.Deadline,
+                    CourseId = x.CourseUnit.CourseId,
+                    StudyGroupId = x.StudyGroupId
+                })
+                .ToList();
+
+             return foundAssignments;
         }
 
         public async Task<List<FlatAssignmentModel>> GetByStudyGroupAsync(Guid studyGroupId)
