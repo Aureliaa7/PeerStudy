@@ -13,6 +13,7 @@ namespace PeerStudy.Core.DomainEntities
             StudyGroupFiles = new HashSet<StudyGroupFile>();
             UnlockedCourseUnits = new HashSet<UnlockedCourseUnit>();
             StudentBadges = new HashSet<StudentBadge>();
+            PostponedAssignments = new HashSet<PostponedAssignment>();
         }
 
         public int NoTotalPoints { get; set; }
@@ -30,5 +31,7 @@ namespace PeerStudy.Core.DomainEntities
         public ICollection<UnlockedCourseUnit> UnlockedCourseUnits { get; set; }
 
         public ICollection<StudentBadge> StudentBadges { get; set; }
+
+        public ICollection<PostponedAssignment> PostponedAssignments { get; set; }
     }
 }

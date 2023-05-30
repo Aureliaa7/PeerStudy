@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
@@ -29,6 +30,9 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         [Inject]
         private IAuthService AuthService { get; set; }
 
+        [Inject]
+        private IConfiguration Configuration { get; set; }
+
 
         [Parameter]
         public Guid StudyGroupId { get; set; }
@@ -53,18 +57,28 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
         private List<UploadFileModel> allFiles = new List<UploadFileModel>();
         private List<UploadFileModel> newlyAddedFiles = new List<UploadFileModel>();
         private Guid currentUserId;
+        private bool canPostponeDeadline;
+        private bool isPostponeDeadlineButtonDisabled;
 
         private const string buttonStyles = "margin: 10px;";
 
         protected override async Task OnInitializedAsync()
         {
             isLoading = true;
-            currentUserId = new Guid(await AuthService.GetCurrentUserIdAsync());
-            assignmentDetails = await AssignmentFileService.GetUploadedFilesByStudyGroupAsync(AssignmentId, StudyGroupId);
-            isReadOnly = (await CourseService.GetCourseStatusAsync(CourseId)) == CourseStatus.Archived;
-            if (assignmentDetails.CompletedAt == null)
+            try
             {
-                showUploadFilesButton = true;
+                currentUserId = new Guid(await AuthService.GetCurrentUserIdAsync());
+                assignmentDetails = await AssignmentFileService.GetUploadedFilesByStudyGroupAsync(AssignmentId, StudyGroupId);
+                canPostponeDeadline = await AssignmentService.CanPostponeDeadlineAsync(StudyGroupId, AssignmentId);
+                isReadOnly = (await CourseService.GetCourseStatusAsync(CourseId)) == CourseStatus.Archived;
+                if (assignmentDetails.CompletedAt == null)
+                {
+                    showUploadFilesButton = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.GenericErrorMessage);
             }
             isLoading = false;
         }
@@ -182,6 +196,25 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
                 assignmentDetails.StudyGroupAssignmentFiles != null &&
                 assignmentDetails.StudyGroupAssignmentFiles.Any() &&
                 !allFiles.Any();
+        }
+
+        private async Task PostponeDeadline()
+        {
+            isPostponeDeadlineButtonDisabled = true;
+            StateHasChanged();
+
+            try
+            {
+                assignmentDetails.Deadline = await AssignmentService.PostponeDeadlineAsync(currentUserId, AssignmentId, StudyGroupId);
+                canPostponeDeadline = await AssignmentService.CanPostponeDeadlineAsync(StudyGroupId, AssignmentId);
+            }
+            catch (Exception ex)
+            {
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.GenericErrorMessage);
+                canPostponeDeadline = false;
+            }
+
+            isPostponeDeadlineButtonDisabled = !canPostponeDeadline;
         }
     }
 }

@@ -23,6 +23,20 @@
                 Completed at: @assignmentDetails?.CompletedAt
             </div>
         }
+        else if (canPostponeDeadline)
+        {
+            <AuthorizeView Roles="Student">
+                <div class="postpone-deadline">
+                    <MatButton
+                        Style="@buttonStyles"
+                        Raised="true"
+                           Disabled="isPostponeDeadlineButtonDisabled"
+                        OnClick="PostponeDeadline">
+                        Postpone deadline
+                    </MatButton>
+                </div>
+            </AuthorizeView>
+        }
         <div>
             @assignmentDetails?.Description
         </div>

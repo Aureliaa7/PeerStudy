@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-using PeerStudy.Core.DomainEntities;
+﻿using PeerStudy.Core.DomainEntities;
 using PeerStudy.Core.Interfaces.Repositories;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Infrastructure.AppDbContext;
@@ -33,6 +32,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<QuestionVote> questionVotesRepository;
         private IRepository<Badge> badgesRepository;
         private IRepository<StudentBadge> studentBadgesRepository;
+        private IRepository<PostponedAssignment> postponedAssignmentsRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -235,6 +235,16 @@ namespace PeerStudy.Infrastructure.UnitOfWork
                 return studentBadgesRepository;
             }
         }
+
+        public IRepository<PostponedAssignment> PostponedAssignmentsRepository
+        {
+            get
+            {
+                postponedAssignmentsRepository ??= new Repository<PostponedAssignment>(dbContext);
+                return postponedAssignmentsRepository;
+            }
+        }
+
 
         public async Task SaveChangesAsync()
         {

@@ -8,6 +8,7 @@ namespace PeerStudy.Core.DomainEntities
         public Assignment()
         {
             StudentAssignments = new HashSet<StudentAssignment>();
+            PostponedAssignments = new HashSet<PostponedAssignment>();
         }
 
         public Guid Id { get; set; }
@@ -33,5 +34,7 @@ namespace PeerStudy.Core.DomainEntities
         public StudyGroup StudyGroup { get; set; }
 
         public ICollection<StudentAssignment> StudentAssignments { get; set; }
+
+        public ICollection<PostponedAssignment> PostponedAssignments { get; set; }
     }
 }

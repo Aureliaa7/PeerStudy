@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using PeerStudy.Core.Interfaces.Services;
+using System;
 
 namespace PeerStudy.Infrastructure.Services
 {
@@ -20,6 +21,10 @@ namespace PeerStudy.Infrastructure.Services
 
         public string JWTKey => GetConfigValue(nameof(JWTKey));
 
+        public int MaxPostponedDeadlinesPerStudyGroup => GetNumber(nameof(MaxPostponedDeadlinesPerStudyGroup));
+
+        public int NoDaysToPostponeDeadline => GetNumber(nameof(NoDaysToPostponeDeadline));
+
         private string GetConfigValue(string key)
         {
             try
@@ -29,6 +34,18 @@ namespace PeerStudy.Infrastructure.Services
             catch
             {
                 return string.Empty;
+            }
+        }
+
+        private int GetNumber(string key)
+        {
+            try
+            {
+                return Convert.ToInt32(configuration.GetSection(key).Value);
+            }
+            catch
+            {
+                return 0;
             }
         }
     }

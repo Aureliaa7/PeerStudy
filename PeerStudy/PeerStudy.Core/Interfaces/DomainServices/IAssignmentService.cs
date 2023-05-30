@@ -34,5 +34,21 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         /// <param name="studyGroupId"></param>
         /// <returns></returns>
         Task<List<FlatAssignmentModel>> GetByStudyGroupAsync(Guid studyGroupId);
+
+        /// <summary>
+        /// Postpones a deadline
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="assignmentId"></param>
+        /// <returns>The new deadline</returns>
+        Task<DateTime> PostponeDeadlineAsync(Guid studentId, Guid assignmentId, Guid studyGroupId);
+
+        /// <summary>
+        /// Checks if a student can postpone a deadline 
+        /// </summary>
+        /// <param name="studyGroupId"></param>
+        /// <param name="assignmentId"></param>
+        /// <returns></returns>
+        Task<bool> CanPostponeDeadlineAsync(Guid studyGroupId, Guid assignmentId);
     }
 }

@@ -50,6 +50,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<StudentBadge> StudentBadges { get; set; }
 
+        public DbSet<PostponedAssignment> PostponedAssignments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -75,6 +77,7 @@ namespace PeerStudy.Infrastructure.AppDbContext
             new QuestionVoteConfiguration().Configure(modelBuilder.Entity<QuestionVote>());
             new BadgeConfiguration().Configure(modelBuilder.Entity<Badge>());
             new StudentBadgeConfiguration().Configure(modelBuilder.Entity<StudentBadge>());
+            new PostponedAssignmentConfiguration().Configure(modelBuilder.Entity<PostponedAssignment>());
         }
 
         private static void CreateCourseUnitSequence(ModelBuilder modelBuilder)

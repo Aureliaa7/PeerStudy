@@ -3,6 +3,7 @@ using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Extensions;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Assignments;
 using PeerStudy.Core.Models.StudentAssets;
@@ -18,11 +19,15 @@ namespace PeerStudy.Core.DomainServices
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IStudentPointsService studentPointsService;
+        private readonly IConfigurationService configurationService;
 
-        public AssignmentService(IUnitOfWork unitOfWork, IStudentPointsService studentPointsService)
+        public AssignmentService(IUnitOfWork unitOfWork,
+            IStudentPointsService studentPointsService,
+            IConfigurationService configurationService)
         {
             this.unitOfWork = unitOfWork;
             this.studentPointsService = studentPointsService;
+            this.configurationService = configurationService;
         }
 
         public async Task CreateAsync(CreateAssignmentModel model)
@@ -305,6 +310,84 @@ namespace PeerStudy.Core.DomainServices
             .ToList();
 
             return assignments;
+        }
+
+        public async Task<DateTime> PostponeDeadlineAsync(Guid studentId, Guid assignmentId, Guid studyGroupId)
+        {
+            var assignment = await GetByIdAsync(assignmentId);
+            var studyGroupMembers = await GetStudyGroupMembersAsync(studyGroupId);
+
+            if (!await CanPostponeDeadlineAsync(studyGroupId, assignment, studyGroupMembers))
+            {
+                throw new PreconditionFailedException("The study group reached the max number of postponed assignments" +
+                    "or does not have enough points...");
+            }
+            var noStudentsInStudyGroup = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudyGroupId == studyGroupId)).Count();
+
+            var noPointsPaidByAMember = assignment.Points / 2;
+
+            var postponedAssignment = new PostponedAssignment
+            {
+                AssignmentId = assignmentId,
+                CreatedAt = DateTime.UtcNow,
+                NoTotalPaidPoints = noStudentsInStudyGroup * noPointsPaidByAMember,
+                StudentId = studentId,
+                StudyGroupId = studyGroupId
+            };
+            await unitOfWork.PostponedAssignmentsRepository.AddAsync(postponedAssignment);
+
+            assignment.Deadline = assignment.Deadline?.AddDays(configurationService.NoDaysToPostponeDeadline);
+            await unitOfWork.AssignmentsRepository.UpdateAsync(assignment);
+            foreach (var student in studyGroupMembers)
+            {
+                student.NoTotalPoints -= assignment.Points;
+                await unitOfWork.UsersRepository.UpdateAsync(student);
+            }
+
+            await unitOfWork.SaveChangesAsync();
+
+            return assignment.Deadline.Value;
+        }
+
+        public async Task<bool> CanPostponeDeadlineAsync(Guid studyGroupId, Guid assignmentId)
+        {
+            var assignment = await GetByIdAsync(assignmentId);
+            var studyGroupMembers = await GetStudyGroupMembersAsync(studyGroupId);
+
+            return await CanPostponeDeadlineAsync(studyGroupId, assignment, studyGroupMembers);
+        }
+
+        private async Task<Assignment> GetByIdAsync(Guid assignmentId)
+        {
+            return await unitOfWork.AssignmentsRepository.GetByIdAsync(assignmentId) ??
+             throw new EntityNotFoundException($"The assignment with id {assignmentId} does not exist!");
+        }
+
+        private async Task<bool> CanPostponeDeadlineAsync(Guid studyGroupId, Assignment assignment, List<Student> students)
+        {
+            var noPostponedDeadlines = (await unitOfWork.PostponedAssignmentsRepository.GetAllAsync(x => x.StudyGroupId == studyGroupId))
+                .Count();
+
+            bool canPostponeDeadline = noPostponedDeadlines < configurationService.MaxPostponedDeadlinesPerStudyGroup;
+            bool studentsHaveNecessaryPoints = StudyGroupCanPostponeDeadline(students, assignment);
+
+            return canPostponeDeadline && studentsHaveNecessaryPoints;
+        }
+
+        private bool StudyGroupCanPostponeDeadline(List<Student> studyGroupMembers, Assignment assignment)
+        {
+            bool canPostponeDeadline = !(studyGroupMembers.Any(x => x.NoTotalPoints < assignment.Points / 2));
+
+            return canPostponeDeadline;
+        }
+
+        private async Task<List<Student>> GetStudyGroupMembersAsync(Guid studyGroupId)
+        {
+            var students = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudyGroupId == studyGroupId))
+               .Select(x => x.Student)
+               .ToList();
+
+            return students;
         }
     }
 }

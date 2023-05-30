@@ -43,3 +43,7 @@ h3 {
     display: block;
     font-size: 12px;
 }
+
+.postpone-deadline {
+    text-align: right;
+}

@@ -50,6 +50,8 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<StudentBadge> StudentBadgesRepository { get; }
 
+        IRepository<PostponedAssignment> PostponedAssignmentsRepository { get; }
+
         Task SaveChangesAsync();
     }
 }
