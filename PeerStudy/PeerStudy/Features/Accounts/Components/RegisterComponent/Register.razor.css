@@ -1,5 +1,5 @@
 ﻿.register-card {
-    width: 80%;
+    width: 95%;
     margin: auto;
     background-color: #a8c5de;
     border-radius: 20px;
@@ -20,14 +20,41 @@
     place-items: center;
 }
 
-div {
-    display: inline-block;
-}
-
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 95%;
     margin-top:20px;
     margin-left: auto;
+}
+
+.register-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collab-image {
+    flex: 1.5;
+    text-align: center;
+}
+
+.form-container {
+    flex: 2;
+}
+
+.collab-image img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 20px;
+}
+
+.app-name, .motto {
+    font-family: 'Trebuchet MS', sans-serif;
+    display: block;
+    color: #003366;
+}
+
+.app-name {
+    font-size: 22px;
 }

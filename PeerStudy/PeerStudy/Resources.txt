@@ -5,6 +5,7 @@ collab-learning3.svg: https://www.vectorstock.com/royalty-free-vector/promoting-
 collab-learning4.svg: https://www.vectorstock.com/royalty-free-vector/transparency-many-teamwork-people-join-colorful-vector-7735256
 
 collabImage: https://undraw.co
+collabImage2: https://undraw.co
 
 State management:	https://blog.antosubash.com/posts/state-management-blazor-fluxor
 					https://medium.com/it-dead-inside/lets-learn-blazor-fluxor-app-state-for-blazor-422194eeac26

@@ -1,44 +1,56 @@
 ﻿@page "/register"
 @using PeerStudy.Shared
 
-<EditForm Model="@registerModel" OnValidSubmit="@CreateAccount">
-    <DataAnnotationsValidator />
-    <div class="card register-card">
-        <div class="card-title">
-            <h3>Register</h3>
-        </div>
+<div class="app-logo">
+    <span class="app-name">Peer Study</span>
+    <span class="motto">Learning together, growing together</span>
+</div>
 
-        <div class="card-body">
-            <div class="form-row">
-                <div>
-                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.FirstName" Label="First Name"></MatTextField>
-                    <ValidationMessage For="@(() => registerModel.FirstName)" />
-                </div>
-                <div>
-                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.LastName" Label="Last Name"></MatTextField>
-                    <ValidationMessage For="@(() => registerModel.LastName)" />
-                </div>
-            </div>
-            <div class="form-row">
-                <div>
-                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.Email" Label="Email"></MatTextField>
-                    <ValidationMessage For="@(() => registerModel.Email)" />
-                </div>
-                <div>
-                    <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.Password" Label="Password" Type="password"></MatTextField>
-                    <ValidationMessage For="@(() => registerModel.Password)" />
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div>
-                    <PeerStudyFileUpload Class="file-upload" OnChange="@FilesReady" Label="Choose a profile picture" Accept=".png, .jpg, .jpeg"></PeerStudyFileUpload>
-                </div>
-                <div>
-                    <MatButton Class="submit-button" Style="@submitBtnStyleRules" Raised="true" Type="submit" Disabled=@(isBtnDisabled || !context.IsModified() || !context.Validate())>Create account</MatButton>
-                </div>
-            </div>
-            <div><a href="/login">Already have an account?</a></div>
-        </div>
+<div class="register-container">
+    <div class="collab-image">
+        <img src="/images/collabimage2.png" />
     </div>
-</EditForm>
+    <div class="form-container">
+        <EditForm Model="@registerModel" OnValidSubmit="@CreateAccount">
+            <DataAnnotationsValidator />
+            <div class="card register-card">
+                <div class="card-title">
+                    <h3>Register</h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="form-row">
+                        <div>
+                            <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.FirstName" Label="First Name"></MatTextField>
+                            <ValidationMessage For="@(() => registerModel.FirstName)" />
+                        </div>
+                        <div>
+                            <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.LastName" Label="Last Name"></MatTextField>
+                            <ValidationMessage For="@(() => registerModel.LastName)" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.Email" Label="Email"></MatTextField>
+                            <ValidationMessage For="@(() => registerModel.Email)" />
+                        </div>
+                        <div>
+                            <MatTextField Class="input-field" Style="@inputFieldStyleRules" @bind-Value="@registerModel.Password" Label="Password" Type="password"></MatTextField>
+                            <ValidationMessage For="@(() => registerModel.Password)" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <PeerStudyFileUpload Class="file-upload" OnChange="@FilesReady" Label="Choose a profile picture" Accept=".png, .jpg, .jpeg"></PeerStudyFileUpload>
+                        </div>
+                        <div>
+                            <MatButton Class="submit-button" Style="@submitBtnStyleRules" Raised="true" Type="submit" Disabled=@(isBtnDisabled || !context.IsModified() || !context.Validate())>Create account</MatButton>
+                        </div>
+                    </div>
+                    <div><a href="/login">Already have an account?</a></div>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
