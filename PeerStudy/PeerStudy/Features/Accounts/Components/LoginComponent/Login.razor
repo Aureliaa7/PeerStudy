@@ -1,29 +1,38 @@
 ﻿@page "/login"
 
-<EditForm Model="loginModel" OnValidSubmit="LogIn">
-    <DataAnnotationsValidator />
-    <div class="card login-card">
-        <div class="card-title">
-            <h3>Login</h3>
-        </div>
-
-        <div class="card-body">
-            <div>
-                <MatTextField Class="input-field" Style="@styleRules" @bind-Value="@loginModel.Email" Label="Email" Icon="email"></MatTextField>
-                <ValidationMessage For="@(() => loginModel.Email)" />
-            </div>
-
-            <div>
-                <MatTextField Class="input-field" Style="@styleRules" @bind-Value="@loginModel.Password" Label="Password" Icon="lock" Type="password"></MatTextField>
-                <ValidationMessage For="@(() => loginModel.Password)" />
-            </div>
-
-            <div>
-                <MatButton Class="submit-button" Style="@styleRules" Raised="true" Type="submit" Disabled="@(isSubmitButtonDisabled || !context.IsModified() || !context.Validate())">Log in</MatButton>
-            </div>
-            <div>You do not have an account?<a href="/register">Sign up</a></div>
-        </div>
+<div class="app-logo">
+    <span class="app-name">Peer Study</span>
+    <span class="motto">Learning together, growing together</span>
+</div>
+<div class="login-container">
+    <div class="collab-image">
+        <img src="/images/collabimage.png" />
     </div>
-</EditForm>
+    <div class="form-container">
+        <EditForm Model="loginModel" OnValidSubmit="LogIn">
+            <DataAnnotationsValidator />
+            <div class="card login-card">
+                <div class="card-title">
+                    <h3>Login</h3>
+                </div>
 
+                <div class="card-body container">
+                    <div class="container">
+                        <MatTextField Class="input-field" Style="@styleRules" @bind-Value="@loginModel.Email" Label="Email" Icon="email"></MatTextField>
+                        <ValidationMessage For="@(() => loginModel.Email)" />
+                    </div>
 
+                    <div class="container">
+                        <MatTextField Class="input-field" Style="@styleRules" @bind-Value="@loginModel.Password" Label="Password" Icon="lock" Type="password"></MatTextField>
+                        <ValidationMessage For="@(() => loginModel.Password)" />
+                    </div>
+
+                    <div class="container">
+                        <MatButton Class="submit-button" Style="@styleRules" Raised="true" Type="submit" Disabled="@(isSubmitButtonDisabled || !context.IsModified() || !context.Validate())">Log in</MatButton>
+                    </div>
+                    <div>You do not have an account? <a href="/register">Sign up</a></div>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>

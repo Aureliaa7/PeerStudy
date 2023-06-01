@@ -1,13 +1,15 @@
 ﻿.login-card {
     margin-top: 5%;
-    width: 50%;
-    margin-left: 25%;
+    width: 90%;
     background-color: #a8c5de;
     border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: 20px;
+    padding: 10px;
 }
 
 .card-title, label {
@@ -15,9 +17,40 @@
     color: white;
 }
 
-div {
+.container {
     margin-top: 15px;
     display: grid;
     place-items: center;
     width: 95%;
+}
+
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collab-image {
+    flex: 1.5;
+    text-align: center;
+}
+
+.form-container {
+    flex: 2;
+}
+
+.collab-image img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 20px;
+}
+
+.app-name, .motto {
+    font-family: 'Trebuchet MS', sans-serif;
+    display: block;
+    color: #003366;
+}
+
+.app-name {
+    font-size: 22px;
 }
