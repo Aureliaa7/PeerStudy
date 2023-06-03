@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.StudyGroups;
-using System.Collections.Generic;
 
 namespace PeerStudy.Features.StudyGroups.Components
 {

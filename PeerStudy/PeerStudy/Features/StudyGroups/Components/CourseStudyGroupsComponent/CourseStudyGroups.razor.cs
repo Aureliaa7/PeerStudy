@@ -1,6 +1,5 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
-using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.StudyGroups;
 using System;
 using System.Collections.Generic;
@@ -10,10 +9,6 @@ namespace PeerStudy.Features.StudyGroups.Components.CourseStudyGroupsComponent
 {
     public partial class CourseStudyGroups : StudyGroupsBase
     {
-        [Inject]
-        private IStudyGroupService StudyGroupService { get; set; }
-
-
         [Parameter]
         public Guid CourseId { get; set; }
 

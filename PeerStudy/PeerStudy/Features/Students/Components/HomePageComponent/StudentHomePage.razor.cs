@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Users;
-using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +14,6 @@ namespace PeerStudy.Features.Students.Components.HomePageComponent
     {
         [Inject]
         private IAchievementService AchievementService { get; set; }
-
-        [Inject]
-        private IPeerStudyToastService ToastService { get; set; }
 
 
         private StudentProfileModel studentProgress;

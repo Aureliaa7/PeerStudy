@@ -36,17 +36,16 @@
             </div>
 
             <article class="content px-4">
-                @*<ErrorBoundary @ref="@errorBoundary">
-                <ChildContent>
-                @Body
-                </ChildContent>
-                <ErrorContent>
-                <Alert Color="Color.Danger" @bind-Visible="showErrorAlert">
-                <AlertDescription>An error occurred... Please try again later.</AlertDescription>
-                </Alert>
-                </ErrorContent>
-                </ErrorBoundary>*@
-                @Body
+                <ErrorBoundary @ref="@errorBoundary">
+                    <ChildContent>
+                        @Body
+                    </ChildContent>
+                    <ErrorContent>
+                        <Alert Color="Color.Danger" @bind-Visible="showErrorAlert">
+                            <AlertDescription>An error occurred... Please try again later.</AlertDescription>
+                        </Alert>
+                    </ErrorContent>
+                </ErrorBoundary>
             </article>
         </main>
     </div>

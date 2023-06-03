@@ -11,7 +11,7 @@
             {
                 <div class="no-profile-photo">
                     <span>
-                        @CurrentUserName?.ToUpper().First()
+                        @(string.IsNullOrEmpty(CurrentUserName) ? string.Empty : CurrentUserName.ToUpper().First())
                     </span>
                 </div>
             }

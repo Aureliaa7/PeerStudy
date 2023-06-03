@@ -7,7 +7,6 @@ using PeerStudy.Core.Models.Courses;
 using PeerStudy.Core.Models.CourseUnits;
 using PeerStudy.Core.Models.Resources;
 using PeerStudy.Models;
-using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,12 +36,6 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
         [Inject]
         private IStudentPointsService StudentAssetService { get; set; }
-
-        [Inject]
-        private IPeerStudyToastService ToastService { get; set; }
-
-        [Inject]
-        private INavigationMenuService NavigationMenuService { get; set; }
 
 
         [Parameter]

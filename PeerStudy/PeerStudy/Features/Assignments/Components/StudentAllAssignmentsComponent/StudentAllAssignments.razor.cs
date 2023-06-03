@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Assignments;
-using PeerStudy.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +14,6 @@ namespace PeerStudy.Features.Assignments.Components.StudentAllAssignmentsCompone
     {
         [Inject]
         private IAssignmentService AssignmentService { get; set; }
-
-        [Inject]
-        private IPeerStudyToastService ToastService { get; set; }
 
         [Inject]
         private NavigationManager NavigationManager { get; set; }
