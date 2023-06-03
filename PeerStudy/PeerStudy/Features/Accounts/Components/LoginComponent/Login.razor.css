@@ -46,9 +46,9 @@
 }
 
 .app-name, .motto {
-    font-family: 'Trebuchet MS', sans-serif;
+    font-family: serif, sans-serif, Verdana;
+    color: #6699cc;
     display: block;
-    color: #003366;
 }
 
 .app-name {

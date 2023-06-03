@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PeerStudy
+﻿namespace PeerStudy
 {
     public static class ClientConstants
     {
@@ -9,11 +7,7 @@ namespace PeerStudy
         public const int ImageWidth = 300;
         public const int ImageHeight = 500;
 
-        // caching constants
-        public static string ActiveCoursesCacheKey = "ActiveCourses";
-        public static string StudentStudyGroupsKey = "StudentStudyGroups";
-
-        public static IReadOnlyCollection<string> CacheConstants = new List<string> { ActiveCoursesCacheKey, StudentStudyGroupsKey };
-
+        public const string AppName = "Peer Study";
+        public const string Motto = "Learning together, growing together";
     }
 }

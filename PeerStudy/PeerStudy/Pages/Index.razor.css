@@ -1,14 +1,46 @@
 ﻿.home-page {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     width: 100%;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.collab-image {
+    width: 45%;
 }
 
 img {
     width: 100%;
+    border-radius: 15px;
 }
 
 .carousel {
-    margin-left: 15px;
     z-index: -1;
+    width: 60%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
 }
+
+.app-name, .motto {
+    text-align: center;
+    font-family: serif, sans-serif, Verdana;
+    color: #6699cc;
+}
+
+.app-name {
+    font-size: 3em;
+}
+
+.motto {
+    width: 100%;
+    font-size: 2em;
+    border-radius: 15px;
+}
+
+

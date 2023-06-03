@@ -1,12 +1,18 @@
 ﻿@page "/"
 
 <div class="home-page">
- @*   <div class="app-image">
-        <img src="/images/PeerStudy.png" />
-    </div>*@
-
+    <div class="app-name"><b>@ClientConstants.AppName</b></div>
+    <div class="container">
+        <div class="collab-image">
+            <img src="/images/collabimage.png" />
+        </div>
+        <div class="motto">@ClientConstants.Motto</div>
+        <div class="collab-image">
+            <img src="/images/collabimage2.png" />
+        </div>
+    </div>
     <div class="carousel">
-        <Carousel @bind-SelectedSlide="@selectedSlide" Crossfade="true">
+        <Carousel Style="@carouselStyleRules" @bind-SelectedSlide="@selectedSlide" Crossfade="true">
             <CarouselSlide Name="1">
                 <Image Source="/images/collab-learning1.jpg" Text="Collab image 1" Display="Display.Block" Width="Width.Is100" />
             </CarouselSlide>
@@ -26,4 +32,6 @@
 
 @code {
     private string selectedSlide = "1";
+
+    private const string carouselStyleRules = "top: 50%;";
 }

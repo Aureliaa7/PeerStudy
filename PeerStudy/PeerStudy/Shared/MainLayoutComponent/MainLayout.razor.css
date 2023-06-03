@@ -99,3 +99,11 @@ main {
     color: white;
     cursor: pointer;
 }
+
+a {
+    color: white;
+}
+
+a:hover {
+    text-decoration: none;
+}

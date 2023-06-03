@@ -179,6 +179,10 @@ body::-webkit-scrollbar {
     margin: 10px;
 }
 
+.carousel-inner {
+    border-radius: 20px;
+}
+
 
 .left {
     float: left;
