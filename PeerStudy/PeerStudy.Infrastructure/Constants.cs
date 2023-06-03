@@ -6,5 +6,7 @@
         public const string UserFullName = "UserFullName";
 
         public const string ProfileImagesDirector = "wwwroot\\profile-photos";
+
+        public const string ProfileImage = "ProfileImage";
     }
 }

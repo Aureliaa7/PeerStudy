@@ -19,6 +19,8 @@ namespace PeerStudy.Services.Interfaces
 
         public string CurrentUsername { get; set; }
 
+        public string CurrentUserProfileImage { get; set; }
+
         event EventHandler<EventArgs> OnChanged;
         
         void NotifyChanged();

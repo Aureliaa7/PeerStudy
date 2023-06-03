@@ -22,6 +22,7 @@ namespace PeerStudy
             try
             {
                 NavigationMenuService.CurrentUsername = await AuthService.GetCurrentUserNameAsync();
+                NavigationMenuService.CurrentUserProfileImage = await AuthService.GetCurrentUserProfilePhotoNameAsync();
             }
             catch (Exception ex)
             {

@@ -16,5 +16,7 @@ namespace PeerStudy.Services.Interfaces
         Task<string> GetCurrentUserEmailAsync();
 
         Task<string> GetCurrentUserNameAsync();
+
+        Task<string> GetCurrentUserProfilePhotoNameAsync();
     }
 }

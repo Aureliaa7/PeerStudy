@@ -10,3 +10,30 @@
 .dropdown-toggle {
     background-color: #3B7197 !important;
 }
+
+.user-profile-image {
+    border-radius: 50%;
+}
+
+.user {
+    padding: 0;
+}
+
+.action-button {
+    padding-left: 5px;
+}
+
+.no-profile-photo {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: inline-block;
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+}
+
+.username {
+    padding: 5px;
+}

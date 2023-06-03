@@ -45,7 +45,8 @@ namespace PeerStudy.Infrastructure.Services
                 new Claim(ClaimTypes.Name, string.Concat(user.FirstName, " ", user.LastName)),
                 new Claim(ClaimTypes.Role, user.Role.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(Constants.UserId, user.Id.ToString())
+                new Claim(Constants.UserId, user.Id.ToString()),
+                new Claim(Constants.ProfileImage, user.ProfilePhotoName ?? string.Empty)
             };
 
             string jwtKey = configuration.GetSection("JWTKey").Value;

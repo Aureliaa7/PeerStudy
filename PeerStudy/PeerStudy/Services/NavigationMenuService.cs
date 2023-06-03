@@ -13,6 +13,8 @@ namespace PeerStudy.Services
 
         public string CurrentUsername { get; set; }
 
+        public string CurrentUserProfileImage { get; set; }
+
         public event EventHandler<EventArgs> OnChanged;
 
         public void AddMenuItems(List<MenuItem> items)

@@ -20,9 +20,6 @@
                         <a href="/login">Login</a>
                     </NotAuthorized>
                     <Authorized>
-                        <span class="current-user">
-                            @NavigationMenuService.CurrentUsername
-                        </span>
                         @foreach (var menuItem in NavigationMenuService.GetMenuItems())
                         {
                             <div class="nav-item">
@@ -31,23 +28,25 @@
                                 </NavLink>
                             </div>
                         }
-                        <MenuUserAccount></MenuUserAccount>
+                        <MenuUserAccount CurrentUserName="@NavigationMenuService.CurrentUsername"
+                                         CurrentUserProfileImageName="@NavigationMenuService.CurrentUserProfileImage">
+                        </MenuUserAccount>
                     </Authorized>
                 </AuthorizeView>
             </div>
 
             <article class="content px-4">
                 @*<ErrorBoundary @ref="@errorBoundary">
-                    <ChildContent>
-                        @Body
-                    </ChildContent>
-                    <ErrorContent>
-                        <Alert Color="Color.Danger" @bind-Visible="showErrorAlert">
-                            <AlertDescription>An error occurred... Please try again later.</AlertDescription>
-                        </Alert>
-                    </ErrorContent>
+                <ChildContent>
+                @Body
+                </ChildContent>
+                <ErrorContent>
+                <Alert Color="Color.Danger" @bind-Visible="showErrorAlert">
+                <AlertDescription>An error occurred... Please try again later.</AlertDescription>
+                </Alert>
+                </ErrorContent>
                 </ErrorBoundary>*@
-                   @Body
+                @Body
             </article>
         </main>
     </div>

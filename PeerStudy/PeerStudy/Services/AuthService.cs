@@ -55,7 +55,8 @@ namespace PeerStudy.Services
                 ((PeerStudyAuthStateProvider)authStateProvider).NotifyUserAuthentication(token);
 
                 navigationMenuService.CurrentUsername = JwtHelper.GetClaimValueByName(token, ClaimTypes.Name);
-              
+                navigationMenuService.CurrentUserProfileImage = JwtHelper.GetClaimValueByName(token, Constants.ProfileImage);
+
                 return JwtHelper.GetClaimValueByName(token, Constants.UserId);
             }
 
@@ -67,6 +68,7 @@ namespace PeerStudy.Services
             navigationMenuService.Reset();
 
             navigationMenuService.CurrentUsername = null;
+            navigationMenuService.CurrentUserProfileImage = null;
             await localStorageService.RemoveItemAsync(ClientConstants.Token);
             ((PeerStudyAuthStateProvider)authStateProvider).NotifyUserLogout();
         }
@@ -84,6 +86,11 @@ namespace PeerStudy.Services
         public Task<string> GetCurrentUserNameAsync()
         {
             return GetClaimByNameAsync(ClaimTypes.Name);
+        }
+
+        public Task<string> GetCurrentUserProfilePhotoNameAsync()
+        {
+            return GetClaimByNameAsync(Constants.ProfileImage);
         }
     }
 }
