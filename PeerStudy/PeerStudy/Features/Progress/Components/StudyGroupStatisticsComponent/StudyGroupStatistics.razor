@@ -30,12 +30,12 @@
 
         <div class="unlocked-course-units">
             <span class="section">Unlocked Course Units Statistics</span>
-            <Chart @ref="unlockedCourseUnitsBarChart" Type="ChartType.Bar" TItem="double" />
+            <Chart @ref="unlockedCourseUnitsBarChart" Type="ChartType.Bar" TItem="int" />
         </div>
 
         <div class="assignments-progress">
             <span class="section">Assignments Progress</span>
-            <BarChart @ref="assignmentsProgressBarChart" TItem="double" Options="@GetBarChartOptions("Assignments Progress")" />
+            <BarChart @ref="assignmentsProgressBarChart" TItem="int" Options="@GetBarChartOptions("Assignments Progress")" />
         </div>
     </div>
 }

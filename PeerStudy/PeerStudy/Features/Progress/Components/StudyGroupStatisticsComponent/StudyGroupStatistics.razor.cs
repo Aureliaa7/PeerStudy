@@ -33,8 +33,8 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
         public List<DropDownItem> studyGroupsDropdownItems;
         private StudyGroupStatisticsDataModel studyGroupStatisticsDataModel;
 
-        private BarChart<double> assignmentsProgressBarChart;
-        private Chart<double> unlockedCourseUnitsBarChart;
+        private BarChart<int> assignmentsProgressBarChart;
+        private Chart<int> unlockedCourseUnitsBarChart;
         private PieChart<int> assignmentsStatisticsChart;
 
         protected override async Task InitializeAsync()
@@ -142,10 +142,9 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
                 .ToList();
 
             var data = studentNameNoUnlockedCourseUnitsPairs.Select(x => x.Value)
-                .ToList()
-                .ConvertAll(x => (double) x);
+                .ToList();
 
-           var dataset = new BarChartDataset<double>
+           var dataset = new BarChartDataset<int>
            {
                Label = "No. unlocked course units",
                Data = data,
@@ -187,7 +186,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
 
             var labels = GetAssignmentsProgressLabels();
             var studentsNameIdPairs = GetStudentsIdsNamesPairs();
-            List<BarChartDataset<double>> datasets = new List<BarChartDataset<double>>();
+            List<BarChartDataset<int>> datasets = new List<BarChartDataset<int>>();
 
             foreach (var pair in studentsNameIdPairs)
             {
@@ -198,7 +197,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
             await assignmentsProgressBarChart.AddLabelsDatasetsAndUpdate(labels, datasets.ToArray());
         }
 
-        private BarChartDataset<double> GetStudentAssignmentDataSet(KeyValuePair<Guid, string> studentIdName)
+        private BarChartDataset<int> GetStudentAssignmentDataSet(KeyValuePair<Guid, string> studentIdName)
         {
             var data = studyGroupStatisticsDataModel.AssignmentsProgress
                 .SelectMany(x => x.StudentAssignmentStatus
@@ -207,10 +206,9 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
                             .Select(z => z.NoEarnedPoints)
                     )
                  )
-                .ToList()
-                .ConvertAll(x => (double) x);
+                .ToList();
 
-            return new BarChartDataset<double>
+            return new BarChartDataset<int>
             {
                 Label = studentIdName.Value,
                 Data = data,
