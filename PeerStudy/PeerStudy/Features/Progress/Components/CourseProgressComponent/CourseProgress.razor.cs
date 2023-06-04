@@ -43,8 +43,6 @@ namespace PeerStudy.Features.Progress.Components.CourseProgressComponent
                 CourseId,
                 CourseTitle,
                 currentUserRole);
-
-            var a = await AchievementService.GetStatisticsDataByGroupAsync(new Guid("9A31B8C9-E66F-42BE-0995-08DB35E99FAF"), CourseId);
         }
 
         private async Task HandleTabChangedEvent(int activeTabIndex)

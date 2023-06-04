@@ -1,0 +1,41 @@
+﻿@using PeerStudy.Models
+
+@page "/{courseTitle}/{courseId:guid}/statistics"
+@inherits PeerStudyComponentBase
+@attribute [Authorize(Roles = "Teacher")]
+
+<Loading IsLoading="isLoading"
+         HasData="@(!isLoading && studyGroupStatisticsDataModel != null)"
+         NotFoundMessage="@UIMessages.NoDataMessage">
+    <div class="study-groups-items">
+        <MatSelectItem Style="margin-left: 7px; width: 94%"
+                       Label="Study Group"
+                       Value="@selectedStudyGroup"
+                       ValueChanged="@(async (DropDownItem? value) => await HandleStudyGroupSelection(value))"
+                       Items="@studyGroupsDropdownItems">
+            <ItemTemplate Context="itemmenucontext"><span>@itemmenucontext?.Value</span></ItemTemplate>
+        </MatSelectItem>
+    </div>
+
+</Loading>
+
+@*Note: Cannot place this inside Loading component*@
+@if (!isLoading && selectedStudyGroup != null)
+{
+    <div class="statistics">
+        <div class="assignments-statistics">
+            <span class="section">Assignments Statistics</span>
+            <PieChart @ref="assignmentsStatisticsChart" TItem="int"></PieChart>
+        </div>
+
+        <div class="unlocked-course-units">
+            <span class="section">Unlocked Course Units Statistics</span>
+            <Chart @ref="unlockedCourseUnitsBarChart" Type="ChartType.Bar" TItem="double" />
+        </div>
+
+        <div class="assignments-progress">
+            <span class="section">Assignments Progress</span>
+            <BarChart @ref="assignmentsProgressBarChart" TItem="double" Options="@GetBarChartOptions("Assignments Progress")" />
+        </div>
+    </div>
+}

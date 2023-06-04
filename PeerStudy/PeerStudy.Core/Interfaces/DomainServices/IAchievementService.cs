@@ -41,7 +41,5 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         /// <param name="teacherId"></param>
         /// <returns></returns>
         Task<ExtendedStudentCourseProgressModel> GetProgressByCourseAndStudentAsync(Guid courseId, Guid studentId, Guid teacherId);
-
-        Task<StudyGroupStatisticsDataModel> GetStatisticsDataByGroupAsync(Guid studyGroupId, Guid courseId);
     }
 }

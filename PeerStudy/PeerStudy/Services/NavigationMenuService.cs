@@ -85,7 +85,12 @@ namespace PeerStudy.Services
                 {
                     Href = $"/{courseTitle}/{courseId}/students-progress",
                     Name = "Leaderboards"
-                }
+                },
+                new MenuItem
+                {
+                    Href = $"/{courseTitle}/{courseId}/statistics",
+                    Name = "Statistics"
+                },
             };
         }
 

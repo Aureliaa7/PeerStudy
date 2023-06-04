@@ -1,0 +1,38 @@
+﻿.study-groups-items {
+    width: 50%;
+    float: right;
+}
+
+.statistics {
+    margin-top: 60px;
+    padding: 20px;
+}
+
+.assignments-statistics, 
+.assignments-progress,
+.unlocked-course-units {
+    padding: 20px;
+    margin: 20px;
+}
+
+.assignments-statistics {
+    width: 35%;
+}
+
+.unlocked-course-units {
+    width: 40%;
+}
+
+.assignments-progress {
+    width: 80%;
+}
+
+.unlocked-course-units,
+.assignments-statistics {
+    display: inline-block;
+}
+
+.section {
+    font-size: 1.2em;
+    color: #0063BF;
+}
