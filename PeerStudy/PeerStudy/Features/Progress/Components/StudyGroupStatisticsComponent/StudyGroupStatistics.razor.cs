@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static PeerStudy.ClientConstants;
 using StringExtensions = PeerStudy.Core.Extensions.StringExtensions;
 
 namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
@@ -27,11 +28,6 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
 
         [Inject]
         private IStudyGroupService StudyGroupService { get; set; }
-
-        //ToDo: add more colors
-        List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
-        List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
-
 
         private DropDownItem selectedStudyGroup;
         public List<DropDownItem> studyGroupsDropdownItems;
@@ -93,7 +89,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
 
         private async Task DrawCharts()
         {
-            await HandleRedrawAssignmentsProgressChart();
+            await DrawAssignmentsProgressChart();
             await DrawUnlockedCourseUnitsStatisticsChart();
             await DrawAssignmentsStatisticsChart();
         }
@@ -153,8 +149,8 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
            {
                Label = "No. unlocked course units",
                Data = data,
-               BackgroundColor = backgroundColors,
-               BorderColor = borderColors,
+               BackgroundColor = ChartColors.BackgroundColors,
+               BorderColor = ChartColors.BorderColors,
                BorderWidth = 1
            };
 
@@ -176,9 +172,6 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
 
         private Dictionary<Guid, string> GetStudentsIdsNamesPairs()
         {
-            var a = studyGroupStatisticsDataModel.AssignmentsProgress.First()
-            .StudentAssignmentStatus.First();
-
             var namesIdsPairs = studyGroupStatisticsDataModel.AssignmentsProgress.First()
             .StudentAssignmentStatus.First()
             .StudentAssignmentsStatus
@@ -188,7 +181,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
             return namesIdsPairs;
         }
 
-        private async Task HandleRedrawAssignmentsProgressChart()
+        private async Task DrawAssignmentsProgressChart()
         {
             await assignmentsProgressBarChart.Clear();
 
@@ -221,8 +214,8 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
             {
                 Label = studentIdName.Value,
                 Data = data,
-                BackgroundColor = backgroundColors,
-                BorderColor = borderColors,
+                BackgroundColor = ChartColors.BackgroundColors,
+                BorderColor = ChartColors.BorderColors,
             };
         }
         #endregion
@@ -241,7 +234,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
                     studyGroupStatisticsDataModel.AssignmentsStatistics.MissingAssignments,
                     studyGroupStatisticsDataModel.AssignmentsStatistics.ToDoAssignments,
                 },
-                BackgroundColor = backgroundColors
+                BackgroundColor = ChartColors.BackgroundColors
             };
 
             var labels = new List<string>
