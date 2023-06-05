@@ -14,7 +14,9 @@ namespace PeerStudy.Core.Models.Users
 
         public List<StudentCourseProgressModel> CoursesProgress { get; set; }
 
-        public List<StudentBadgeDetailsModel> EarnedBadges { get; set; }
+        public List<StudentBadgeDetailsModel> QAndABadges { get; set; }
+
+        public List<StudentBadgeDetailsModel> CoursesBadges { get; set; }
 
         public List<CourseRankingModel> CourseRankings { get; set; }
     }

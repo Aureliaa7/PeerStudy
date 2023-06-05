@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PeerStudy.Core.Enums;
+using System;
 
 namespace PeerStudy.Core.DomainEntities
 {
@@ -11,6 +12,12 @@ namespace PeerStudy.Core.DomainEntities
         public Guid BadgeId { get; set; }
 
         public DateTime EarnedAt { get; set; }
+
+        public StudentBadgeType Type { get; set; }
+
+        public Guid? CourseId { get; set; }
+
+        public Course? Course { get; set; }
 
         public Student Student { get; set; }
 

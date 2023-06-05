@@ -1,4 +1,5 @@
-﻿@using PeerStudy.Features.Assets.Components.Badges.StudentBadgesComponent
+﻿@using PeerStudy.Core.Models.StudentAssets;
+@using PeerStudy.Features.Assets.Components.Badges.StudentBadgesComponent
 
 @page "/{courseId:guid}/{studentId:guid}/progress"
 @inherits PeerStudyComponentBase
@@ -22,15 +23,26 @@
             <MatTabGroup>
                 <MatTab Label="Earned Badges">
                     <div class="tab-content">
-                        <StudentBadges Badges="studentCourseProgress.AllBadges">
-                        </StudentBadges>
+                        <div class="q-and-a-badges">
+                            <span>Q&A Badges</span>
+                            <StudentBadges Badges="studentCourseProgress.QAndABadges">
+                            </StudentBadges>
+                        </div>
+                        @if (studentCourseProgress.CourseBadge != null)
+                        {
+                            <div class="course-badges">
+                                <span>Badges for course @studentCourseProgress.CourseBadge.CourseTitle</span>
+                                <StudentBadges Badges="@(new List<StudentBadgeDetailsModel> { studentCourseProgress.CourseBadge })">
+                                </StudentBadges>
+                            </div>
+                        }
                     </div>
                 </MatTab>
                 <MatTab Label="Unlocked Course Units">
                     <div class="tab-content">
-                            @*    Extract this to a component*@
+                        @*    Extract this to a component*@
                         @if (studentCourseProgress.UnlockedCourseUnits.Any())
-                        {  
+                        {
                             @foreach (var courseUnit in studentCourseProgress.UnlockedCourseUnits)
                             {
                                 <div class="progress-course-unit-container">
@@ -44,7 +56,7 @@
                                         <span class="unlock-date">Unlocked at: @courseUnit.UnlockedAt</span>
                                     </div>
                                 </div>
-                            }                      
+                            }
                         }
                         else
                         {

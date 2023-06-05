@@ -1,4 +1,6 @@
-﻿<div class="badge-container">
+﻿@using PeerStudy.Core.Enums
+
+<div class="badge-container">
     <div class="badge-image">
         <img src=@($"data:image/png;base64,{Badge.Base64Content}") />
     </div>
@@ -9,9 +11,12 @@
         <div class="earn-date">
             @Badge.EarnedAt
         </div>
-        <div class="points">
-            @Badge.Points points
-        </div>
+        @if (Badge.Type == StudentBadgeType.QAndA)
+        {
+            <div class="points">
+                @Badge.Points points
+            </div>
+        }      
         <div>
             @Badge.Description
         </div>

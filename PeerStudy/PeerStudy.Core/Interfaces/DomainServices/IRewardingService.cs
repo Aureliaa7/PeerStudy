@@ -12,5 +12,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task UpdateBadgesForUpvotedAnswerAsync(Guid answerId);
 
         Task UpdateBadgesForUpvotedQuestionAsync(Guid questionId);
+
+        Task UpdateBadgesForCourseAsync(Guid courseId);
     }
 }

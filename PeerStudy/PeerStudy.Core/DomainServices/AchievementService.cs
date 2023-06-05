@@ -41,7 +41,8 @@ namespace PeerStudy.Core.DomainServices
                 .OrderBy(x => x.CourseTitle)
                 .ToList();
 
-            studentProgress.EarnedBadges = await GetBadgesByStudentAsync(studentId);
+            studentProgress.QAndABadges = await GetQAndABadgesByStudentAsync(studentId);
+            studentProgress.CoursesBadges = await GetCoursesBadgesByStudentAsync(studentId, status);
             studentProgress.CourseRankings = (await GetStudentCoursesRankingAsync(studentId, status))
                 .OrderBy(x => x.CourseTitle)
                 .ToList();
@@ -91,17 +92,37 @@ namespace PeerStudy.Core.DomainServices
             return coursesProgress;
         }
 
-        private async Task<List<StudentBadgeDetailsModel>> GetBadgesByStudentAsync(Guid studentId)
+        private async Task<List<StudentBadgeDetailsModel>> GetQAndABadgesByStudentAsync(Guid studentId)
         {
-            var earnedBadges = (await unitOfWork.StudentBadgesRepository.GetAllAsync(x => x.StudentId == studentId))
+            var earnedBadges = (await unitOfWork.StudentBadgesRepository.GetAllAsync(x => x.StudentId == studentId
+            && x.Type == StudentBadgeType.QAndA))
                 .Select(x => new StudentBadgeDetailsModel
                 {
                     Title = x.Badge.Title,
                     Base64Content = x.Badge.Base64Content,
                     Description = x.Badge.Description,
                     Points = x.Badge.Points,
-                    Type = x.Badge.Type,
+                    Type = x.Type,
                     EarnedAt = x.EarnedAt
+                })
+                .ToList();
+
+            return earnedBadges;
+        }
+
+        private async Task<List<StudentBadgeDetailsModel>> GetCoursesBadgesByStudentAsync(Guid studentId, CourseStatus courseStatus)
+        {
+            var earnedBadges = (await unitOfWork.StudentBadgesRepository.GetAllAsync(x => x.StudentId == studentId
+            && x.Type == StudentBadgeType.Course && x.Course.Status == courseStatus))
+                .Select(x => new StudentBadgeDetailsModel
+                {
+                    Title = x.Badge.Title,
+                    Base64Content = x.Badge.Base64Content,
+                    Description = x.Badge.Description,
+                    Points = x.Badge.Points,
+                    Type = x.Type,
+                    EarnedAt = x.EarnedAt,
+                    CourseTitle = x.Course.Title
                 })
                 .ToList();
 
@@ -344,6 +365,19 @@ namespace PeerStudy.Core.DomainServices
                 throw new EntityNotFoundException($"The student with id {studentId} was not found!");
 
             var courseProgress = await GetCourseProgressByStudentAsync(studentId, courseId);
+            var courseBadge = (await unitOfWork.StudentBadgesRepository.GetAllAsync(x =>
+                x.StudentId == studentId && x.Type == StudentBadgeType.Course && x.CourseId == courseId))
+                .Select(x => new StudentBadgeDetailsModel
+                {
+                    EarnedAt = x.EarnedAt,
+                    Base64Content = x.Badge.Base64Content,
+                    CourseTitle = x.Course.Title,
+                    Description = x.Badge.Description,
+                    Title = x.Badge.Title,
+                    Type = x.Type
+                })
+                .FirstOrDefault();
+
             var progressModel = new ExtendedStudentCourseProgressModel
             {
                 CourseUnitsAssignmentsProgress = courseProgress.CourseUnitsAssignmentsProgress,
@@ -353,7 +387,8 @@ namespace PeerStudy.Core.DomainServices
                 TeacherName = courseProgress.TeacherName,
                 Name = $"{student.FirstName} {student.LastName}",
                 Email = student.Email,
-                AllBadges = await GetBadgesByStudentAsync(studentId)
+                QAndABadges = await GetQAndABadgesByStudentAsync(studentId),
+                CourseBadge = courseBadge
             };
 
             return progressModel;

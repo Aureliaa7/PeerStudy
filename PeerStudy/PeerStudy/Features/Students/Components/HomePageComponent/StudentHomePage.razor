@@ -1,4 +1,5 @@
 ﻿@using PeerStudy.Core.Enums;
+@using PeerStudy.Core.Models.StudentAssets;
 @using PeerStudy.Features.Assets.Components.Badges.StudentBadgesComponent
 @using PeerStudy.Features.Progress.Components.Leaderboards.LeaderboardItemComponent
 
@@ -34,8 +35,22 @@
             <MatTabGroup>
                 <MatTab Label="Earned Badges">
                     <div class="tab-content">
-                        <StudentBadges Badges="studentProgress.EarnedBadges">
-                        </StudentBadges>
+                        <div class="q-and-a-badges">
+                            <span>Q&A Badges</span>
+                            <StudentBadges Badges="studentProgress.QAndABadges">
+                            </StudentBadges>
+                        </div>
+                        @if (studentProgress.CoursesBadges != null)
+                        {
+                            foreach (var item in studentProgress.CoursesBadges)
+                            {
+                                <div class="course-badges">
+                                    <span>Badges for course @item.CourseTitle</span>
+                                    <StudentBadges Badges="@(new List<StudentBadgeDetailsModel> { item })">
+                                    </StudentBadges>
+                                </div>
+                            }
+                        }
                     </div>
                 </MatTab>
                 <MatTab Label="Unlocked Course Units">

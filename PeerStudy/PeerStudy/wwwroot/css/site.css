@@ -241,5 +241,11 @@ body::-webkit-scrollbar {
 }
 
 .progress-assignment-details {
-    padding-top: 7px;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.q-and-a-badges,
+.course-badges {
+    margin-bottom: 20px;
 }

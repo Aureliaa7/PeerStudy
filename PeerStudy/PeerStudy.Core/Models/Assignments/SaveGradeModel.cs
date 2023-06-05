@@ -8,6 +8,8 @@ namespace PeerStudy.Core.Models.Assignments
 
         public Guid StudentId { get; set; }
 
+        public Guid CourseId { get; set; }
+
         public int Points { get; set; }
     }
 }

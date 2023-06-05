@@ -20,14 +20,17 @@ namespace PeerStudy.Core.DomainServices
         private readonly IUnitOfWork unitOfWork;
         private readonly IStudentPointsService studentPointsService;
         private readonly IConfigurationService configurationService;
+        private readonly IRewardingService rewardingService;
 
         public AssignmentService(IUnitOfWork unitOfWork,
             IStudentPointsService studentPointsService,
-            IConfigurationService configurationService)
+            IConfigurationService configurationService,
+            IRewardingService rewardingService)
         {
             this.unitOfWork = unitOfWork;
             this.studentPointsService = studentPointsService;
             this.configurationService = configurationService;
+            this.rewardingService = rewardingService;
         }
 
         public async Task CreateAsync(CreateAssignmentModel model)
@@ -201,6 +204,8 @@ namespace PeerStudy.Core.DomainServices
             await unitOfWork.SaveChangesAsync();
 
             await SavePointsAsync(model.StudentId, model.Points);
+
+            await rewardingService.UpdateBadgesForCourseAsync(model.CourseId);
         }
 
         private async Task SavePointsAsync(Guid studentId, int noPoints)

@@ -5,7 +5,7 @@ namespace PeerStudy.Core.Models.StudentAssets
 {
     public class StudentBadgeDetailsModel
     {
-        public BadgeType Type { get; set; }
+        public StudentBadgeType Type { get; set; }
 
         public string Title { get; set; }
 
@@ -16,5 +16,7 @@ namespace PeerStudy.Core.Models.StudentAssets
         public int Points { get; set; }
 
         public DateTime EarnedAt { get; set; }
+
+        public string? CourseTitle { get; set; }
     }
 }

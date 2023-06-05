@@ -10,7 +10,8 @@ namespace PeerStudy.Core.Models.ProgressModels
 
         public string Email { get; set; }
 
-        public List<StudentBadgeDetailsModel> AllBadges { get; set; }
+        public List<StudentBadgeDetailsModel> QAndABadges { get; set; }
 
+        public StudentBadgeDetailsModel? CourseBadge { get; set; }
     }
 }

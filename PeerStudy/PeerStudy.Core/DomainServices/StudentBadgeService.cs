@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
 {
-    public class BadgeService : IBadgeService
+    public class StudentBadgeService : IStudentBadgeService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IStudentPointsService studentPointsService;
 
-        public BadgeService(IUnitOfWork unitOfWork, IStudentPointsService studentPointsService)
+        public StudentBadgeService(IUnitOfWork unitOfWork, IStudentPointsService studentPointsService)
         {
             this.unitOfWork = unitOfWork;
             this.studentPointsService = studentPointsService;
         }
 
-        public async Task AddAsync(Guid studentId, BadgeType badgeType)
+        public async Task AddAsync(Guid studentId, BadgeType badgeType, StudentBadgeType studentBadgeType, Guid? courseId = null)
         {
             var badge = await unitOfWork.BadgesRepository.GetFirstOrDefaultAsync(x => x.Type == badgeType) 
                 ?? throw new EntityNotFoundException($"Badge {badgeType.ToString()} was not found!");
@@ -29,7 +29,9 @@ namespace PeerStudy.Core.DomainServices
             {
                 StudentId = studentId,
                 Badge = badge,
-                EarnedAt = DateTime.UtcNow
+                EarnedAt = DateTime.UtcNow,
+                Type = studentBadgeType,
+                CourseId = courseId
             });          
             
             await studentPointsService.AddAsync(new SaveStudentPointsModel

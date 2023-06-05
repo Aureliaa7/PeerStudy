@@ -66,6 +66,7 @@ namespace PeerStudy.Features.Assignments.Components.TeacherCourseAssignmentsComp
         {
             try
             {
+                data.CourseId = CourseId;
                 await AssignmentService.GradeAssignmentAsync(data);
                
                 var assignment = assignments.First(x => x.Id == data.AssignmentId);
