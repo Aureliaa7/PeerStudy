@@ -4,12 +4,17 @@
 
 .posted-at {
     float: right;
+    font-size: 0.8rem;
 }
 
-.question-content, .header {
+.question-content {
     padding: 10px;
 }
 
 .answers {
     padding: 10px;
+}
+
+.header {
+    padding: 20px;
 }

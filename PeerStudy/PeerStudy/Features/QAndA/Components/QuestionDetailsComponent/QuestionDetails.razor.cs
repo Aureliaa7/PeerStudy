@@ -5,6 +5,7 @@ using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.QAndA.Answers;
 using PeerStudy.Core.Models.QAndA.Questions;
 using PeerStudy.Core.Models.QAndA.Votes;
+using PeerStudy.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,9 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
         [Inject]
         private NavigationManager NavigationManager { get; set; }
 
+        [Inject]
+        private IAuthService AuthService { get; set; }
+
 
         [Parameter]
         public Guid QuestionId { get; set; }
@@ -35,11 +39,13 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
         private bool isEditQuestionDisabled = true;
 
         private Guid? answerId;
+        private string currentUserProfileImageName;
 
         protected override async Task InitializeAsync()
         {
             await SetCurrentUserDataAsync();
             questionDetails = await QuestionService.GetAsync(QuestionId);
+            currentUserProfileImageName = await AuthService.GetCurrentUserProfilePhotoNameAsync();
         }
 
         private void EnableEditQuestion()
@@ -105,6 +111,7 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
                 });
 
                 savedAnswer.AuthorName = userName;
+                savedAnswer.AuthorProfileImageName = currentUserProfileImageName;
                 questionDetails.Answers.Add(savedAnswer);
             }
             catch (Exception ex)

@@ -7,21 +7,9 @@
 
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
         <a class="dropdown-item user" href="/">
-            @if (string.IsNullOrWhiteSpace(CurrentUserProfileImageName))
-            {
-                <div class="no-profile-photo">
-                    <span>
-                        @(string.IsNullOrEmpty(CurrentUserName) ? string.Empty : CurrentUserName.ToUpper().First())
-                    </span>
-                </div>
-            }
-            else
-            {
-                <img class="user-profile-image" src=@($"/profile-photos/{CurrentUserProfileImageName}") />
-            }
-            <span class="username">
-                @CurrentUserName
-            </span>
+            <UserName FullName="@CurrentUserName"
+                      ProfilePhotoName="@CurrentUserProfileImageName">
+            </UserName>
         </a>
         <a class="dropdown-item action-button" href="/change-password">Change password</a>
         <a class="dropdown-item action-button" href="/logout">Log out</a>

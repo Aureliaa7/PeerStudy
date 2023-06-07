@@ -10,6 +10,8 @@ namespace PeerStudy.Core.Models.QAndA.Questions
 
         public string AuthorName { get; set; }
 
+        public string AuthorProfileImageName { get; set; }
+
         public List<AnswerDetailsModel> Answers { get; set; } = new List<AnswerDetailsModel>();
 
         public int NoUpvotes { get; set; }

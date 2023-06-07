@@ -35,7 +35,8 @@ namespace PeerStudy.Core.DomainServices
                     Id = x.Id,
                     Title = x.Title,
                     Tags = x.QuestionTags.Select(x => x.Tag.Content).ToList(),
-                    NoAnswers = x.Answers.Count()
+                    NoAnswers = x.Answers.Count(),
+                    ProfilePhotoName = x.Author.ProfilePhotoName
                 })
                 .ToList();
 

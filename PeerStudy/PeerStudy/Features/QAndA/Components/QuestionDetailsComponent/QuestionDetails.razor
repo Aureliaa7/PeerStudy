@@ -9,7 +9,11 @@
 <Loading IsLoading="isLoading" HasData="@(!isLoading && questionDetails != null)">
     <div class="header">
         <h3>@questionDetails.Title</h3>
-        <span class="posted-at">@questionDetails.AuthorName posted on: @questionDetails?.CreatedAt</span>
+        <span class="posted-at">
+            <UserName FullName="@questionDetails.AuthorName"
+                      ProfilePhotoName="@questionDetails.AuthorProfileImageName">
+            </UserName>
+             posted on: @questionDetails?.CreatedAt</span>
     </div>
     <hr />
 

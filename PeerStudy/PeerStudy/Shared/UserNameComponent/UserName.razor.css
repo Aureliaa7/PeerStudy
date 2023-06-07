@@ -1,0 +1,23 @@
+﻿.no-profile-photo {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: inline-block;
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+}
+
+.username {
+    padding: 5px;
+}
+
+.user-profile-image {
+    border-radius: 50%;
+}
+
+img {
+    width: 30px;
+    height: 30px;
+}

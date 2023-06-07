@@ -14,7 +14,10 @@
     {
         <div class="answer-details">
             <div class="author-and-date">
-                @Answer.AuthorName replied @Answer.CreatedAt
+                <UserName FullName="@Answer.AuthorName"
+                      ProfilePhotoName="@Answer.AuthorProfileImageName">
+                </UserName>
+                replied @Answer.CreatedAt
             </div>
             <div class="buttons">
                 <div class="left">

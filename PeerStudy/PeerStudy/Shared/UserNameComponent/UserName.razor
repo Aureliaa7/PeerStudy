@@ -1,0 +1,15 @@
+﻿@if (string.IsNullOrWhiteSpace(ProfilePhotoName))
+{
+    <div class="no-profile-photo">
+        <span>
+            @(string.IsNullOrEmpty(FullName) ? string.Empty : FullName.ToUpper().First())
+        </span>
+    </div>
+}
+else
+{
+    <img class="user-profile-image" src=@($"/profile-photos/{ProfilePhotoName}") />
+}
+<span class="username">
+    @FullName
+</span>

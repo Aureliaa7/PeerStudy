@@ -12,6 +12,8 @@ namespace PeerStudy.Core.Models.QAndA.Answers
 
         public string AuthorName { get; set; }
 
+        public string AuthorProfileImageName { get; set; }
+
         public string HtmlContent { get; set; }
 
         public DateTime CreatedAt { get; set; }

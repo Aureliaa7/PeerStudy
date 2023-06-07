@@ -125,7 +125,8 @@ namespace PeerStudy.Core.DomainServices
                         VoteType = x.VoteType,
                         Id = x.Id
                     })
-                    .ToList()
+                    .ToList(),
+                    AuthorProfileImageName = x.Author.ProfilePhotoName
                 })
                 .FirstOrDefault();
 
@@ -144,7 +145,9 @@ namespace PeerStudy.Core.DomainServices
                         .Select(x => x.Tag.Content)
                         .ToList(),
                     Title = x.Title,
-                    NoAnswers = x.Answers.Count()
+                    NoAnswers = x.Answers.Count(),
+                    AuthorName = $"{x.Author.FirstName} {x.Author.LastName}",
+                    ProfilePhotoName = x.Author.ProfilePhotoName
                 })
                 .ToList();
 
