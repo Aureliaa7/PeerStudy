@@ -21,18 +21,20 @@ img {
     z-index: -1;
     width: 60%;
     position: relative;
-    display: flex;
+    display: inline-block;
     justify-content: center;
     align-items: center;
     padding: 15px;
 }
 
-.app-name, .motto {
-    text-align: center;
+.app-name, .motto, .main-features-title, ul {
     font-family: serif, sans-serif, Verdana;
     color: #6699cc;
 }
 
+.app-name, .motto {
+    text-align: center;
+}
 .app-name {
     font-size: 3em;
 }
@@ -43,4 +45,18 @@ img {
     border-radius: 15px;
 }
 
+ul {
+    list-style-type: disc;
+}
 
+.main-features {
+    display: inline-block;
+    position: absolute;
+    padding: 20px;
+    width: 30%;
+    margin-left: 7%;
+}
+
+.main-features-title {
+    font-size: 1.5em;
+}

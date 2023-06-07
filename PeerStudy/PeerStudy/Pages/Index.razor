@@ -12,20 +12,40 @@
         </div>
     </div>
     <div class="carousel">
+     @*   Note: Cannot user for loop inside Carousel component*@
         <Carousel Style="@carouselStyleRules" @bind-SelectedSlide="@selectedSlide" Crossfade="true">
             <CarouselSlide Name="1">
-                <Image Source="/images/collab-learning1.jpg" Text="Collab image 1" Display="Display.Block" Width="Width.Is100" />
+                <Image Source="/images/peerStudy1.png" Text="PeerStudy 1" Display="Display.Block" Width="Width.Is100" />
             </CarouselSlide>
             <CarouselSlide Name="2">
-                <Image Source="/images/collab-learning2.jpg" Text="Collab image 2" Display="Display.Block" Width="Width.Is100" />
+                <Image Source="/images/peerStudy2.png" Text="PeerStudy 2" Display="Display.Block" Width="Width.Is100" />
             </CarouselSlide>
             <CarouselSlide Name="3">
-                <Image Source="/images/collab-learning3.jpg" Text="Collab image 3" Display="Display.Block" Width="Width.Is100" />
+                <Image Source="/images/peerStudy3.png" Text="PeerStudy 3" Display="Display.Block" Width="Width.Is100" />
             </CarouselSlide>
             <CarouselSlide Name="4">
-                <Image Source="/images/collab-learning4.jpg" Text="Collab image 4" Display="Display.Block" Width="Width.Is100" />
+                <Image Source="/images/peerStudy4.png" Text="PeerStudy 4" Display="Display.Block" Width="Width.Is100" />
+            </CarouselSlide>
+            <CarouselSlide Name="5">
+                <Image Source="/images/peerStudy5.png" Text="PeerStudy 5" Display="Display.Block" Width="Width.Is100" />
+            </CarouselSlide>
+            <CarouselSlide Name="6">
+                <Image Source="/images/peerStudy6.png" Text="PeerStudy 6" Display="Display.Block" Width="Width.Is100" />
+            </CarouselSlide>
+            <CarouselSlide Name="7">
+                <Image Source="/images/peerStudy7.png" Text="PeerStudy 7" Display="Display.Block" Width="Width.Is100" />
             </CarouselSlide>
         </Carousel>
+    </div>
+    <div class="main-features">
+        <span class="main-features-title">Main features</span>
+        <ul>
+            <li>Study groups</li>
+            <li>Group assignments</li>
+            <li>Leaderboards</li>
+            <li>Progress charts</li>
+            <li>Uncover content progressively</li>
+        </ul>
     </div>
 </div>
 
@@ -33,5 +53,5 @@
 @code {
     private string selectedSlide = "1";
 
-    private const string carouselStyleRules = "top: 50%;";
+    private const string carouselStyleRules = "display: inline-block; top: 50%; border: 1px solid #ccc; border-radius: 15px;";
 }

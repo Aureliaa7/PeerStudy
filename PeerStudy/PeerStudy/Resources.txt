@@ -7,5 +7,5 @@ collab-learning4.svg: https://www.vectorstock.com/royalty-free-vector/transparen
 collabImage: https://undraw.co
 collabImage2: https://undraw.co
 
-State management:	https://blog.antosubash.com/posts/state-management-blazor-fluxor
-					https://medium.com/it-dead-inside/lets-learn-blazor-fluxor-app-state-for-blazor-422194eeac26
+https://www.matblazor.com/
+https://blazorise.com/

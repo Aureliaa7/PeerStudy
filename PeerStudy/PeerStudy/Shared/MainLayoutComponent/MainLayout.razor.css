@@ -19,7 +19,7 @@ main {
     height: 3.6rem;
     display: flex;
     align-items: center;
-    z-index: 2;
+    z-index: 4;
 }
 
 .top-row ::deep a, .top-row .btn-link {
@@ -62,7 +62,7 @@ main {
     .top-row {
         position: sticky;
         top: 0;
-        z-index: 2;
+        z-index: 4;
     }
 
     .top-row, article {
