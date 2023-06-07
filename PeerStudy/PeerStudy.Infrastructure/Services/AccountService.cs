@@ -57,6 +57,21 @@ namespace PeerStudy.Infrastructure.Services
             return false;
         }
 
+        public async Task<UserDetailsModel> GetUserDetailsAsync(Guid userId)
+        {
+            var user = await unitOfWork.UsersRepository.GetFirstOrDefaultAsync(
+                x => x.Id == userId) ?? throw new EntityNotFoundException($"User with id {userId} was not found!");
+
+            return new UserDetailsModel
+            {
+                Id = userId,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ProfilePhotoName = user.ProfilePhotoName,
+            };
+        }
+
         public async Task<string> LoginAsync(LoginModel loginModel)
         {
             string token = string.Empty;

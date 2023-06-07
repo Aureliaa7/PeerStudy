@@ -1,0 +1,18 @@
+﻿@page "/account-details"
+@inherits PeerStudyComponentBase
+@attribute [Authorize]
+
+<Loading IsLoading="isLoading"
+         HasData="@(!isLoading && userDetails != null)"
+         NotFoundMessage="@UIMessages.NoFoundAccountMessage">
+    <h3 class="page-title">Account Details</h3>
+    <div class="account-details">
+        <div>
+            <UserName FullName="@($"{userDetails.FirstName} {userDetails.LastName}")"
+                      ProfilePhotoName="@userDetails.ProfilePhotoName">
+            </UserName>
+        </div>
+        <span>@userDetails.Email</span>
+        <a class="change-password-link" href="/change-password">Change password</a>
+    </div>
+</Loading>

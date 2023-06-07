@@ -1,4 +1,5 @@
 ﻿using PeerStudy.Core.Models.Accounts;
+using System;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Core.Interfaces.DomainServices
@@ -10,5 +11,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task RegisterAsync(RegisterModel registerModel);
 
         Task<bool> ChangePasswordAsync(ChangePasswordModel changePasswordModel);
+
+        Task<UserDetailsModel> GetUserDetailsAsync(Guid userId);
     }
 }

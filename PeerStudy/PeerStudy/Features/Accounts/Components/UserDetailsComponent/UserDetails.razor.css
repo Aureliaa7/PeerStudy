@@ -1,0 +1,18 @@
+﻿.account-details {
+    width: 60%;
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    padding: 20px;
+    margin: auto;
+    top: 50px;
+    position: relative;
+}
+
+span, a {
+    display: block;
+    line-height: 40px;
+}
+
+.change-password-link {
+    margin-top: 40px;
+}

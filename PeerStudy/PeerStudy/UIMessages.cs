@@ -66,5 +66,7 @@
         public const string NoDataMessage = "No data yet...";
 
         public const string GenericErrorMessage = "An error occurred while loading the data...";
+
+        public const string NoFoundAccountMessage = "The account could not be found...";
     }
 }
