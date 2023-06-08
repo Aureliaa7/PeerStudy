@@ -12,8 +12,13 @@
         </div>
     </div>
     <div class="carousel">
-     @*   Note: Cannot use for loop inside Carousel component*@
-        <Carousel Style="@carouselStyleRules" @bind-SelectedSlide="@selectedSlide" Crossfade="true">
+        @*   Note: Cannot use for loop inside Carousel component*@
+        <Carousel Style="@carouselStyleRules"
+                  @bind-SelectedSlide="@selectedSlide"
+                  Crossfade="true"
+                  ShowControls="false"
+                  Interval="1500"
+                  ShowIndicators="false">
             <CarouselSlide Name="1">
                 <Image Source="/images/peerStudy1.png" Text="PeerStudy 1" Display="Display.Block" Width="Width.Is100" />
             </CarouselSlide>

@@ -357,6 +357,11 @@ namespace PeerStudy.Core.DomainServices
         public async Task<bool> CanPostponeDeadlineAsync(Guid studyGroupId, Guid assignmentId)
         {
             var assignment = await GetByIdAsync(assignmentId);
+            if (assignment.CompletedAt == null && assignment.Deadline < DateTime.UtcNow)
+            {
+                return false;
+            }
+
             var studyGroupMembers = await GetStudyGroupMembersAsync(studyGroupId);
 
             return await CanPostponeDeadlineAsync(studyGroupId, assignment, studyGroupMembers);

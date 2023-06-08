@@ -22,6 +22,10 @@
             <div class="completed-at">
                 Completed at: @assignmentDetails?.CompletedAt
             </div>
+            @if (assignmentDetails.CompletedAt > assignmentDetails.Deadline)
+            {
+                <span class="done-late-message">Done late</span>
+            }
         }
         else if (canPostponeDeadline)
         {

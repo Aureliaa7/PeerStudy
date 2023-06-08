@@ -47,3 +47,9 @@ h3 {
 .postpone-deadline {
     text-align: right;
 }
+
+.done-late-message {
+    float: right;
+    font-size: 0.7rem;
+    color: #ff3232;
+}
