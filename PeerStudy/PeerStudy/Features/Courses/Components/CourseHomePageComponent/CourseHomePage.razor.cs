@@ -399,7 +399,7 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
 
             if (!previousCourseUnitsAreAvailable)
             {
-                unlockCourseUnitMessage = $"You cannot skip course units. To unlock this course unit, you need to unlock the previous ones.";
+                unlockCourseUnitMessage = "You cannot skip course units. To unlock this course unit, you need to unlock the previous ones.";
                 isConfirmUnlockUnitButtonDisabled = true;
                 return;
             }

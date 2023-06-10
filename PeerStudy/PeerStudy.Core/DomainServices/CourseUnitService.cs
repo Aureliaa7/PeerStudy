@@ -187,9 +187,9 @@ namespace PeerStudy.Core.DomainServices
         {
             if (courseUnitOrder > 1)
             {
-                var previousCourseUnits = (await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.Order < courseUnitOrder && !x.IsAvailable))
+                var previousLockedCourseUnitsIds = (await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.Order < courseUnitOrder && !x.IsAvailable))
+                    .Select(x => x.Id)
                     .ToList();
-                var previousLockedCourseUnitsIds = previousCourseUnits.Select(x => x.Id).ToList();
 
                 var noUnlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetTotalRecordsAsync(x =>
                     previousLockedCourseUnitsIds.Contains(x.CourseUnitId) && x.StudentId == studentId);
