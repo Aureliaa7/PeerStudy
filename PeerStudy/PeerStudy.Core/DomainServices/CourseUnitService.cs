@@ -168,48 +168,43 @@ namespace PeerStudy.Core.DomainServices
             var courseUnit = await unitOfWork.CourseUnitsRepository.GetFirstOrDefaultAsync(x => x.Id == courseUnitId) ?? 
                 throw new EntityNotFoundException($"Course unit with id {courseUnitId} was not found!");
 
-            if (courseUnit.Order > 1)
+            if (courseUnit.Order > 1 &&
+                await CheckPreviousCourseUnitsAvailabilityAsync(courseUnit.Order, studentId))
             {
-                await CheckIfPreviousCourseUnitWasUnlocked(courseUnit.Order, studentId);
+                await studentPointsService.SubtractPointsAsync(studentId, courseUnit.NoPointsToUnlock, false);
+                await unitOfWork.UnlockedCourseUnitsRepository.AddAsync(new UnlockedCourseUnit
+                {
+                    CourseUnitId = courseUnitId,
+                    StudentId = studentId,
+                    UnlockedAt = DateTime.UtcNow
+                });
+
+                await unitOfWork.SaveChangesAsync();
             }
-
-            await studentPointsService.SubtractPointsAsync(studentId, courseUnit.NoPointsToUnlock, false);
-            await unitOfWork.UnlockedCourseUnitsRepository.AddAsync(new UnlockedCourseUnit
-            {
-                CourseUnitId = courseUnitId,
-                StudentId = studentId,
-                UnlockedAt = DateTime.UtcNow
-            });
-
-            await unitOfWork.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Checks if the previous course unit is available
-        /// </summary>
-        /// <param name="courseUnitOrder">The index of the course unit to be unlocked</param>
-        /// <param name="studentId">The student id</param>
-        /// <returns></returns>
-        private async Task CheckIfPreviousCourseUnitWasUnlocked(int courseUnitOrder, Guid studentId)
+        public async Task<bool> CheckPreviousCourseUnitsAvailabilityAsync(int courseUnitOrder, Guid studentId)
         {
             if (courseUnitOrder > 1)
             {
-                var previousCourseUnit = await unitOfWork.CourseUnitsRepository.GetFirstOrDefaultAsync(x => x.Order == courseUnitOrder - 1)
-                    ?? throw new PreconditionFailedException($"Course unit with index {courseUnitOrder-1} was not found!");
+                var previousCourseUnits = (await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.Order < courseUnitOrder && !x.IsAvailable))
+                    .ToList();
+                var previousLockedCourseUnitsIds = previousCourseUnits.Select(x => x.Id).ToList();
 
-                if (previousCourseUnit.IsAvailable)
+                var noUnlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetTotalRecordsAsync(x =>
+                    previousLockedCourseUnitsIds.Contains(x.CourseUnitId) && x.StudentId == studentId);
+
+                if (previousLockedCourseUnitsIds.Count > noUnlockedCourseUnits)
                 {
-                    return;
+                    return false;
                 }
-
-                var unlockedPreviousCourseUnit = await unitOfWork.UnlockedCourseUnitsRepository.GetFirstOrDefaultAsync(
-                    x => x.CourseUnitId == previousCourseUnit.Id && x.StudentId == studentId)
-                    ?? throw new PreconditionFailedException($"The course unit with index {courseUnitOrder-1} is still locked!");
             }
             else
             {
                 throw new ArgumentException("Course unit order should be greater than 1!");
             }
+
+            return true;
         }
 
         private async Task CheckIfCourseUnitExistsAsync(Guid id)

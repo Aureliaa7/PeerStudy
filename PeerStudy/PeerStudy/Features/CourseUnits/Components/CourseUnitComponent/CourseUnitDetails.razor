@@ -3,7 +3,26 @@
 <div class="course-unit">
     <div class="course-unit-header">
         <AuthorizeView Roles="Teacher">
-            <div class="title"><b>@CourseUnit?.Title</b></div>
+            <div class="title">
+                <b>@CourseUnit?.Title</b>
+                <div class="course-unit-availability">
+                    @if (!CourseUnit.IsAvailable)
+                    {
+                        <div>
+                            <MatButton Style="@defaultCursor"
+                                   Icon="@MatIconNames.Lock">
+                            </MatButton>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <MatButton Style="@defaultCursor" Icon="@MatIconNames.Lock_open">
+                            </MatButton>
+                        </div>
+                    }
+                </div>
+            </div>
 
             @if (IsMenuIconVisible)
             {
@@ -53,8 +72,8 @@
                     else
                     {
                         <div class="lock-icon">
-                            <MatButton Style="@defaultCursor" 
-                                Icon="@MatIconNames.Lock">
+                            <MatButton Style="@defaultCursor"
+                               Icon="@MatIconNames.Lock">
                             </MatButton>
                         </div>
                     }

@@ -30,8 +30,9 @@
     width: 150px;
     height: 195px;
     border-radius: 10px;
-    z-index: 1;
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #6699cc 0%)
+    z-index: 5;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #6699cc 0%);
+    top: -185px;
 }
 
 .resource:hover {
@@ -55,4 +56,8 @@
 
 .grey-out {
     opacity: 0.5;
+}
+
+.course-unit-availability {
+    display: inline-block;
 }

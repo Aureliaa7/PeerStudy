@@ -378,18 +378,28 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             NavigationManager.NavigateTo($"/{courseDetails.Title}/{courseDetails.Id}/{courseUnitId}/assignments");
         }
 
-        private void DisplayUnlockCourseUnitDialog(Guid courseUnitId)
+        private async Task DisplayUnlockCourseUnitDialog(Guid courseUnitId)
         {
             string message;
 
             showUnlockCourseUnitDialog = true;
             selectedCourseUnitId = courseUnitId;
             var courseUnitToBeUnlocked = courseUnits.First(x => x.Id == selectedCourseUnitId);
-            var previousCourseUnit = courseUnits.FirstOrDefault(x => x.Order == courseUnitToBeUnlocked.Order - 1);
-
-            if (previousCourseUnit == null || !previousCourseUnit.IsAvailable)
+            bool previousCourseUnitsAreAvailable = false;
+            
+            try
             {
-                unlockCourseUnitMessage = $"You cannot skip course units. To unlock this course unit, you need to unlock the previous one.";
+                previousCourseUnitsAreAvailable = await CourseUnitService.CheckPreviousCourseUnitsAvailabilityAsync(courseUnitToBeUnlocked.Order, currentUserId);
+            }
+            catch
+            {
+                ToastService.ShowToast(ToastLevel.Error, UIMessages.GenericErrorMessage);
+                return;
+            }
+
+            if (!previousCourseUnitsAreAvailable)
+            {
+                unlockCourseUnitMessage = $"You cannot skip course units. To unlock this course unit, you need to unlock the previous ones.";
                 isConfirmUnlockUnitButtonDisabled = true;
                 return;
             }

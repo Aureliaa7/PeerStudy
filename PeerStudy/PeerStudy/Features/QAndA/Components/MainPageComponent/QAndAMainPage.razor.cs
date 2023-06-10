@@ -1,6 +1,7 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.Pagination;
 using PeerStudy.Core.Models.QAndA.Questions;
@@ -38,15 +39,18 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            NavigationMenuService.AddMenuItems(new List<MenuItem>
+            if (currentUserRole == Role.Student)
             {
-                new MenuItem
+                NavigationMenuService.AddMenuItems(new List<MenuItem>
                 {
-                    Href = "/my-questions",
-                    Name = "My questions"
-                }
-            });
-            NavigationMenuService.NotifyChanged();
+                    new MenuItem
+                    {
+                        Href = "/my-questions",
+                        Name = "My questions"
+                    }
+                });
+                NavigationMenuService.NotifyChanged();
+            }
         }
 
         protected override async Task InitializeAsync()
@@ -137,9 +141,9 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
                 {
                     await SetDataForPageNumber(firstPage);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
-                    ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
+                    ToastService.ShowToast(ToastLevel.Error, UIMessages.GenericErrorMessage);
                 }
             }
         }

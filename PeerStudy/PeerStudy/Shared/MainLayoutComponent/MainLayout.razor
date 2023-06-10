@@ -16,8 +16,16 @@
             <div class="top-row px-4">
                 <AuthorizeView>
                     <NotAuthorized>
-                        <a href="/register">Register</a>
-                        <a href="/login">Login</a>
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="/register">
+                                Register
+                            </NavLink>
+                        </div>
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="/login">
+                                Login
+                            </NavLink>
+                        </div>
                     </NotAuthorized>
                     <Authorized>
                         @foreach (var menuItem in NavigationMenuService.GetMenuItems())

@@ -5,7 +5,6 @@ using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Models.QAndA.Answers;
 using PeerStudy.Core.Models.QAndA.Questions;
 using PeerStudy.Core.Models.QAndA.Votes;
-using PeerStudy.Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +21,6 @@ namespace PeerStudy.Features.QAndA.Components.QuestionDetailsComponent
 
         [Inject]
         private NavigationManager NavigationManager { get; set; }
-
-        [Inject]
-        private IAuthService AuthService { get; set; }
 
 
         [Parameter]
