@@ -266,10 +266,11 @@ namespace PeerStudy.Core.DomainServices
                     CourseTitle = assignment.CourseUnit.Course.Title,
                     CourseUnitTitle = assignment.CourseUnit.Title,
                     EmailType = EmailType.GradedAssignment,
-                    NoPoints = noPoints,
+                    EarnedPoints = noPoints,
                     RecipientName = $"{student.FirstName} {student.LastName}",
                     TeacherName = $"{assignment.CourseUnit.Course.Teacher.FirstName} {assignment.CourseUnit.Course.Teacher.LastName}",
-                    To = new List<string> { student.Email }
+                    To = new List<string> { student.Email },
+                    NoMaxPoints = assignment.Points
                 };
 
                 await emailService.SendAsync(emailModel);

@@ -2,6 +2,8 @@
 {
     public class GradedAssignmentEmailModel : AssignmentBaseModel
     {
-        public int NoPoints { get; set; }
+        public int EarnedPoints { get; set; }
+
+        public int NoMaxPoints { get; set; }
     }
 }

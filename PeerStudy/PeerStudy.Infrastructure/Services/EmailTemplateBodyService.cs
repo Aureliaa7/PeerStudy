@@ -109,7 +109,7 @@ namespace PeerStudy.Infrastructure.Services
         private static string ReplaceGradedAssignmentEmailTokens(GradedAssignmentEmailModel emailModel, string emailBody)
         {
             emailBody = ReplaceAssignmentRelatedTokens(emailModel, emailBody);
-            emailBody = emailBody.Replace(EmailTokens.EarnedPoints, emailModel.NoPoints.ToString());
+            emailBody = emailBody.Replace(EmailTokens.EarnedPoints, emailModel.EarnedPoints.ToString());
 
             return emailBody;
         }
