@@ -110,6 +110,7 @@ namespace PeerStudy.Infrastructure.Services
         {
             emailBody = ReplaceAssignmentRelatedTokens(emailModel, emailBody);
             emailBody = emailBody.Replace(EmailTokens.EarnedPoints, emailModel.EarnedPoints.ToString());
+            emailBody = emailBody.Replace(EmailTokens.NoMaxPointsAssignment, emailModel.NoMaxPoints.ToString());
 
             return emailBody;
         }
