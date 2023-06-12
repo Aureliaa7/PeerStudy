@@ -19,6 +19,8 @@ builder.Services.RegisterBlazorComponentLibraries();
 
 builder.Services.AddBlazoredToast();
 
+builder.Services.RegisterEmailConfiguration(builder.Configuration);
+
 var app = builder.Build();
 
 
@@ -27,6 +29,7 @@ var service = serviceProvider.GetService<IDatabaseSeedingService>();
 
 service?.InsertTeachers();
 service?.InsertBadges();
+service?.InsertEmailTemplates();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

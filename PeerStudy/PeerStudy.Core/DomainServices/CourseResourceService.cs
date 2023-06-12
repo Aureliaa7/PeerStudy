@@ -1,8 +1,10 @@
 ﻿using PeerStudy.Core.DomainEntities;
+using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
+using PeerStudy.Core.Models.Emails;
 using PeerStudy.Core.Models.Resources;
 using System;
 using System.Collections.Generic;
@@ -14,13 +16,16 @@ namespace PeerStudy.Core.DomainServices
     public class CourseResourceService : ResourceBaseService<CourseResourceDetailsModel>, ICourseResourceService
     {
         private readonly IGoogleDrivePermissionService drivePermissionService;
+        private readonly IEmailService emailService;
 
         public CourseResourceService(
             IUnitOfWork unitOfWork,
             IGoogleDriveFileService fileService,
-            IGoogleDrivePermissionService drivePermissionService) : base(fileService, unitOfWork)
+            IGoogleDrivePermissionService drivePermissionService,
+            IEmailService emailService) : base(fileService, unitOfWork)
         {
             this.drivePermissionService = drivePermissionService;
+            this.emailService = emailService;
         }
 
         public async Task DeleteAsync(Guid resourceId)
@@ -91,9 +96,39 @@ namespace PeerStudy.Core.DomainServices
             })
             .ToDictionary(x => x.DriveFileId, y => y.Id);
 
+            await NotifyStudentsAsync(data.CourseId, createdResources.Select(x => x.FileName).ToList());
+
             return SetResourcesIds(driveFileIdDbResourceIdPairs, resourceDetailsModels);
         }
 
+        private async Task NotifyStudentsAsync(Guid courseId, List<string> resourcesNames)
+        {
+            try
+            {
+                var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId,
+                    includeProperties: nameof(Teacher)) ?? throw new EntityNotFoundException($"Course with id {courseId} was not found!");
+
+                var studentsEmails = (await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.CourseId == courseId))
+                    .Select(x => x.Student.Email)
+                    .ToList();
+
+                var emailModel = new NewCourseResourceEmailModel
+                {
+                    CourseTitle = course.Title,
+                    EmailType = EmailType.NewCourseMaterial,
+                    RecipientName = string.Empty,
+                    TeacherName = $"{course.Teacher.FirstName} {course.Teacher.LastName}",
+                    To = studentsEmails,
+                    ResourceName = string.Join(", ", resourcesNames)
+                };
+
+                await emailService.SendAsync(emailModel);
+            }
+            catch (Exception ex)
+            {
+                //ToDo: log ex
+            }
+        }
 
         private async Task SetReadPermissionsForEnrolledStudentsAsync(Guid courseId, List<string> fileIds)
         {

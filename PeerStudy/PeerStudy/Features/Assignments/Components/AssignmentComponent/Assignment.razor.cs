@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PeerStudy.Core.Models.Assignments;
-using System;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Features.Assignments.Components.AssignmentComponent

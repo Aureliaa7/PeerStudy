@@ -6,6 +6,7 @@ using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
 using PeerStudy.Core.Models.Assignments;
+using PeerStudy.Core.Models.Emails;
 using PeerStudy.Core.Models.StudentAssets;
 using System;
 using System.Collections.Generic;
@@ -21,16 +22,19 @@ namespace PeerStudy.Core.DomainServices
         private readonly IStudentPointsService studentPointsService;
         private readonly IConfigurationService configurationService;
         private readonly IRewardingService rewardingService;
+        private readonly IEmailService emailService;
 
         public AssignmentService(IUnitOfWork unitOfWork,
             IStudentPointsService studentPointsService,
             IConfigurationService configurationService,
-            IRewardingService rewardingService)
+            IRewardingService rewardingService,
+            IEmailService emailService)
         {
             this.unitOfWork = unitOfWork;
             this.studentPointsService = studentPointsService;
             this.configurationService = configurationService;
             this.rewardingService = rewardingService;
+            this.emailService = emailService;
         }
 
         public async Task CreateAsync(CreateAssignmentModel model)
@@ -71,6 +75,44 @@ namespace PeerStudy.Core.DomainServices
            
             await unitOfWork.StudentAssignmentsRepository.AddRangeAsync(studentAssignments);
             await unitOfWork.SaveChangesAsync();
+
+            try
+            {
+                await NotifyStudentsAsync(model.StudyGroupId, model.CourseUnitId, model.Title, model.DueDate);
+            }
+            catch (Exception ex)
+            {
+                //TODO: log
+            }
+        }
+
+        private async Task NotifyStudentsAsync(
+            Guid studyGroupId,
+            Guid courseUnitId,
+            string assignmentTitle,
+            DateTime assignmentDeadline)
+        {
+            var courseUnit = await unitOfWork.CourseUnitsRepository.GetFirstOrDefaultAsync(x => x.Id == courseUnitId,
+                includeProperties: $"{nameof(Course)}.{nameof(Course.Teacher)}") ?? throw new EntityNotFoundException();
+
+            var studentsEmails = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x =>
+            x.StudyGroupId == studyGroupId))
+            .Select(x => x.Student.Email)
+            .ToList();
+
+            var emailModel = new NewAssignmentEmailModel
+            {
+                AssignmentTitle = assignmentTitle,
+                CourseTitle = courseUnit.Course.Title,
+                CourseUnitTitle = courseUnit.Title,
+                Deadline = assignmentDeadline,
+                EmailType = EmailType.NewAssignment,
+                RecipientName = string.Empty,
+                TeacherName = $"{courseUnit.Course.Teacher.FirstName} {courseUnit.Course.Teacher.LastName}",
+                To = studentsEmails
+            };
+
+            await emailService.SendAsync(emailModel);
         }
 
         public async Task DeleteAsync(Guid assignmentId)
@@ -196,7 +238,7 @@ namespace PeerStudy.Core.DomainServices
         public async Task GradeAssignmentAsync(SaveGradeModel model)
         {
             var studentAssignment = await unitOfWork.StudentAssignmentsRepository.GetFirstOrDefaultAsync(x => x.AssignmentId ==
-            model.AssignmentId && x.StudentId == model.StudentId) ?? throw new EntityNotFoundException($"StudentAssignment entity with studentId {model.StudentId} and assignmentId {model.AssignmentId} " +
+            model.AssignmentId && x.StudentId == model.StudentId, includeProperties: nameof(Student)) ?? throw new EntityNotFoundException($"StudentAssignment entity with studentId {model.StudentId} and assignmentId {model.AssignmentId} " +
                     $"was not found!");
            
             studentAssignment.Points = model.Points;
@@ -206,6 +248,36 @@ namespace PeerStudy.Core.DomainServices
             await SavePointsAsync(model.StudentId, model.Points);
 
             await rewardingService.UpdateBadgesForCourseAsync(model.CourseId);
+
+            await NotifyStudentRegardingGradedAssignmentAsync(studentAssignment.Student, model.AssignmentId, model.Points);
+        }
+
+        private async Task NotifyStudentRegardingGradedAssignmentAsync(Student student, Guid assignmentId, int noPoints)
+        {
+            try
+            {
+                var assignment = await unitOfWork.AssignmentsRepository.GetFirstOrDefaultAsync(x =>
+                    x.Id == assignmentId, includeProperties: $"{nameof(CourseUnit)}.{nameof(Course)}.{nameof(Teacher)}")
+                ?? throw new EntityNotFoundException();
+
+                var emailModel = new GradedAssignmentEmailModel
+                {
+                    AssignmentTitle = assignment.Title,
+                    CourseTitle = assignment.CourseUnit.Course.Title,
+                    CourseUnitTitle = assignment.CourseUnit.Title,
+                    EmailType = EmailType.GradedAssignment,
+                    NoPoints = noPoints,
+                    RecipientName = $"{student.FirstName} {student.LastName}",
+                    TeacherName = $"{assignment.CourseUnit.Course.Teacher.FirstName} {assignment.CourseUnit.Course.Teacher.LastName}",
+                    To = new List<string> { student.Email }
+                };
+
+                await emailService.SendAsync(emailModel);
+            }
+            catch (Exception ex)
+            {
+                //ToDo: log
+            }
         }
 
         private async Task SavePointsAsync(Guid studentId, int noPoints)

@@ -52,6 +52,8 @@ namespace PeerStudy.Infrastructure.AppDbContext
 
         public DbSet<PostponedAssignment> PostponedAssignments { get; set; }
 
+        public DbSet<EmailTemplate> EmailTemplates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

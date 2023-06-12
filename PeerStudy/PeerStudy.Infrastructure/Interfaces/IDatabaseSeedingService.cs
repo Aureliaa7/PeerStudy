@@ -5,5 +5,7 @@
         void InsertTeachers();
 
         void InsertBadges();
+
+        void InsertEmailTemplates();
     }
 }

@@ -93,5 +93,36 @@ namespace PeerStudy.Infrastructure.Services
             {
             }
         }
+
+        public void InsertEmailTemplates()
+        {
+            try
+            {
+                var filePath = $@"{Directory.GetCurrentDirectory()}\emailTemplates.json";
+                StreamReader sr = new StreamReader(filePath);
+                var jsonData = sr.ReadToEnd();
+                var templates = JsonSerializer.Deserialize<List<EmailTemplate>>(jsonData);
+
+                if (templates == null || !templates.Any())
+                {
+                    return;
+                }
+
+                var templatesToBeInserted = new List<EmailTemplate>();
+
+                foreach (var template in templates)
+                {
+                    bool templateExists = context.EmailTemplates.Where(x => x.Type == template.Type).Any();
+                    if (!templateExists)
+                    {
+                        templatesToBeInserted.Add(template);
+                    }
+                }
+
+                context.EmailTemplates.AddRange(templatesToBeInserted);
+                context.SaveChanges();
+            }
+            catch (Exception) { }
+        }
     }
 }

@@ -1,0 +1,57 @@
+[
+  {
+    "Type": 0,
+    "Subject": "Course Enrollment Request",
+    "Body": "Hello [RecipientName],\n\n A new course enrollment request has been submitted by [StudentName] for [CourseTitle]. Please review the request and take appropriate action. You can approve or deny the enrollment request. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 1,
+    "Subject": "Approved Course Enrollment Request",
+    "Body": "Hello [RecipientName],\n\n Your course enrollment request for course [CourseTitle] has been approved by [TeacherName]. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 2,
+    "Subject": "Rejected Course Enrollment Request",
+    "Body": "Hello [RecipientName],\n\n Your course enrollment request for course [CourseTitle] has been rejected by [TeacherName]. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 3,
+    "Subject": "New Assignment",
+    "Body": "Hello [RecipientName],\n\n [TeacherName] posted a new assignment for course [CourseTitle] - course unit [CourseUnitTitle]: [AssignmentTitle], deadline: [AssignmentDeadline]. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 4,
+    "Subject": "Graded Assignment",
+    "Body": "Hello [RecipientName],\n\n [TeacherName] graded your assignment for course [CourseTitle] - course unit [CourseUnitTitle]: [AssignmentTitle]. \n Number of points: [EarnedPoints]/[NoMaxPointsAssignment]. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 5,
+    "Subject": "New Course Material",
+    "Body": "Hello [RecipientName],\n\n [TeacherName] posted new resources for course [CourseTitle]: [ResourceName]. Log in to view the details. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 6,
+    "Subject": "Q&A Badge",
+    "Body": "Hello [RecipientName],\n\n You just earned a new badge- [BadgeTitle]: [BadgeDescription]. \n Earned points: [EarnedPoints]. Log in to view the details. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 7,
+    "Subject": "Create Study Groups",
+    "Body": "Hello [RecipientName],\n\n [TeacherName] has created the study groups for course [CourseTitle]. Your group has the following members: [StudyGroupMembers]. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 8,
+    "Subject": "Assigned Work Item",
+    "Body": "Hello [RecipientName],\n\n [WorkItemChangedBy] has assigned you the work item [WorkItemTitle] from [CourseTitle] - [StudyGroupTitle]. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 9,
+    "Subject": "Unassigned Work Item",
+    "Body": "Hello [RecipientName],\n\n [WorkItemChangedBy] has unassigned your work item [WorkItemTitle] from [CourseTitle] - [StudyGroupTitle]. \n\n Have a nice day, \n PeerStudy"
+  },
+  {
+    "Type": 10,
+    "Subject": "New Question Response",
+    "Body": "Hello [RecipientName],\n\n [AnswerAuthorName] has replied to your question [QuestionTitle]. Log in to view the details. \n\n Have a nice day, \n PeerStudy"
+  }
+]

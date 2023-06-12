@@ -52,6 +52,8 @@ namespace PeerStudy.Core.Interfaces.UnitOfWork
 
         IRepository<PostponedAssignment> PostponedAssignmentsRepository { get; }
 
+        IRepository<EmailTemplate> EmailTemplatesRepository { get; }
+
         Task SaveChangesAsync();
     }
 }

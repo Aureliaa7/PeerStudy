@@ -33,6 +33,7 @@ namespace PeerStudy.Infrastructure.UnitOfWork
         private IRepository<Badge> badgesRepository;
         private IRepository<StudentBadge> studentBadgesRepository;
         private IRepository<PostponedAssignment> postponedAssignmentsRepository;
+        private IRepository<EmailTemplate> emailTemplatesRepository;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -245,6 +246,14 @@ namespace PeerStudy.Infrastructure.UnitOfWork
             }
         }
 
+        public IRepository<EmailTemplate> EmailTemplatesRepository
+        {
+            get
+            {
+                emailTemplatesRepository ??= new Repository<EmailTemplate>(dbContext);
+                return emailTemplatesRepository;
+            }
+        }
 
         public async Task SaveChangesAsync()
         {

@@ -29,7 +29,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
         [Inject]
         private IStudyGroupService StudyGroupService { get; set; }
 
-        private DropDownItem selectedStudyGroup;
+        private DropDownItem? selectedStudyGroup;
         public List<DropDownItem> studyGroupsDropdownItems;
         private StudyGroupStatisticsDataModel studyGroupStatisticsDataModel;
 
@@ -46,7 +46,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
                 CourseTitle,
                 currentUserRole);
             await SetStudyGroupsDropdownItems();
-            selectedStudyGroup = studyGroupsDropdownItems.First();
+            selectedStudyGroup = studyGroupsDropdownItems.Any() ? studyGroupsDropdownItems.First() : new DropDownItem();
             studyGroupStatisticsDataModel = await StatisticsService.GetStatisticsDataByGroupAsync(new Guid(selectedStudyGroup.Key), CourseId);
         }
 

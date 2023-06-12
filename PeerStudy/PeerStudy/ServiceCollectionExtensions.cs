@@ -6,11 +6,13 @@ using Blazorise.RichTextEdit;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PeerStudy.Core.DomainServices;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
+using PeerStudy.Core.Models.Emails;
 using PeerStudy.Infrastructure.AppDbContext;
 using PeerStudy.Infrastructure.Interfaces;
 using PeerStudy.Infrastructure.Services;
@@ -70,6 +72,7 @@ namespace PeerStudy
             services.AddScoped<IRewardingService, RewardingService>();
             services.AddScoped<IAchievementService, AchievementService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
+            services.AddScoped<IEmailTemplateService, EmailTemplateService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)
@@ -95,6 +98,17 @@ namespace PeerStudy
             services.AddScoped<IGoogleDriveFileService, GoogleDriveFileService>();
             services.AddScoped<IGoogleDrivePermissionService, GoogleDrivePermissionService>();
             services.AddScoped<IConfigurationService, ConfigurationService>();
+            services.AddScoped<IEmailTemplateBodyService, EmailTemplateBodyService>();
+            services.AddScoped<IEmailService, EmailService>();
+        }
+
+        public static void RegisterEmailConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            var emailConfig = configuration
+                .GetSection(nameof(EmailConfiguration))
+                .Get<EmailConfiguration>();
+
+            services.AddSingleton(emailConfig);
         }
     }
 }
