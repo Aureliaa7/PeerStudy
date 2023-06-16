@@ -36,7 +36,7 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
         private bool showSearchQuestionsInstructions;
         private string searchQuery = string.Empty;
 
-        protected override async void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             await SetCurrentUserDataAsync();
 
