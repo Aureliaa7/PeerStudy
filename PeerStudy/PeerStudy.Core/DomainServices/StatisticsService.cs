@@ -86,7 +86,7 @@ namespace PeerStudy.Core.DomainServices
             Guid courseId,
             List<Guid> studyGroupMembersIds)
         {
-            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.StudyGroupId == studyGroupId);
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(x => x.StudyGroupId == studyGroupId && x.CompletedAt != null);
             var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.CourseId == courseId);
             var studentsAssignments = await unitOfWork.StudentAssignmentsRepository.GetAllAsync(x => studyGroupMembersIds.Contains(x.StudentId));
 

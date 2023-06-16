@@ -21,6 +21,9 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmen
         public bool IsLoading { get; set; }
 
         [Parameter]
+        public bool CanDeleteRequests { get; set; }
+
+        [Parameter]
         public string NoRequestsMessage { get; set; }
 
         [Parameter]
@@ -49,6 +52,9 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmen
         [Parameter]
         public EventCallback<List<CourseEnrollmentRequestDetailsModel>> OnRejectRequests { get; set; }
 
+        [Parameter]
+        public EventCallback<List<CourseEnrollmentRequestDetailsModel>> OnDeleteRequests { get; set; }
+
 
         private List<CourseEnrollmentRequestDetailsModel> selectedRequests;
         private List<CourseEnrollmentRequestDetailsModel> currentRequests;
@@ -71,18 +77,25 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmen
         private async Task ApproveRequests()
         {
             //send the list of requests bc. the selectedRequest is always null even if there is only one item selected
+            UpdateRequestsList(selectedRequests);
             await OnApproveRequests.InvokeAsync(selectedRequests);
-            ResetSelectedRequests();
         }
 
         private async Task RejectRequests()
         {
+            UpdateRequestsList(selectedRequests);
             await OnRejectRequests.InvokeAsync(selectedRequests);
-            ResetSelectedRequests();
         }
 
-        private void ResetSelectedRequests()
+        private async Task DeleteRequests()
         {
+            UpdateRequestsList(selectedRequests);
+            await OnDeleteRequests.InvokeAsync(selectedRequests);
+        }
+
+        private void UpdateRequestsList(List<CourseEnrollmentRequestDetailsModel> selectedRequests)
+        {
+            currentRequests = currentRequests.Except(selectedRequests).ToList();
             selectedRequests = null;
             StateHasChanged();
         }

@@ -1,0 +1,32 @@
+﻿@using PeerStudy.Core.Enums
+@using PeerStudy.Features.CourseEnrollmentRequests.Components.CourseEnrollmentRequestComponent
+
+@page "/my-enrollment-requests"
+@attribute [Authorize(Roles = "Student")]
+@inherits PeerStudyComponentBase
+
+<h3 class="page-title">My Enrollment Requests</h3>
+
+@if (!isLoading)
+{
+    <MatSelectItem Label="Status"
+               Value="@enrollmentStatus"
+               ValueChanged="@(async (CourseEnrollmentRequestStatus? value) => await HandleSelectedStatusChanged(value))"
+               Items="@enrollmentStatuses">
+    </MatSelectItem>
+}
+
+<Loading IsLoading="isLoading"
+         HasData="@(!isLoading && requests != null && requests.Any())"
+         NotFoundMessage="@UIMessages.NoEnrollmentRequestsMessage">
+    <div class="requests-container">
+        <CourseEnrollmentRequestList Requests="@requests"
+                                     DisplayActionButtons=true
+                                     IsLoading="isLoading"
+                                     NoRequestsMessage="@UIMessages.NoEnrollmentRequestsMessage"
+                                     AllowMultipleSelection=true
+                                     CanDeleteRequests="@(enrollmentStatus != null && enrollmentStatus.Value == CourseEnrollmentRequestStatus.Pending)"
+                                     OnDeleteRequests="DeleteRequests">
+        </CourseEnrollmentRequestList>
+    </div>
+</Loading>

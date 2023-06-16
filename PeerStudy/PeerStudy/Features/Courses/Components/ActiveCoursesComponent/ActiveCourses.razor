@@ -6,6 +6,7 @@
 @attribute [Authorize]
 @inherits CoursesBase
 
+<h3 class="page-title">Active Courses</h3>
 
 <AuthorizeView Roles="Teacher">
     @if (!isLoading)
@@ -19,6 +20,7 @@
     <CreateUpdateCourseDialog IsVisible="displayCourseDialog"
                               IsEditCourseEnabled="false"
                               CourseModel="CourseModel"
+                              DialogTitle="@CreateCourseDialogTitle"
                               OnSave="SaveCourse"
                               OnCancel="CloseCourseDialog">
     </CreateUpdateCourseDialog>
@@ -29,6 +31,7 @@
                               IsEditCourseEnabled="true"
                               CourseModel="CourseModel"
                               HasStudyGroups="courseHasStudyGroups"
+                              DialogTitle="@UpdateCourseDialogTitle"
                               OnSave="EditCourse"
                               OnCancel="CancelEditCourse">
         </CreateUpdateCourseDialog>

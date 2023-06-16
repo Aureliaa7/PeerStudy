@@ -36,9 +36,12 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
         private bool showSearchQuestionsInstructions;
         private string searchQuery = string.Empty;
 
-        protected override void OnInitialized()
+        protected override async void OnInitialized()
         {
+            await SetCurrentUserDataAsync();
+
             base.OnInitialized();
+
             if (currentUserRole == Role.Student)
             {
                 NavigationMenuService.AddMenuItems(new List<MenuItem>
@@ -55,7 +58,6 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
 
         protected override async Task InitializeAsync()
         {
-            await SetCurrentUserDataAsync();
             var response = await QuestionService.GetAllAsync(currentUserId, new PaginationFilter(1, pageSize));
             SetCurrentData(response.Data, response.TotalPages);
             noPagesForRecentQuestions = response.TotalPages;

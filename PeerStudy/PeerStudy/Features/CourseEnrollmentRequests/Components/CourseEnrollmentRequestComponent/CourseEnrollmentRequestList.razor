@@ -1,17 +1,27 @@
 ﻿@using PeerStudy.Core.Models.CourseEnrollments
 
-<Header title="@CourseTitle"></Header>
+<AuthorizeView Roles="Teacher">
+    <Header title="@CourseTitle"></Header>
+</AuthorizeView>
 
 <Loading IsLoading="IsLoading"
          HasData="@(Requests != null && Requests.Any())"
          NotFoundMessage="@NoRequestsMessage">
-    @if (DisplayActionButtons)
-    {
+    <AuthorizeView Roles="Teacher">
+        @if (DisplayActionButtons)
+        {
+            <div>
+                <MatButton Disabled="AreButtonsDisabled() || IsApproveButtonDisabled()" Style="display: inline-block;" OnClick="ApproveRequests" Raised=true>Approve</MatButton>
+                <MatButton Disabled="AreButtonsDisabled()" Style="display: inline-block;" OnClick="RejectRequests">Reject</MatButton>
+            </div>
+        }
+    </AuthorizeView>
+
+    <AuthorizeView Roles="Student">
         <div>
-            <MatButton Disabled="AreButtonsDisabled() || IsApproveButtonDisabled()" Style="display: inline-block;" OnClick="ApproveRequests" Raised=true>Approve</MatButton>
-            <MatButton Disabled="AreButtonsDisabled()" Style="display: inline-block;" OnClick="RejectRequests">Reject</MatButton>
+            <MatButton Raised=true Disabled="AreButtonsDisabled() || !CanDeleteRequests" Style="display: inline-block;" OnClick="DeleteRequests">Delete</MatButton>
         </div>
-    }
+    </AuthorizeView>
 
     <DataGrid TItem="CourseEnrollmentRequestDetailsModel"
               Data="@currentRequests"
@@ -27,6 +37,9 @@
             <DataGridCommandColumn />
             <DataGridColumn Field="@nameof(CourseEnrollmentRequestDetailsModel.StudentName)" Caption="Student" />
             <DataGridColumn Field="@nameof(CourseEnrollmentRequestDetailsModel.CreatedAt)" Caption="Created At" />
+            <AuthorizeView Roles="Student">
+                <DataGridColumn Field="@nameof(CourseEnrollmentRequestDetailsModel.CourseTitle)" Caption="Course" />
+            </AuthorizeView>
         </DataGridColumns>
     </DataGrid>
 

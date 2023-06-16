@@ -42,12 +42,13 @@ namespace PeerStudy.Features.Courses.Components.EnrollInCourseComponent
         {
             try
             {
-                await CourseEnrollmentService.CreateEnrollmentRequestAsync(currentUserId, courseDetails.Id);
                 courses = courses.Except(new List<CourseDetailsModel> { courseDetails }).ToList();
+                await CourseEnrollmentService.CreateEnrollmentRequestAsync(currentUserId, courseDetails.Id);
                 ToastService.ShowToast(ToastLevel.Success, UIMessages.CreateCourseEnrollmentRequestSuccessMessage);
             }
             catch (Exception ex)
             {
+                courses.Add(courseDetails);
                 ToastService.ShowToast(ToastLevel.Error, UIMessages.CreateCourseEnrollmentRequestErrorMessage);
             }
         }

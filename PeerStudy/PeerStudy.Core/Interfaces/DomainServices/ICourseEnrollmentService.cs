@@ -17,5 +17,9 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<bool> ChangeStatusAsync(List<CourseEnrollmentRequestDetailsModel> requests, CourseEnrollmentRequestStatus newStatus);
 
         Task<CourseNoStudentsDetailsModel> GetCourseEnrollmentStatusAsync(Guid courseId);
+
+        Task<List<CourseEnrollmentRequestDetailsModel>> GetByStudentAndStatusAsync(Guid studentId, CourseEnrollmentRequestStatus status);
+
+        Task DeleteAsync(Guid authorId, List<Guid> requestsIds);
     }
 }

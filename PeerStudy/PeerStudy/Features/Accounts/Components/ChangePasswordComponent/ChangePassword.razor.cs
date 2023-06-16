@@ -19,6 +19,9 @@ namespace PeerStudy.Features.Accounts.Components.ChangePasswordComponent
         [Inject]
         private IPeerStudyToastService ToastService { get; set; }
 
+        [Inject]
+        private NavigationManager NavigationManager { get; set; }
+
 
         private ChangePasswordModel changePasswordModel = new();
         private string styleRules = "width: 80%";
@@ -41,6 +44,7 @@ namespace PeerStudy.Features.Accounts.Components.ChangePasswordComponent
             if (result)
             {
                 ToastService.ShowToast(ToastLevel.Success, "Password successfully changed.");
+                NavigationManager.NavigateTo("/account-details");
             }
             else
             {

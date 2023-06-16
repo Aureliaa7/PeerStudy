@@ -12,6 +12,7 @@
         public const string NoCompletedAssignmentsMessage = "There are no completed assignments yet...";
 
         public const string NoPendingRequestsMessage = "There are no pending requests...";
+        public const string NoEnrollmentRequestsMessage = "There are no requests...";
         public const string NoRejectedRequestsMessage = "There are no rejected requests...";
         public const string FetchRequestsFailedMessage = "An error occurred while fetching the requests...";
 
@@ -68,5 +69,7 @@
         public const string GenericErrorMessage = "An error occurred while loading the data...";
 
         public const string NoFoundAccountMessage = "The account could not be found...";
+
+        public const string DeleteCourseEnrollmentRequestsErrorMessage = "An error occurred while deleting the enrollment requests...";
     }
 }

@@ -46,6 +46,8 @@ namespace PeerStudy.Features.CourseEnrollmentRequests.Components.PendingRequests
             {
                 requests = requests.Except(requestsToBeUpdated).ToList();
                 ToastService.ShowToast(ToastLevel.Success,"The requests were successfully updated");
+                StateHasChanged();
+
                 return true;
             }
             else

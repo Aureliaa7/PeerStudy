@@ -12,6 +12,8 @@ namespace PeerStudy.Features.Courses.Components.ActiveCoursesComponent
     {
         private const string addCourseBtnStyle = "position: fixed; right: 30px; margin-bottom: 15px";
         private const string archivePopupTitle = "Archive Course";
+        private const string CreateCourseDialogTitle = "Create course";
+        private const string UpdateCourseDialogTitle = "Update course";
 
         private bool displayCourseDialog = false;
         private string noCoursesMessage;

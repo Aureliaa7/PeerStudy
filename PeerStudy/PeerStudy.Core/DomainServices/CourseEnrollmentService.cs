@@ -224,5 +224,50 @@ namespace PeerStudy.Core.DomainServices
 
             return enrolledStudentsStatus;
         }
+
+        public async Task<List<CourseEnrollmentRequestDetailsModel>> GetByStudentAndStatusAsync(Guid studentId, CourseEnrollmentRequestStatus status)
+        {
+            await CheckIfStudentExistsAsync(studentId);
+
+            var enrollmentRequests = (await unitOfWork.CourseEnrollmentRequestsRepository.GetAllAsync(
+                x => x.StudentId == studentId && x.Status == status))
+                .Select(x => new CourseEnrollmentRequestDetailsModel
+                {
+                    Id = x.Id,
+                    CourseId = x.CourseId,
+                    StudentId = x.StudentId,
+                    CourseTitle = x.Course.Title,
+                    StudentName = $"{x.Student.FirstName} {x.Student.LastName}",
+                    CreatedAt = x.CreatedAt
+                })
+                .ToList();
+
+            return enrollmentRequests;
+        }
+
+        public async Task DeleteAsync(Guid authorId, List<Guid> requestsIds)
+        {
+            await CheckIfStudentExistsAsync(authorId);
+
+            var requestsToBeRemoved = await unitOfWork.CourseEnrollmentRequestsRepository.GetAllAsync(
+                x => x.StudentId == authorId && requestsIds.Contains(x.Id));
+
+            foreach (var request in requestsToBeRemoved)
+            {
+                await unitOfWork.CourseEnrollmentRequestsRepository.RemoveAsync(request);
+            }
+
+            await unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task CheckIfStudentExistsAsync(Guid studentId)
+        {
+            bool studentExists = await unitOfWork.UsersRepository.ExistsAsync(x => x.Id == studentId && x.Role == Role.Student);
+
+            if (!studentExists)
+            {
+                throw new EntityNotFoundException($"Student with id {studentId} was not found!");
+            }
+        }
     }
 }
