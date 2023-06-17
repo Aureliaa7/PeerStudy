@@ -21,6 +21,9 @@ namespace PeerStudy.Features.CourseUnits.Components.CreateUpdateCourseUnitCompon
         [Parameter]
         public bool IsEditModeEnabled { get; set; }
 
+        [Parameter]
+        public string DialogTitle { get; set; }
+
 
         private async Task Save()
         {

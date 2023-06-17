@@ -80,6 +80,9 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
         private const string deleteResourcePopupTitle = "Delete Course Unit Resource";
         private DeleteCourseUnitResourceModel? deleteResourceModel;
 
+        private const string addCourseUnitDialogTitle = "Create course unit";
+        private const string updateCourseUnitDialogTitle = "Update course unit";
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
