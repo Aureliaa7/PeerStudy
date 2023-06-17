@@ -61,8 +61,9 @@ namespace PeerStudy.Core.DomainServices
             course.StudyGroupsDriveFolderId = await fileService.CreateFolderAsync(studyGroupsFolderName, course.DriveRootFolderId);
 
             await permissionService.SetPermissionsAsync(new List<string> { course.ResourcesDriveFolderId }, 
-                new List<string> { teacher.Email, configurationService.AppEmail}, 
-                "writer");
+                new List<string> { teacher.Email }, "writer");
+            await permissionService.SetPermissionsAsync(new List<string> { course.DriveRootFolderId }, 
+                new List<string> { configurationService.AppEmail }, "writer");
 
             var insertedCourse = await unitOfWork.CoursesRepository.AddAsync(course);
             await unitOfWork.SaveChangesAsync();
