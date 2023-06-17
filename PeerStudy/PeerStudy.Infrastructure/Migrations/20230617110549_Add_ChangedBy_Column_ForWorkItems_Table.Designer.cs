@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PeerStudy.Infrastructure.AppDbContext;
 
@@ -11,9 +12,10 @@ using PeerStudy.Infrastructure.AppDbContext;
 namespace PeerStudy.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230617110549_Add_ChangedBy_Column_ForWorkItems_Table")]
+    partial class Add_ChangedBy_Column_ForWorkItems_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1117,7 +1119,7 @@ namespace PeerStudy.Infrastructure.Migrations
                     b.HasOne("PeerStudy.Core.DomainEntities.Student", "ChangedBy")
                         .WithMany()
                         .HasForeignKey("ChangedById")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PeerStudy.Core.DomainEntities.StudyGroup", "StudyGroup")
