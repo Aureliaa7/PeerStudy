@@ -143,6 +143,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         {
             showAddWorkItemDialog = false;
             workItemModel.StudyGroupId = StudyGroupId;
+            workItemModel.ChangedBy = currentUserId;
             try
             {
                 var savedWorkItem = await WorkItemService.AddAsync(workItemModel);
@@ -188,7 +189,8 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 Description = selectedRow.Description,
                 Status = selectedRow.Status,
                 StudyGroupId = StudyGroupId,
-                Title = selectedRow.Title
+                Title = selectedRow.Title,
+                ChangedBy = currentUserId
             };
         }
 
@@ -205,6 +207,7 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 workItemToBeUpdated.Status = workItemModel.Status;
                 workItemToBeUpdated.AssignedTo = workItemModel.AssignedTo;
                 workItemToBeUpdated.AssignedToFullName = (studentDropDownItems.First(x => x.Key == workItemModel.AssignedTo.ToString()))?.Value;
+                workItemToBeUpdated.ChangedBy = workItemModel.ChangedBy;
                 selectedRow = null;
                 StateHasChanged();
             }

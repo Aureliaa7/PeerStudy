@@ -2,7 +2,9 @@
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
+using PeerStudy.Core.Models.Emails;
 using PeerStudy.Core.Models.ProgressModels;
 using System;
 using System.Collections.Generic;
@@ -14,53 +16,101 @@ namespace PeerStudy.Core.DomainServices
     public class RewardingService : IRewardingService
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly IStudentBadgeService badgeService;
+        private readonly IStudentBadgeService studentBadgeService;
+        private readonly IBadgeService badgeService;
+        private readonly IEmailService emailService;
 
         private const int numberOfCourseBadges = 3;
         private const int firstPlace = 1;
         private const int secondPlace = 2;
         private const int thirdPlace = 3;
 
-        public RewardingService(IUnitOfWork unitOfWork, IStudentBadgeService badgeService)
+        public RewardingService(
+            IUnitOfWork unitOfWork,
+            IStudentBadgeService studentBadgeService,
+            IBadgeService badgeService,
+            IEmailService emailService)
         {
             this.unitOfWork = unitOfWork;
+            this.studentBadgeService = studentBadgeService;
             this.badgeService = badgeService;
+            this.emailService = emailService;
         }
 
         public async Task UpdateBadgesForAnswersAsync(Guid studentId)
         {
             var postedAnswers = (await unitOfWork.AnswersRepository.GetAllAsync(x => x.AuthorId == studentId)).Count();
 
+            Badge badge = null;
+
             if (postedAnswers == Constants.FirstPostedAnswer)
             {
-                await badgeService.AddAsync(studentId, BadgeType.FirstAnswer, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(studentId, BadgeType.FirstAnswer, StudentBadgeType.QAndA);
+                badge = await badgeService.GetByTypeAsync(BadgeType.FirstAnswer);
             }
             else if (postedAnswers == Constants.AnswersBronzeThreshold)
             {
-                await badgeService.AddAsync(studentId, BadgeType.AnswerContributor, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(studentId, BadgeType.AnswerContributor, StudentBadgeType.QAndA);
+                badge = await badgeService.GetByTypeAsync(BadgeType.AnswerContributor);
             }
             else if (postedAnswers % Constants.AnswersSilverThreshold == 0)
             {
-                await badgeService.AddAsync(studentId, BadgeType.Mentor, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(studentId, BadgeType.Mentor, StudentBadgeType.QAndA);
+                badge = await badgeService.GetByTypeAsync(BadgeType.Mentor);
             }
+
+            await NotifyStudentAboutEarnedBadgeAsync(studentId, badge);
         }
 
         public async Task UpdateBadgesForQuestionsAsync(Guid studentId)
         {
             var postedQuestions = (await unitOfWork.QuestionsRepository.GetAllAsync(x => x.AuthorId == studentId)).Count();
 
+            Badge badge = null;
+
             if (postedQuestions == Constants.FirstPostedQuestion)
             {
-                await badgeService.AddAsync(studentId, BadgeType.FirstQuestion, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(studentId, BadgeType.FirstQuestion, StudentBadgeType.QAndA);
+                badge = await badgeService.GetByTypeAsync(BadgeType.FirstQuestion);
             }
             else if (postedQuestions == Constants.QuestionsBronzeThreshold)
             {
-                await badgeService.AddAsync(studentId, BadgeType.QuestionContributor, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(studentId, BadgeType.QuestionContributor, StudentBadgeType.QAndA);
+                badge = await badgeService.GetByTypeAsync(BadgeType.QuestionContributor);
             }
             else if (postedQuestions % Constants.QuestionsSilverThreshold == 0)
             {
-                await badgeService.AddAsync(studentId, BadgeType.QuestionMaster, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(studentId, BadgeType.QuestionMaster, StudentBadgeType.QAndA);
+                badge = await badgeService.GetByTypeAsync(BadgeType.QuestionMaster);
             }
+
+            await NotifyStudentAboutEarnedBadgeAsync(studentId, badge);
+        }
+
+        private async Task NotifyStudentAboutEarnedBadgeAsync(Guid studentId, Badge badge)
+        {
+            try
+            {
+                if (badge == null)
+                {
+                    throw new ArgumentNullException(nameof(badge));
+                }
+
+                var student = await unitOfWork.UsersRepository.GetFirstOrDefaultAsync(x => x.Id == studentId && x.Role == Role.Student)
+                    ?? throw new EntityNotFoundException($"Student with id {studentId} was not found!");
+            
+                var emailModel = new EarnedBadgeEmailModel
+                {
+                    BadgeDescription = badge.Description,
+                    BadgeTitle = badge.Title,
+                    NoEarnedPoints = badge.Points,
+                    RecipientName = $"{student.FirstName} {student.LastName}",
+                    EmailType = EmailType.EarnedQAndABadge,
+                    To = new List<string> { student.Email }
+                };
+                await emailService.SendAsync(emailModel);
+            }
+            catch { }
         }
 
         public async Task UpdateBadgesForUpvotedAnswerAsync(Guid answerId)
@@ -73,7 +123,7 @@ namespace PeerStudy.Core.DomainServices
 
             if (noUpvotes == Constants.FirstUpvotedAnswer)
             {
-                await badgeService.AddAsync(answer.AuthorId, BadgeType.FirstUpvotedAnswer, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(answer.AuthorId, BadgeType.FirstUpvotedAnswer, StudentBadgeType.QAndA);
             }
         }
 
@@ -87,7 +137,7 @@ namespace PeerStudy.Core.DomainServices
 
             if (noUpvotes == Constants.FirstUpvotedQuestion)
             {
-                await badgeService.AddAsync(question.AuthorId, BadgeType.FirstUpvotedQuestion, StudentBadgeType.QAndA);
+                await studentBadgeService.AddAsync(question.AuthorId, BadgeType.FirstUpvotedQuestion, StudentBadgeType.QAndA);
             }
         }
 
@@ -134,7 +184,7 @@ namespace PeerStudy.Core.DomainServices
             {
                 foreach (var student in students)
                 {
-                    await badgeService.AddAsync(student.StudentId, badgeType, StudentBadgeType.Course, courseId);
+                    await studentBadgeService.AddAsync(student.StudentId, badgeType, StudentBadgeType.Course, courseId);
                 }
             }
             else
@@ -146,7 +196,7 @@ namespace PeerStudy.Core.DomainServices
                     bool hasBadge = filteredBadges.Any(x => x.StudentId == student.StudentId);
                     if (!hasBadge)
                     {
-                        await badgeService.AddAsync(student.StudentId, badgeType, StudentBadgeType.Course, courseId);
+                        await studentBadgeService.AddAsync(student.StudentId, badgeType, StudentBadgeType.Course, courseId);
                     }
                 }
             }

@@ -2,10 +2,13 @@
 using PeerStudy.Core.Enums;
 using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
+using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
+using PeerStudy.Core.Models.Emails;
 using PeerStudy.Core.Models.QAndA.Answers;
 using PeerStudy.Core.Models.QAndA.Votes;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PeerStudy.Core.DomainServices
@@ -14,21 +17,24 @@ namespace PeerStudy.Core.DomainServices
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IRewardingService rewardingService;
+        private readonly IEmailService emailService;
 
-        public AnswerService(IUnitOfWork unitOfWork, IRewardingService rewardingService)
+        public AnswerService(
+            IUnitOfWork unitOfWork, 
+            IRewardingService rewardingService,
+            IEmailService emailService)
         {
             this.unitOfWork = unitOfWork;
             this.rewardingService = rewardingService;
+            this.emailService = emailService;
         }
 
         public async Task<AnswerDetailsModel> AddAsync(AddAnswerModel answerModel)
         {
-            bool questionExists = await unitOfWork.QuestionsRepository.ExistsAsync(x => x.Id == answerModel.QuestionId);
-            if (!questionExists)
-            {
-                throw new EntityNotFoundException($"The question with id {answerModel.QuestionId} was not found!");
-            }
-
+            var question = await unitOfWork.QuestionsRepository.GetFirstOrDefaultAsync(x => x.Id == answerModel.QuestionId,
+                includeProperties: nameof(Question.Author))
+                ?? throw new EntityNotFoundException($"The question with id {answerModel.QuestionId} was not found!");
+         
             var savedAnswer = await unitOfWork.AnswersRepository.AddAsync(new Answer
             {
                 AuthorId = answerModel.AuthorId,
@@ -43,6 +49,8 @@ namespace PeerStudy.Core.DomainServices
                 await rewardingService.UpdateBadgesForAnswersAsync(answerModel.AuthorId);
             }
 
+            await NotifyNewQuestionResponseAsync(question, answerModel.AuthorId);
+
             return new AnswerDetailsModel
             {
                 Id = savedAnswer.Id,
@@ -50,6 +58,26 @@ namespace PeerStudy.Core.DomainServices
                 AuthorId = answerModel.AuthorId,
                 HtmlContent = savedAnswer.Content
             };
+        }
+
+        private async Task NotifyNewQuestionResponseAsync(Question question, Guid responseAuthorId)
+        {
+            try
+            {
+                var answerAuthor = await unitOfWork.UsersRepository.GetByIdAsync(responseAuthorId);
+
+                var emailModel = new NewQuestionAnswerEmailModel
+                {
+                    EmailType = EmailType.NewQuestionResponse,
+                    QuestionTitle = question.Title,
+                    AnswerAuthorName = $"{answerAuthor.FirstName} {answerAuthor.LastName}",
+                    RecipientName = $"{question.Author.FirstName} {question.Author.LastName}",
+                    To = new List<string> { question.Author.Email }
+                };
+
+                await emailService.SendAsync(emailModel);
+            }
+            catch { }
         }
 
         private async Task<bool> IsStudent(Guid userId)

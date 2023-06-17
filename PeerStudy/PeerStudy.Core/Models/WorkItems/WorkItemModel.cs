@@ -18,5 +18,7 @@ namespace PeerStudy.Core.Models.WorkItems
         public Guid? AssignedTo { get; set; }
 
         public Guid StudyGroupId { get; set; }
+
+        public Guid ChangedBy { get; set; }
     }
 }

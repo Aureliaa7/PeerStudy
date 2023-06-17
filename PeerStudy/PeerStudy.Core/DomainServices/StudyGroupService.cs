@@ -4,6 +4,7 @@ using PeerStudy.Core.Exceptions;
 using PeerStudy.Core.Interfaces.DomainServices;
 using PeerStudy.Core.Interfaces.Services;
 using PeerStudy.Core.Interfaces.UnitOfWork;
+using PeerStudy.Core.Models.Emails;
 using PeerStudy.Core.Models.StudyGroups;
 using PeerStudy.Core.Models.Users;
 using System;
@@ -17,17 +18,22 @@ namespace PeerStudy.Core.DomainServices
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IGoogleDriveFileService driveFileService;
+        private readonly IEmailService emailService;
 
-        public StudyGroupService(IUnitOfWork unitOfWork, IGoogleDriveFileService driveFileService)
+        public StudyGroupService(
+            IUnitOfWork unitOfWork,
+            IGoogleDriveFileService driveFileService,
+            IEmailService emailService)
         {
             this.unitOfWork = unitOfWork;
             this.driveFileService = driveFileService;
+            this.emailService = emailService;
         }
 
         public async Task CreateStudyGroupsAsync(Guid teacherId, Guid courseId, int noStudentsPerGroup)
         {
             var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == courseId && x.TeacherId == teacherId,
-                includeProperties: $"{nameof(Course.CourseEnrollments)}.{nameof(StudentCourse.Student)}") ?? 
+                includeProperties: $"{nameof(Course.CourseEnrollments)}.{nameof(StudentCourse.Student)},{nameof(Teacher)}") ?? 
                 throw new EntityNotFoundException($"Course with id {courseId} and teacher id {teacherId} was not found!");
             
             if (course.HasStudyGroups)
@@ -73,12 +79,33 @@ namespace PeerStudy.Core.DomainServices
 
                 studyGroup.DriveFolderId = await driveFileService.CreateFolderAsync(studyGroup.Name, course.StudyGroupsDriveFolderId);
                 groups.Add(studyGroup);
+
+                var emailModel = new CreatedStudyGroupsEmailModel
+                {
+                    CourseTitle = course.Title,
+                    EmailType = EmailType.CreatedStudyGroups,
+                    RecipientName = string.Empty,
+                    TeacherName = $"{course.Teacher.FirstName} {course.Teacher.LastName}",
+                    StudyGroupMembers = group.Select(x => $"{x.FirstName} {x.LastName}").ToList(),
+                    To = group.Select(x => x.Email).ToList()
+                };
+
+                await NotifyStudyGroupsCreationAsync(emailModel);
             }
 
             await unitOfWork.StudyGroupRepository.AddRangeAsync(groups);
             course.HasStudyGroups = true;
             await unitOfWork.CoursesRepository.UpdateAsync(course);
             await unitOfWork.SaveChangesAsync();
+        }
+
+        private async Task NotifyStudyGroupsCreationAsync(CreatedStudyGroupsEmailModel emailModel)
+        {
+            try
+            {
+                await emailService.SendAsync(emailModel);
+            }
+            catch { }
         }
 
         public async Task<StudyGroupDetailsModel> GetAsync(Guid id)

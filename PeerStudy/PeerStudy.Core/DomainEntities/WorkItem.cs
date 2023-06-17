@@ -19,8 +19,12 @@ namespace PeerStudy.Core.DomainEntities
 
         public Guid StudyGroupId { get; set; }
 
+        public Guid ChangedById { get; set; }
+
         public StudyGroup StudyGroup { get; set; }
 
         public Student? AssignedTo { get; set; }
+
+        public Student ChangedBy { get; set; }
     }
 }

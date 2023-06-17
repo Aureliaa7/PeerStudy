@@ -73,6 +73,7 @@ namespace PeerStudy
             services.AddScoped<IAchievementService, AchievementService>();
             services.AddScoped<IStatisticsService, StatisticsService>();
             services.AddScoped<IEmailTemplateService, EmailTemplateService>();
+            services.AddScoped<IBadgeService, BadgeService>();
         }
 
         private static void RegisterClientServices(this IServiceCollection services)
