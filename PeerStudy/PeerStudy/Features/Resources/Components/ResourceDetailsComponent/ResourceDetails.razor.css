@@ -28,11 +28,13 @@ a {
 }
 
 .delete-button {
-    float: right;
     display: inline-block;
+    right: -45px;
+    position: relative;
 }
 
 .details-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    text-align: left;
 }

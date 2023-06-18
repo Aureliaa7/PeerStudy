@@ -118,7 +118,9 @@ namespace PeerStudy.Core.DomainServices
                 Id = studyGroup.Id,
                 Title = studyGroup.Name,
                 CourseTitle = studyGroup.Course.Title,
-                Students = studyGroup.StudentStudyGroups.Select(x => new EnrolledStudentModel
+                Students = studyGroup.StudentStudyGroups
+                .OrderBy(x => x.Student.LastName)
+                .Select(x => new EnrolledStudentModel
                 {
                     FirstName = x.Student.FirstName,
                     LastName = x.Student.LastName
@@ -181,7 +183,9 @@ namespace PeerStudy.Core.DomainServices
                 {
                     Id = x.StudyGroupId,
                     CourseTitle = x.StudyGroup.Course.Title,
-                    Students = x.StudyGroup.StudentStudyGroups.Select(x => new EnrolledStudentModel
+                    Students = x.StudyGroup.StudentStudyGroups
+                    .OrderBy(x => x.Student.LastName)
+                    .Select(x => new EnrolledStudentModel
                     {
                         FirstName = x.Student.FirstName,
                         LastName = x.Student.LastName
@@ -231,6 +235,7 @@ namespace PeerStudy.Core.DomainServices
 
             return studyGroup
                 .StudentStudyGroups
+                .OrderBy(x => x.Student.LastName)
                 .Select(x => new UserModel
                 {
                     FullName = $"{x.Student.FirstName} {x.Student.LastName}",

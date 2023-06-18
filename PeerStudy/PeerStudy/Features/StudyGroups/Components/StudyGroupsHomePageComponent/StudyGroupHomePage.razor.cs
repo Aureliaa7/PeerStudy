@@ -36,6 +36,8 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
         private const string deleteResourcePopupTitle = "Delete Resource";
         private const string deleteResourcePopupMessage = "Are you sure you want to delete this resource?";
 
+        private string pageTitle;
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -55,6 +57,7 @@ namespace PeerStudy.Features.StudyGroups.Components.StudyGroupsHomePageComponent
         {
             studyGroup = await StudyGroupService.GetAsync(StudyGroupId);
             isReadOnly = !studyGroup.IsActive;
+            pageTitle = $"{studyGroup.CourseTitle} - {studyGroup.Title}";
         }
 
         private async Task UploadFiles(List<UploadFileModel> files)
