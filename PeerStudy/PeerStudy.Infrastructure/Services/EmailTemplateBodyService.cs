@@ -120,7 +120,7 @@ namespace PeerStudy.Infrastructure.Services
             emailBody = emailBody.Replace(EmailTokens.TeacherName, emailModel.TeacherName);
             emailBody = emailBody.Replace(EmailTokens.CourseTitle, emailModel.CourseTitle);
             emailBody = emailBody.Replace(EmailTokens.CourseUnitTitle, emailModel.CourseUnitTitle);
-            emailBody = emailBody.Replace(EmailTokens.AssignmentDeadline, emailModel.AssignmentTitle);
+            emailBody = emailBody.Replace(EmailTokens.AssignmentTitle, emailModel.AssignmentTitle);
 
             return emailBody;
         }

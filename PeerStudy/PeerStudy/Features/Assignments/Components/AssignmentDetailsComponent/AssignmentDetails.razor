@@ -127,6 +127,11 @@
                             </div>
                         }
                     }
+                    else if ((assignmentDetails.StudyGroupAssignmentFiles == null || !assignmentDetails.StudyGroupAssignmentFiles.Any()) &&
+                        assignmentDetails.Deadline > DateTime.UtcNow)
+                    {
+                        <h5>No work yet...</h5>
+                    }
                     else
                     {
                         <h5>Missing work...</h5>

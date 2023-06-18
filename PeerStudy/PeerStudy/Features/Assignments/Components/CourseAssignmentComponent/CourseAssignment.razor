@@ -91,16 +91,18 @@
                             }
                         </Select>
                     </PageSelectorTemplate>
-                  
+
                 </DataGrid>
             </MatExpansionPanelDetails>
         </MatExpansionPanel>
     </MatAccordion>
 </div>
 
-<ConfirmationPopup IsOpen="showConfirmationPopup"
-                   Title="@confirmationPopupTitle"
-                   Message="@deleteAssignmentConfirmationMessage"
-                   OnCancel="CancelDeleteAssignmentHandler"
-                   OnConfirm="DeleteAssignmentHandler">
-</ConfirmationPopup>
+<div class="confirmation-popup">
+    <ConfirmationPopup IsOpen="showConfirmationPopup"
+                       Title="@confirmationPopupTitle"
+                       Message="@deleteAssignmentConfirmationMessage"
+                       OnCancel="CancelDeleteAssignmentHandler"
+                       OnConfirm="DeleteAssignmentHandler">
+    </ConfirmationPopup>
+</div>
