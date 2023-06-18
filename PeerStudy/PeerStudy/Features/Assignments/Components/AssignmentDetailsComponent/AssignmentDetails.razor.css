@@ -53,3 +53,7 @@ h3 {
     font-size: 0.7rem;
     color: #ff3232;
 }
+
+.assignment-description {
+    text-align: justify;
+}

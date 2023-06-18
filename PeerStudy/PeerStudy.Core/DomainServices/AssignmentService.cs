@@ -148,8 +148,10 @@ namespace PeerStudy.Core.DomainServices
                 return result;
             }
 
-            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync();
-            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter);
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudentId == studentId);
+            var studyGroupsIds = studentStudyGroups.Select(x => x.StudyGroupId).ToList();
+
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter.And(x => studyGroupsIds.Contains(x.StudyGroupId)));
             var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync();
             var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync();
             var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync();
@@ -335,8 +337,11 @@ namespace PeerStudy.Core.DomainServices
             }
 
             var studentCourses = await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.StudentId == studentId);
-            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync();
-            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter);
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudentId == studentId);
+            var studyGroupsIds = studentStudyGroups
+                .Select(x => x.StudyGroupId)
+                .ToList();
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter.And(x => studyGroupsIds.Contains(x.StudyGroupId)));
             var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync();
             var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync();
             var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync();
