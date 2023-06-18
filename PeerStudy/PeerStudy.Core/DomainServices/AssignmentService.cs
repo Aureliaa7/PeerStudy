@@ -218,7 +218,9 @@ namespace PeerStudy.Core.DomainServices
                     StudentGroupId = x.StudyGroupId,
                     Points = x.Points,
                     CompletedAt = x.CompletedAt,
-                    Students = x.StudentAssignments.Select(y => new GradeAssignmentModel
+                    Students = x.StudentAssignments
+                    .OrderBy(x => x.Student.LastName)
+                    .Select(y => new GradeAssignmentModel
                     {
                         StudentId = y.StudentId,
                         StudentName = $"{y.Student.FirstName} {y.Student.LastName}",

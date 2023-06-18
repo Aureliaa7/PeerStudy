@@ -239,6 +239,7 @@ namespace PeerStudy.Core.DomainServices
                 FirstName = x.Student.FirstName,
                 LastName = x.Student.LastName
             })
+            .OrderBy(x => x.LastName)
             .ToList();
 
             return students;
