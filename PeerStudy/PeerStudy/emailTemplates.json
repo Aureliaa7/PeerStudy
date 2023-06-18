@@ -2,7 +2,7 @@
   {
     "Type": 0,
     "Subject": "Course Enrollment Request",
-    "Body": "Hello [RecipientName],\n\n A new course enrollment request has been submitted by [StudentName] for [CourseTitle]. Please review the request and take appropriate action. You can approve or deny the enrollment request. \n\n Have a nice day, \n PeerStudy"
+    "Body": "Hello [RecipientName],\n\n A new course enrollment request has been submitted by [StudentName] for [CourseTitle]. Please review the request and take appropriate action. You can approve or reject the enrollment request. \n\n Have a nice day, \n PeerStudy"
   },
   {
     "Type": 1,
