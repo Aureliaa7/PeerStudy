@@ -17,12 +17,12 @@
 
 a {
     display: inline-block;
-    width: 70%;
+    width: 90%;
 }
 
 span {
     display: inline-block;
-    max-width: 50%;
+    max-width: 80%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

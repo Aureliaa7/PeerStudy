@@ -31,6 +31,9 @@ namespace PeerStudy.Features.WorkItems.Components.CreateUpdateWorkItemComponent
         [Parameter]
         public DropDownItem? SelectedStudent { get; set; }
 
+        [Parameter]
+        public string DialogTitle { get; set; }
+
         private const string matFieldStyles = "width: 98%;";
         private const string descriptionFieldStyles = "width: 98%; height: 100px;";
 

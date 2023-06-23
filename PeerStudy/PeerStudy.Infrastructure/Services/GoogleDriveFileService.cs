@@ -32,7 +32,7 @@ namespace PeerStudy.Infrastructure.Services
 
         public async Task<string> CreateFolderAsync(string folderName, string parent = null)
         {
-            var driveFolder = new Google.Apis.Drive.v3.Data.File();
+            var driveFolder = new DriveFile();
             driveFolder.Name = folderName;
             driveFolder.MimeType = folderMimeType;
             if (!string.IsNullOrEmpty(parent))
@@ -64,7 +64,10 @@ namespace PeerStudy.Infrastructure.Services
                 }
 
                 //Note: add app email as writer for validation purposes
-                await permissionService.SetPermissionsAsync(new List<string> { request.ResponseBody.Id }, new List<string> { model.OwnerEmail, configuration.AppEmail }, writerRole);
+                await permissionService.SetPermissionsAsync(
+                    new List<string> { request.ResponseBody.Id }, 
+                    new List<string> { model.OwnerEmail, configuration.AppEmail }, 
+                    writerRole);
 
                 return new DriveFileDetailsModel
                 {

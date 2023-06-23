@@ -1,4 +1,0 @@
-
-
-* State management: https://jonhilton.net/blazor-state-management/
-* Caching: https://code-maze.com/aspnetcore-in-memory-caching/

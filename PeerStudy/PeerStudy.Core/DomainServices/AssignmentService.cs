@@ -148,25 +148,25 @@ namespace PeerStudy.Core.DomainServices
                 return result;
             }
 
-            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudentId == studentId);
-            var studyGroupsIds = studentStudyGroups.Select(x => x.StudyGroupId).ToList();
+            var studentStudyGroup = await unitOfWork.StudentStudyGroupRepository.GetFirstOrDefaultAsync(
+                x => x.StudentId == studentId && x.StudyGroup.CourseId == courseId)
+                ?? throw new EntityNotFoundException($"Entity with student id {studentId} and course id {courseId} was not found!");
 
-            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter.And(x => studyGroupsIds.Contains(x.StudyGroupId)));
-            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync();
-            var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync();
-            var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync();
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudyGroupId == studentStudyGroup.StudyGroupId);
+            var studentsIds = studentStudyGroups.Select(x => x.StudentId).ToList();
+
+            var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter.And(x => x.StudyGroupId == studentStudyGroup.StudyGroupId));
+            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.CourseId == courseId);
+            var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync(x => x.CourseUnit.CourseId == courseId
+            && studentsIds.Contains(x.StudentId));
 
             var availableAssignments = from a in assignments
                                        join cu in courseUnits on a.CourseUnitId equals cu.Id
-                                       join sg in studyGroups on cu.CourseId equals sg.CourseId
-                                       where sg.Id == a.StudyGroupId &&
-                                             cu.CourseId == courseId && (cu.IsAvailable || 
-                                             studentStudyGroups.Any(ssg =>
-                                                ssg.StudentId == studentId &&
-                                                ssg.StudyGroupId == a.StudyGroupId &&
+                                       where cu.IsAvailable || 
+                                             studentStudyGroups.All(ssg =>                                              
                                                 unlockedCourseUnits.Any(ucu =>
                                                     ucu.StudentId == ssg.StudentId &&
-                                                    ucu.CourseUnitId == cu.Id)))
+                                                    ucu.CourseUnitId == cu.Id))
                                        select a;
 
             var foundAssignments = availableAssignments
@@ -337,27 +337,30 @@ namespace PeerStudy.Core.DomainServices
             }
 
             var studentCourses = await unitOfWork.StudentCourseRepository.GetAllAsync(x => x.StudentId == studentId);
-            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudentId == studentId);
-            var studyGroupsIds = studentStudyGroups
+            var studyGroupsIds = (await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => x.StudentId == studentId))
                 .Select(x => x.StudyGroupId)
                 .ToList();
+            var studentStudyGroups = await unitOfWork.StudentStudyGroupRepository.GetAllAsync(x => studyGroupsIds.Contains(x.StudyGroupId));
+
+            var studentsIds = studentStudyGroups.Select(x => x.StudentId)
+                .Distinct()
+                .ToList();
+            var courseIds = studentCourses.Select(x => x.CourseId)
+                .ToList();
+
             var assignments = await unitOfWork.AssignmentsRepository.GetAllAsync(filter.And(x => studyGroupsIds.Contains(x.StudyGroupId)));
-            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync();
-            var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync();
-            var studyGroups = await unitOfWork.StudyGroupRepository.GetAllAsync();
+            var courseUnits = await unitOfWork.CourseUnitsRepository.GetAllAsync(x => courseIds.Contains(x.CourseId));
+            var unlockedCourseUnits = await unitOfWork.UnlockedCourseUnitsRepository.GetAllAsync(x => studentsIds.Contains(x.StudentId)
+                && courseIds.Contains(x.CourseUnit.CourseId));
 
             var availableAssignments =
-                from sc in studentCourses
-                join cu in courseUnits on sc.CourseId equals cu.CourseId
-                join sg in studyGroups on cu.CourseId equals sg.CourseId
-                join a in assignments on cu.Id equals a.CourseUnitId
-                where sg.Id == a.StudyGroupId && (cu.IsAvailable ||
-                  studentStudyGroups.Any(ssg =>
-                     ssg.StudentId == studentId &&
-                     ssg.StudyGroupId == a.StudyGroupId &&
-                     unlockedCourseUnits.Any(ucu =>
-                         ucu.StudentId == ssg.StudentId &&
-                         ucu.CourseUnitId == cu.Id)))
+                from a in assignments
+                join cu in courseUnits on a.CourseUnitId equals cu.Id
+                where cu.IsAvailable ||
+                  studentStudyGroups.Where(x => x.StudyGroupId == a.StudyGroupId).All(ssg =>
+                                                unlockedCourseUnits.Any(ucu =>
+                                                    ucu.StudentId == ssg.StudentId &&
+                                                    ucu.CourseUnitId == cu.Id))
                 select a;
 
 
@@ -464,7 +467,7 @@ namespace PeerStudy.Core.DomainServices
             return canPostponeDeadline && studentsHaveNecessaryPoints;
         }
 
-        private bool StudyGroupCanPostponeDeadline(List<Student> studyGroupMembers, Assignment assignment)
+        private static bool StudyGroupCanPostponeDeadline(List<Student> studyGroupMembers, Assignment assignment)
         {
             bool canPostponeDeadline = !(studyGroupMembers.Any(x => x.NoTotalPoints < assignment.Points / 2));
 

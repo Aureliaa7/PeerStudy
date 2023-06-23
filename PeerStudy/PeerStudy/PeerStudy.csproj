@@ -27,7 +27,6 @@
   <ItemGroup>
     <Content Include="Features\QAndA\Components\AnswerComponent\AnswerDetails.razor.css" />
     <Content Include="Pages\Index.razor.css" />
-    <Content Include="Resources.txt" />
   </ItemGroup>
 
   <ItemGroup>

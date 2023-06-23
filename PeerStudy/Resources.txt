@@ -1,0 +1,33 @@
+* Images:
+	collab-learning1.svg: https://www.vectorstock.com/royalty-free-vector/school-teamwork-progress-children-collaborate-vector-43696588
+	collab-learning2.svg: https://www.vectorstock.com/royalty-free-vector/education-abstract-concept-tree-book-vector-3512040
+	collab-learning3.svg: https://www.vectorstock.com/royalty-free-vector/promoting-peer-to-peer-learning-blue-gradient-vector-43428294
+	collab-learning4.svg: https://www.vectorstock.com/royalty-free-vector/transparency-many-teamwork-people-join-colorful-vector-7735256
+
+	collabImage: https://undraw.co
+	collabImage2: https://undraw.co
+
+* Blazor component libraries:
+	https://www.matblazor.com/
+	https://blazorise.com/
+	https://blazorise.com/docs/extensions/datagrid/getting-started
+	https://blazorise.com/docs/start
+	https://blazorise.com/docs/extensions/richtextedit
+	https://blazorise.com/docs/extensions/chart
+	https://github.com/Blazored/Toast
+
+* Email notifications: https://code-maze.com/aspnetcore-send-email/
+
+* Onion architecture: https://code-maze.com/onion-architecture-in-aspnetcore/
+
+* Local storage access for Blazor apps: https://github.com/Blazored/LocalStorage
+
+* Toast library: https://github.com/Blazored/Toast
+
+* Google Drive API: https://developers.google.com/drive/api/guides/mime-types
+				  https://developers.google.com/drive/api/guides/manage-sharing#.net
+				  https://medium.com/geekculture/upload-files-to-google-drive-with-c-c32d5c8a7abc
+				  https://www.daimto.com/upload-file-to-google-drive/
+				  
+
+

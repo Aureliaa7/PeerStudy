@@ -2,7 +2,7 @@
     <EditForm Model="WorkItemModel">
         <DataAnnotationsValidator />
         <MatDialog @bind-IsOpen="@IsVisible" CanBeClosed="false">
-            <MatDialogTitle>Create task</MatDialogTitle>
+            <MatDialogTitle>@DialogTitle</MatDialogTitle>
             <MatDialogContent Class="mat-dialog-styles">
                 <div class="work-item-card">
 

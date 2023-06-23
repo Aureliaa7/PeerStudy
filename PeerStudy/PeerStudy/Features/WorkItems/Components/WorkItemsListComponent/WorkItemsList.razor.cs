@@ -57,6 +57,8 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private bool isDeleteConfirmationPopupVisible;
         private const string deletePopupTitle = "Delete Task";
         private const string deleteWorkItemMessage = "Are you sure you want to delete this task?";
+        private const string addWorkItemDialogTitle = "Create task";
+        private const string editWorkItemDialogTitle = "Edit task";
 
         protected override async Task OnInitializedAsync()
         {

@@ -67,7 +67,7 @@ namespace PeerStudy.Core.DomainServices
                     DriveFileId = file.FileDriveId,
                     FileName = file.Name,
                     OwnerId = data.OwnerId,
-                    Type = Enums.ResourceType.File,
+                    Type = ResourceType.File,
                     CourseUnitId = data.CourseUnitId
                 });
 
