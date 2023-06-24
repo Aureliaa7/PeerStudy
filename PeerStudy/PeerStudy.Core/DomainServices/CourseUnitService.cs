@@ -169,7 +169,7 @@ namespace PeerStudy.Core.DomainServices
                 throw new EntityNotFoundException($"Course unit with id {courseUnitId} was not found!");
 
             if (courseUnit.Order > 1 &&
-                await CheckPreviousCourseUnitsAvailabilityAsync(courseUnit.Order, studentId))
+                await CheckPreviousCourseUnitsAvailabilityAsync(courseUnit.Order, studentId, courseUnit.CourseId))
             {
                 await studentPointsService.SubtractPointsAsync(studentId, courseUnit.NoPointsToUnlock, false);
                 await unitOfWork.UnlockedCourseUnitsRepository.AddAsync(new UnlockedCourseUnit
@@ -183,11 +183,11 @@ namespace PeerStudy.Core.DomainServices
             }
         }
 
-        public async Task<bool> CheckPreviousCourseUnitsAvailabilityAsync(int courseUnitOrder, Guid studentId)
+        public async Task<bool> CheckPreviousCourseUnitsAvailabilityAsync(int courseUnitOrder, Guid studentId, Guid courseId)
         {
             if (courseUnitOrder > 1)
             {
-                var previousLockedCourseUnitsIds = (await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.Order < courseUnitOrder && !x.IsAvailable))
+                var previousLockedCourseUnitsIds = (await unitOfWork.CourseUnitsRepository.GetAllAsync(x => x.CourseId == courseId && x.Order < courseUnitOrder && !x.IsAvailable))
                     .Select(x => x.Id)
                     .ToList();
 

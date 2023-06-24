@@ -20,6 +20,9 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         [Inject]
         private IStudyGroupService StudyGroupService { get; set; }
 
+        [Inject]
+        private ICourseService CourseService { get; set; }
+
 
         [Parameter]
         public Guid StudyGroupId { get; set; }
@@ -60,6 +63,8 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
         private const string addWorkItemDialogTitle = "Create task";
         private const string editWorkItemDialogTitle = "Edit task";
 
+        private string courseTitle = string.Empty;
+
         protected override async Task OnInitializedAsync()
         {
            await base.OnInitializedAsync();
@@ -75,11 +80,13 @@ namespace PeerStudy.Features.WorkItems.Components.WorkItemsListComponent
                 ResetCurrentDataSource();
 
                 isReadOnly = !await StudyGroupService.IsActiveAsync(StudyGroupId);
+                courseTitle = await CourseService.GetTitleByStudyGroupAsync(StudyGroupId);
             } 
             catch (Exception ex)
             {
                 ToastService.ShowToast(ToastLevel.Error, "An error occurred...");
             }
+            courseTitle = $"{courseTitle} - {StudyGroupName}";
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

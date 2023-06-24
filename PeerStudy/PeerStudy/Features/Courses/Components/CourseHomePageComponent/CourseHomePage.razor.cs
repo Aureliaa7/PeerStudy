@@ -392,7 +392,8 @@ namespace PeerStudy.Features.Courses.Components.CourseHomePageComponent
             
             try
             {
-                previousCourseUnitsAreAvailable = await CourseUnitService.CheckPreviousCourseUnitsAvailabilityAsync(courseUnitToBeUnlocked.Order, currentUserId);
+                previousCourseUnitsAreAvailable = 
+                    await CourseUnitService.CheckPreviousCourseUnitsAvailabilityAsync(courseUnitToBeUnlocked.Order, currentUserId, CourseId);
             }
             catch
             {

@@ -36,3 +36,9 @@
     font-size: 1.2em;
     color: #0063BF;
 }
+
+.assignments-statistics-chart,
+.unlocked-course-units-chart,
+.assignments-progress-chart {
+    padding: 15px;
+}

@@ -24,7 +24,8 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         /// </summary>
         /// <param name="courseUnitOrder">The index of the course unit to be unlocked</param>
         /// <param name="studentId">The student id</param>
+        /// <param name="courseId">The course id</param>
         /// <returns>A bool indicating whether or not all the previous course units are available</returns>
-        Task<bool> CheckPreviousCourseUnitsAvailabilityAsync(int courseUnitOrder, Guid studentId);
+        Task<bool> CheckPreviousCourseUnitsAvailabilityAsync(int courseUnitOrder, Guid studentId, Guid courseId);
     }
 }

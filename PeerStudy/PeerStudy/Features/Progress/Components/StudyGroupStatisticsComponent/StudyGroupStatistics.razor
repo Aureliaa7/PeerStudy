@@ -25,17 +25,23 @@
     <div class="statistics">
         <div class="assignments-statistics">
             <span class="section">Assignments Statistics</span>
-            <PieChart @ref="assignmentsStatisticsChart" TItem="int"></PieChart>
+            <div class="assignments-statistics-chart">
+                <PieChart @ref="assignmentsStatisticsChart" TItem="int"></PieChart>
+            </div>
         </div>
 
         <div class="unlocked-course-units">
             <span class="section">Unlocked Course Units Statistics</span>
-            <Chart @ref="unlockedCourseUnitsBarChart" Type="ChartType.Bar" TItem="int" />
+            <div class="unlocked-course-units-chart">
+                <Chart @ref="unlockedCourseUnitsBarChart" Type="ChartType.Bar" TItem="int" Options="@GetUnlockedCourseUnitsChartOptions()" />
+            </div>
         </div>
 
         <div class="assignments-progress">
             <span class="section">Assignments Progress</span>
-            <BarChart @ref="assignmentsProgressBarChart" TItem="int" Options="@GetBarChartOptions("Assignments Progress")" />
+            <div class="assignments-progress-chart">
+                <BarChart @ref="assignmentsProgressBarChart" TItem="int" Options="@GetBarChartOptions()" />
+            </div>
         </div>
     </div>
 }

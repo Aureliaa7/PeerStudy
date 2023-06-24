@@ -31,5 +31,7 @@ namespace PeerStudy.Core.Interfaces.DomainServices
         Task<List<EnrolledStudentModel>> GetStudentsAsync(Guid courseId);
 
         Task<CourseStatus> GetCourseStatusAsync(Guid courseId);
+
+        Task<string> GetTitleByStudyGroupAsync(Guid studyGroupId);
     }
 }

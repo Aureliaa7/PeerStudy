@@ -255,12 +255,16 @@ namespace PeerStudy.Core.DomainServices
         private async Task<Course> GetByIdAsync(Guid id, string propertiesToBeIncluded = "")
         {
             var course = await unitOfWork.CoursesRepository.GetFirstOrDefaultAsync(x => x.Id == id, includeProperties: propertiesToBeIncluded);
-            if (course == null)
-            {
-                throw new EntityNotFoundException($"Course with id: {id} was not found!");
-            }
 
-            return course;
+            return course ?? throw new EntityNotFoundException($"Course with id: {id} was not found!");
+        }
+
+        public async Task<string> GetTitleByStudyGroupAsync(Guid studyGroupId)
+        {
+            var studyGroup = await unitOfWork.StudyGroupRepository.GetFirstOrDefaultAsync(x => x.Id == studyGroupId,
+                includeProperties: nameof(Course)) ?? throw new EntityNotFoundException($"Study group with id {studyGroupId} was not found!");
+
+            return studyGroup.Course.Title;
         }
     }
 }

@@ -22,7 +22,6 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
         public string CourseTitle { get; set; }
 
 
-        // also use the id of the current user to get the data
         [Inject]
         private IStatisticsService StatisticsService { get; set; }
 
@@ -36,6 +35,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
         private BarChart<int> assignmentsProgressBarChart;
         private Chart<int> unlockedCourseUnitsBarChart;
         private PieChart<int> assignmentsStatisticsChart;
+        private ChartOptions unlockedCourseUnitsBarChartOptions;
 
         protected override async Task InitializeAsync()
         {
@@ -97,7 +97,7 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
         #region Charts logic
 
         #region common logic
-        private static BarChartOptions GetBarChartOptions(string title)
+        private static BarChartOptions GetBarChartOptions()
         {
             BarChartOptions options = new()
             {
@@ -115,11 +115,6 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
                     Legend = new()
                     {
                         Position = "top"
-                    },
-                    Title = new()
-                    {
-                        Display = true,
-                        Text = title
                     }
                 }
             };
@@ -156,6 +151,22 @@ namespace PeerStudy.Features.Progress.Components.StudyGroupStatisticsComponent
             await unlockedCourseUnitsBarChart.AddLabelsDatasetsAndUpdate(labels, dataset);
         }
   
+        private static ChartOptions GetUnlockedCourseUnitsChartOptions()
+        {
+            return new()
+            {
+                Scales = new ChartScales
+                {
+                    Y = new ChartAxis
+                    {
+                        Ticks = new ChartAxisTicks
+                        {
+                            StepSize = 1
+                        }
+                    }
+                }
+            };
+        }
         #endregion
 
         #region assignments progress chart
