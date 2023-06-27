@@ -34,7 +34,7 @@
                     <MatButton
                         Style="@buttonStyles"
                         Raised="true"
-                           Disabled="isPostponeDeadlineButtonDisabled"
+                        Disabled="@(isPostponeDeadlineButtonDisabled || isUploadingFilesInProgress)"
                         OnClick="PostponeDeadline">
                         Postpone deadline
                     </MatButton>

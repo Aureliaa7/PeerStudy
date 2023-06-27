@@ -6,3 +6,11 @@
     top: 65px;
     right: 25px;
 }
+
+.q-and-a-badge-section-title {
+    display: block;
+}
+
+.course-badges-container {
+    padding: 5px;
+}

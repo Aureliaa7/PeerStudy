@@ -36,21 +36,23 @@
                 <MatTab Label="Earned Badges">
                     <div class="tab-content">
                         <div class="q-and-a-badges">
-                            <span>Q&A Badges</span>
+                            <span class="q-and-a-badge-section-title">Q&A Badges</span>
                             <StudentBadges Badges="studentProgress.QAndABadges">
                             </StudentBadges>
                         </div>
-                        @if (studentProgress.CoursesBadges != null)
-                        {
-                            foreach (var item in studentProgress.CoursesBadges)
+                        <div class="course-badges-container">
+                            @if (studentProgress.CoursesBadges != null)
                             {
-                                <div class="course-badges">
-                                    <span>Badges for course @item.CourseTitle</span>
-                                    <StudentBadges Badges="@(new List<StudentBadgeDetailsModel> { item })">
-                                    </StudentBadges>
-                                </div>
+                                foreach (var item in studentProgress.CoursesBadges)
+                                {
+                                    <div class="course-badges">
+                                        <span>Badges for course @item.CourseTitle</span>
+                                        <StudentBadges Badges="@(new List<StudentBadgeDetailsModel> { item })">
+                                        </StudentBadges>
+                                    </div>
+                                }
                             }
-                        }
+                        </div>
                     </div>
                 </MatTab>
                 <MatTab Label="Unlocked Course Units">

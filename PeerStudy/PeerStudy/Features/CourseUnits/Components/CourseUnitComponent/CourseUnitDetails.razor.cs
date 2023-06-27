@@ -15,7 +15,7 @@ namespace PeerStudy.Features.CourseUnits.Components.CourseUnitComponent
         public Guid CurrentUserId { get; set; }
 
         [Parameter]
-        public bool IsMenuIconVisible { get; set; }
+        public bool IsReadOnly { get; set; }
 
         [Parameter]
         public EventCallback<Guid> OnDelete { get; set; }

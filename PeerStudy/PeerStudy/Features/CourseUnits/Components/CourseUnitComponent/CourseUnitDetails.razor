@@ -10,7 +10,7 @@
                     {
                         <div>
                             <MatButton Style="@defaultCursor"
-                                   Icon="@MatIconNames.Lock">
+                                       Icon="@MatIconNames.Lock">
                             </MatButton>
                         </div>
                     }
@@ -24,15 +24,16 @@
                 </div>
             </div>
 
-            @if (IsMenuIconVisible)
-            {
-                <div class="menu">
-                    <MatButton Style="@menuButtonStyles" Icon="@MatIconNames.Menu" OnClick="ToggleMenuOptions"></MatButton>
-                </div>
 
-                @if (showMenuOptions)
-                {
-                    <div class="menu-options">
+            <div class="menu">
+                <MatButton Style="@menuButtonStyles" Icon="@MatIconNames.Menu" OnClick="ToggleMenuOptions"></MatButton>
+            </div>
+
+            @if (showMenuOptions)
+            {
+                <div class="@(IsReadOnly ? "menu-options-archived-course" : "menu-options-active-course")">
+                    @if (!IsReadOnly)
+                    {
                         <div class="create-menu-btn">
                             <MatButton Style="@menuButtonsStyles" OnClick="UploadFiles">Upload file</MatButton>
                         </div>
@@ -45,12 +46,13 @@
                         <div class="create-menu-btn">
                             <MatButton Style="@menuButtonsStyles" OnClick="AddAssignment">Create assignment</MatButton>
                         </div>
-                        <div class="create-menu-btn">
-                            <MatButton Style="@menuButtonsStyles" OnClick="ViewAssignments">View assignments</MatButton>
-                        </div>
+                    }
+                    <div class="create-menu-btn">
+                        <MatButton Style="@menuButtonsStyles" OnClick="ViewAssignments">View assignments</MatButton>
                     </div>
-                }
+                </div>
             }
+
         </AuthorizeView>
 
         <AuthorizeView Roles="Student">
@@ -65,7 +67,7 @@
                     {
                         <div class="lock-icon">
                             <MatButton Icon="@MatIconNames.Lock"
-                               OnClick="HandleClickedLockIcon">
+                                       OnClick="HandleClickedLockIcon">
                             </MatButton>
                         </div>
                     }
@@ -73,7 +75,7 @@
                     {
                         <div class="lock-icon">
                             <MatButton Style="@defaultCursor"
-                               Icon="@MatIconNames.Lock">
+                                       Icon="@MatIconNames.Lock">
                             </MatButton>
                         </div>
                     }
@@ -98,9 +100,9 @@
                 {
                     <div>
                         <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
-                                OnDeleteResource="DeleteResource"
-                                CurrentUserId="CurrentUserId"
-                                ResourceDetails="resource">
+                                        OnDeleteResource="DeleteResource"
+                                        CurrentUserId="CurrentUserId"
+                                        ResourceDetails="resource">
                         </CourseResource>
                     </div>
                 }
@@ -118,9 +120,9 @@
                     {
                         <div>
                             <CourseResource IsReadOnly="@(!CourseUnit.IsActive)"
-                                OnDeleteResource="DeleteResource"
-                                CurrentUserId="CurrentUserId"
-                                ResourceDetails="resource">
+                                            OnDeleteResource="DeleteResource"
+                                            CurrentUserId="CurrentUserId"
+                                            ResourceDetails="resource">
                             </CourseResource>
                         </div>
                     }

@@ -181,12 +181,9 @@ namespace PeerStudy.Features.Assignments.Components.AssignmentDetailsComponent
             {
                 ToastService.ShowToast(ToastLevel.Error, "There was an error while uploading the files...");
             }
-            finally
-            {
-                newlyAddedFiles.Clear();
-                isUploadingFilesInProgress = false;
-            }
 
+            newlyAddedFiles.Clear();
+            isUploadingFilesInProgress = false;
             StateHasChanged();
         }
 

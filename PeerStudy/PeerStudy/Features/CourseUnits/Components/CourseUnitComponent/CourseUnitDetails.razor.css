@@ -24,15 +24,24 @@
     padding: 7px;
 }
 
-.menu-options {
+.menu-options-active-course,
+.menu-options-archived-course {
     position: absolute;
     right: 0;
-    width: 150px;
-    height: 195px;
     border-radius: 10px;
     z-index: 5;
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #6699cc 0%);
+}
+
+.menu-options-active-course {
+    width: 150px;
+    height: 195px;
     top: -185px;
+}
+
+.menu-options-archived-course {
+    width: 150px;
+    height: 50px;
 }
 
 .resource:hover {
