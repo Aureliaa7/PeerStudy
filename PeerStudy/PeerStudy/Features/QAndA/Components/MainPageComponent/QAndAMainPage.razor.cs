@@ -40,7 +40,7 @@ namespace PeerStudy.Features.QAndA.Components.MainPageComponent
         {
             await SetCurrentUserDataAsync();
 
-            base.OnInitialized();
+            await base.OnInitializedAsync();
 
             if (currentUserRole == Role.Student)
             {

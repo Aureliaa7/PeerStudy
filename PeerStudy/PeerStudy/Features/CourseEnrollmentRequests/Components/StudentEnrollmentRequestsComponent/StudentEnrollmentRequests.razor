@@ -9,11 +9,13 @@
 
 @if (!isLoading)
 {
-    <MatSelectItem Label="Status"
-               Value="@enrollmentStatus"
-               ValueChanged="@(async (CourseEnrollmentRequestStatus? value) => await HandleSelectedStatusChanged(value))"
-               Items="@enrollmentStatuses">
-    </MatSelectItem>
+    <div class="enrollment-status">
+        <MatSelectItem Label="Status"
+                       Value="@enrollmentStatus"
+                       ValueChanged="@(async (CourseEnrollmentRequestStatus? value) => await HandleSelectedStatusChanged(value))"
+                       Items="@enrollmentStatuses">
+        </MatSelectItem>
+    </div>
 }
 
 <Loading IsLoading="isLoading"
